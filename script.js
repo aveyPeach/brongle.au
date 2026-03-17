@@ -16076,56 +16076,65 @@ function showShareModal(resultType) {
 }
 
 function generateShareString() {
-  let shareText = `Daily Brongle #274 ${guessCount}/9\n\n`;
-  const allTiles = [...document.querySelectorAll(".tile")];
+  const secretRow = document.getElementById("secret-row");
+  const isSecretActive = secretRow && !secretRow.classList.contains("hidden");
 
-  // Loop through tiles in steps of 5 (one row at a time)
-  for (let row = 0; row < allTiles.length; row += 5) {
+  // 1. Dynamic Header Logic
+  // If the secret row is out, it's 10/9. Otherwise, use the standard guessCount.
+  const displayCount = isSecretActive ? 10 : guessCount;
+  let shareText = `Daily Brongle #274 ${displayCount}/9\n\n`;
+
+  // 2. Main Grid Rows (Rows 1-9)
+  // Note: We use querySelectorAll(".guess-grid .tile") to avoid accidentally 
+  // grabbing the secret tiles in this first loop.
+  const gridTiles = [...document.querySelectorAll(".guess-grid .tile")];
+
+  for (let row = 0; row < gridTiles.length; row += 5) {
     let rowText = "";
     let rowHasData = false;
 
-    // Process the 5 tiles in this specific row
     for (let i = 0; i < 5; i++) {
-      const tile = allTiles[row + i];
-      const state = tile.dataset.state;
+      const tile = gridTiles[row + i];
+      const state = tile?.dataset.state;
 
       if (state) {
-        rowHasData = true; // We found a played tile!
-        
+        rowHasData = true;
         if (state === "emoji") rowText += tile.textContent;
         else if (state === "purple") rowText += "🟪";
         else if (state === "red") rowText += "🟥";
         else if (state === "empty") rowText += "⬜";
         else if (state === "correct") rowText += "🟩";
       } else {
-        // If the tile is totally empty/unplayed
         rowText += "⬛"; 
       }
     }
 
-    // ONLY add the row to the final text if someone actually played it
     if (rowHasData) {
       shareText += rowText + "\n";
     } else {
-      // If we hit a completely empty row, we stop adding rows 
-      // (This prevents the trailing empty lines on an early win)
       break; 
     }
   }
 
-  // Include the Secret Row if it's visible
-  const secretRow = document.getElementById("secret-row");
-  if (secretRow && !secretRow.classList.contains("hidden")) {
-      shareText += "\nSECRET ROW:\n";
-      const secretTiles = secretRow.querySelectorAll(".tile");
-      secretTiles.forEach(t => {
-          if (t.dataset.state === "emoji") shareText += t.textContent;
-          else shareText += "⬛";
-      });
-      shareText += "\n";
+  // 3. Secret Row (Row 10)
+  // No label, just the squares/emojis appended directly after row 9
+  if (isSecretActive) {
+    const secretTiles = secretRow.querySelectorAll(".tile");
+    secretTiles.forEach(t => {
+      const state = t.dataset.state;
+      if (state === "emoji") shareText += t.textContent;
+      else if (state === "purple") shareText += "🟪";
+      else if (state === "red") shareText += "🟥";
+      else if (state === "empty") shareText += "⬜";
+      else if (state === "correct") shareText += "🟩";
+      else shareText += "⬛";
+    });
+    shareText += "\n";
   }
 
-  shareText += "\nhttps://aveypeach.github.io/brongle.au/"
+  shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
   navigator.clipboard.writeText(shareText);
+  // Optional: let the user know it worked
+  if (typeof showAlert === "function") showAlert("Copied to clipboard!");
 }
