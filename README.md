@@ -2,7 +2,7 @@ THE Brongle, it's here.
 
 ---
 
-Branched off Wordle Clone by WebDevSimplified, very nicely approachable project, check it out!
+Branched off Wordle Clone by WebDevSimplified, pawsome project, check it out!
 ---
 https://github.com/WebDevSimplified/wordle-clone
 ---
