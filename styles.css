@@ -374,3 +374,9 @@ body {
     border-radius: 8px;
   }
 }
+
+#modal-text {
+  white-space: pre-line; /* This makes the \n actually work! */
+  text-align: center;
+  line-height: 1.5;
+}

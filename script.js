@@ -15820,6 +15820,7 @@ const twosevenfourSequence = [
 initGame()
 
 function initGame() {
+  showNextQuestion()
   // 1. Determine the mode based on the Day Number (dayOffset)
   if (dayOffset === 274) { 
     // Horse Story (Today)
