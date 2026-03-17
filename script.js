@@ -15491,7 +15491,7 @@ const storySequence = [
           {
             danceTiles(tiles);
             
-           showAlert("*loud error buzzer*", 5000);
+           showAlert("behold the tragedy", 5000);
 
             // wait 2 seconds 4 dance to play out 
             // before the share modal covers the screen
