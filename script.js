@@ -3,7 +3,6 @@ const yesBtn = document.getElementById("yes-btn")
 const noBtn = document.getElementById("no-btn")
 const modalText = document.getElementById("modal-text")
 
-// At the top of your script
 let currentQuestionIndex = 0;
 const jokeQuestions = [
   "Welcome to Brongle everypony \n do you want to guess your first word?",
@@ -16,14 +15,13 @@ let youWantWin = false;
 
 let youWon = false;
 
+let storySequence = [];
+
 let currentMode; 
 const GAME_MODES = {
   STANDARD: "standard",
   YES_NO: "yes_no"
 }
-
-// not needed?
-// const today = new Date().toDateString();
 
 const targetWords = [
   "cigar",
@@ -15316,18 +15314,18 @@ const dictionary = [
   "rural",
   "shave",
 ]
-const WORD_LENGTH = 5
-const FLIP_ANIMATION_DURATION = 500
-const DANCE_ANIMATION_DURATION = 500
-const keyboard = document.querySelector("[data-keyboard]")
-const alertContainer = document.querySelector("[data-alert-container]")
-const guessGrid = document.querySelector("[data-guess-grid]")
-const offsetFromDate = new Date(2022, 0, 1)
-const msOffset = Date.now() - offsetFromDate
-const dayOffset = msOffset / 1000 / 60 / 60 / 24
-const targetWord = targetWords[Math.floor(dayOffset)]
+const WORD_LENGTH = 5;
+const FLIP_ANIMATION_DURATION = 500;
+const DANCE_ANIMATION_DURATION = 500;
+const keyboard = document.querySelector("[data-keyboard]");
+const alertContainer = document.querySelector("[data-alert-container]");
+const guessGrid = document.querySelector("[data-guess-grid]");
+const offsetFromDate = new Date(2025, 5, 17).getTime();
+const msOffset = Date.now() - offsetFromDate;
+const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
+const targetWord = targetWords[dayOffset]
 
-let guessCount = 0; // Tracks which guess we are on
+let guessCount = 0; 
 
 // A generic helper to animate custom tile setups
 function revealCustomTiles(tiles, contents, states) {
@@ -15343,10 +15341,117 @@ function revealCustomTiles(tiles, contents, states) {
   });
 }
 
-// The State Machine data
-const storySequence = [
+// state machine data hence4th
+const ogreStorySequence = [
   {
-    // After Guess 1
+    // Guess 1
+    question: "The nefarious ogre appears.",
+    btnYes: "oh?", btnNo: "oh!",
+    msgYes: "*grawr*", 
+    msgNo: "*grawr*",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",]),
+    actionNo:  (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",])
+  },
+  {
+    // Guess 2
+    question: "Talk to him?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "it's important to trust strangers", 
+    msgNo: "GRAWRRR R!!",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "💬", "🌳"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
+    actionNo: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    }
+  },
+    {
+    // Guess 3
+    question: "WILL YOU ANSWER MY RIDDLE?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "yayyy ^~^", 
+    msgNo: "GRAWRRR R!!",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🏚️", "", "", "", "🚗"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
+    actionNo: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    }
+  },
+  {
+    // Guess 4
+    question: "Can car go home?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "WRONG. NO ROAD. OGRE SMASH.", 
+    msgNo: "CORRECT. NO ROAD! OGRE THINK HE LOVE YOU",
+    actionYes: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    },
+    actionNo: (tiles) => revealCustomTiles(tiles, ["💕", "💕", "🧌", "💕", "💕"], ["emoji","emoji","emoji","emoji","emoji"])
+  },
+  {
+    // Guess 5
+    question: "marriage?",
+    btnYes: "yeah sure", btnNo: "nuh uhhhh",
+    msgYes: "*church bells ring*!", 
+    msgNo: "OGRE CAN'T TAKE IT ANYMORE",
+    actionYes: (tiles) => {
+      revealCustomTiles(tiles, ["👨", "📸", "🧌", "👰‍♀️", "💐"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("You two live happily ever after. Share your wedding photos?");
+        }, 2000); 
+      }, 1500);
+    },
+    actionNo: (tiles) => revealCustomTiles(tiles, ["💔", "💔", "🧌", "🔫", "💔"], ["emoji", "emoji","emoji", "emoji","emoji"])
+  },
+  {
+    // Guess 6
+    question: "OGRE CANT TAKE IT ANYMORE",
+    btnYes: "WAIT", btnNo: "PLEASE",
+    msgYes: "It's too late...", 
+    msgNo: "He doesn't listen...",
+    actionYes: (tiles) => playOgreEnd(tiles),
+    actionNo: (tiles) => playOgreEnd(tiles)
+  }
+];
+
+// helper function for guess 5 so as to adhere to DRY
+function playOgreEnd(tiles) {
+  revealCustomTiles(tiles, ["⬛", "⬛", "🕳️", "⬛", "⬛"], ["empty", "empty", "emoji", "empty", "empty"]);
+  document.body.classList.add("shake");
+  
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+    stopInteraction();
+    showShareModal("What have you done? can you ever let people know?");
+  }, 1500);
+}
+
+
+// disgusting branching but i'll clean that up in the future trust
+const twosevenfourSequence = [
+  {
+    // Guess 1
     question: "Is your favourite colour white?",
     btnYes: "YES", btnNo: "NO",
     msgYes: "yay !", msgNo: "too bad",
@@ -15354,7 +15459,7 @@ const storySequence = [
     actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"])
   },
   {
-    // After Guess 2
+    // Guess 2
     question: "Do you like my horse?",
     btnYes: "yes", btnNo: "what horse?",
     msgYes: "me too...", msgNo: "oh you know",
@@ -15362,7 +15467,7 @@ const storySequence = [
     actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "empty", "empty", "empty", "emoji"])
   },
   {
-    // After Guess 3
+    // Guess 3
     question: "Is the horse fast?",
     btnYes: "Yes", btnNo: "No",
     msgYes: "ZOOM !", msgNo: "she's fast enough!!",
@@ -15370,7 +15475,7 @@ const storySequence = [
     actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"])
   },
   {
-    // After Guess 4
+    // Guess 4 (BRANCH)
     question: "Does the horse want to win?",
     btnYes: "Yes", btnNo: "No",
     msgYes: "RAHH !", msgNo: "that's fair",
@@ -15478,7 +15583,6 @@ const storySequence = [
          return "she admires the goalpost";
     },
 
-    // We handle the logic in the action function
     actionYes: (tiles) => {
       if (horseWasHungry) {
         revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]);
@@ -15535,7 +15639,7 @@ const storySequence = [
     }
   },
   {
-    // Guess 7 (THE REACTION)
+    // Guess 7 
     get question() {
       if (horseWasHungry) return "awigugi??";
       else return "The crowd is cheering! One last trot?";
@@ -15565,7 +15669,6 @@ const storySequence = [
     },
 
     actionYes: (tiles) => {
-        // You can keep adding specific reveals here!
         if (horseWasHungry)
           revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]);
         else
@@ -15642,7 +15745,7 @@ const storySequence = [
     }
   },
 {
-    // Guess 9 (The one that unlocks the secret row)
+    // Guess 9 unlocks secret row
     get question() { return "are you stupid?"; },
     btnYes: "i don't kno", btnNo: "i don't knowe",
     
@@ -15655,14 +15758,13 @@ const storySequence = [
       return "please take one last good look at horsie"
     },
 
-    // Notice these actions ONLY flip the 9th row tiles. 
-    // The secret row is revealed by submitGuess.
+    // these actions ONLY flip the 9th row tiles. 
+    // secret row is revealed by submitGuess.
     actionYes: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); },
     actionNo: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); }
   },
   {
-    // Guess 10 (The Heaven/Hell Finale)
-    // This modal will trigger after they type into the secret row
+    // Guess 10 (secret!)
     get question() { return "Where shall Mrs. Horsie go?"; },
     btnYes: "SEE YOU IN HELL.", btnNo: "I WANT TO SEE YOU IN HEAVEN.",
 
@@ -15675,7 +15777,7 @@ const storySequence = [
       return "eaven..."
     },
 
-    actionYes: (tiles) => { // 'tiles' is now the secret row!
+    actionYes: (tiles) => { 
       revealCustomTiles(tiles, ["🏁", "", "", "", "💥"], ["emoji", "red", "red", "red", "emoji"]);
       document.body.classList.add("shake");
 
@@ -15718,18 +15820,26 @@ const storySequence = [
 initGame()
 
 function initGame() {
-  // 1. Determine the mode (Logic we discussed earlier)
-  const dayName = new Date().getDay();
-  if (dayName === 2) { // Tuesday
-      currentMode = GAME_MODES.YES_NO;
+  // 1. Determine the mode based on the Day Number (dayOffset)
+  if (dayOffset === 274) { 
+    // Horse Story (Today)
+    currentMode = GAME_MODES.YES_NO;
+    storySequence = twosevenfourSequence; 
+  } else if (dayOffset === 275) { 
+    // Ogre Story (Tomorrow)
+    currentMode = GAME_MODES.YES_NO;
+    storySequence = ogreStorySequence;
   } else {
-      currentMode = GAME_MODES.STANDARD;
+    // Standard Wordle Mode (Other days)
+    currentMode = GAME_MODES.NORMAL; 
   }
 
-  // 2. Decide how to start
+  // 2. Decide how to start the interaction
   if (currentMode === GAME_MODES.YES_NO) {
-    showNextQuestion(); // Change showIntroModal() to this
+    // On Story Days, we wait for them to type their first word
+    startInteraction(); 
   } else {
+    // On Normal Days, we just start the game
     startInteraction();
   }
 }
@@ -15873,9 +15983,10 @@ function submitGuess() {
   stopInteraction();
 
   if (currentMode === GAME_MODES.YES_NO) {
+    // 1. Use the generic sequence assigned in initGame()
     const currentStory = storySequence[guessCount];
 
-    // The handler for clicking Yes/No
+    // 2. The handler for clicking the buttons
     const handleChoice = (isYes) => {
       // Show reaction text and hide buttons
       modalText.textContent = isYes ? currentStory.msgYes : currentStory.msgNo;
@@ -15884,49 +15995,46 @@ function submitGuess() {
 
       setTimeout(() => {
         modal.classList.add("hidden");
-        // Reset button visibility for the next time the modal opens
+        // Reset button visibility for the next row
         yesBtn.style.display = 'inline-block';
         noBtn.style.display = 'inline-block';
 
-        // Run the visual update (flips horses, apples, or explosions)
+        // Run the specific visual animations for this step
         if (isYes) currentStory.actionYes(activeTiles);
         else currentStory.actionNo(activeTiles);
 
-        // --- TUESDAY SEQUENCE LOGIC ---
+        // --- DYNAMIC PROGRESSION LOGIC ---
         
-        if (guessCount === 8) { 
-          // 1. User just finished the 9th grid guess.
-          // 2. Reveal the Secret Row and move state to 9 (The 10th guess).
+        // A. Special Case: The Horse's Secret Row (Day 274 Only)
+        if (dayOffset === 274 && guessCount === 8) { 
           const secretRow = document.getElementById("secret-row");
           secretRow.classList.remove("hidden");
-          
           guessCount++; 
-          // 3. Unlock keyboard so they can type into the secret row
           setTimeout(startInteraction, 1500); 
-
-        } else if (guessCount < 8) {
-          // Normal Tuesday flow: move to next row and let them type
+        } 
+        // B. General Case: Move to the next step if one exists
+        else if (guessCount < storySequence.length - 1) {
           guessCount++;
           setTimeout(startInteraction, 1500);
-
-        } else if (guessCount === 9) {
-          // End of the road! Mrs. Horsie has reached her final destination.
-          // Interaction remains stopped (stopInteraction was called at the top).
+        } 
+        // C. End Case: No more steps, leave interaction stopped so they can share
+        else {
+          console.log("Brongle Story Complete.");
         }
       }, 1500);
     };
 
-    // Open the Modal with the current story question
+    // 3. Open the Modal with the dynamic question and button labels
     modalText.textContent = currentStory.question;
-    yesBtn.textContent = currentStory.btnYes;
-    noBtn.textContent = currentStory.btnNo;
+    yesBtn.textContent = currentStory.btnYes; // e.g. "Marriage"
+    noBtn.textContent = currentStory.btnNo;   // e.g. "Rejection"
     modal.classList.remove("hidden");
 
     yesBtn.onclick = () => handleChoice(true);
     noBtn.onclick = () => handleChoice(false);
 
   } else {
-    // Normal Wordle Mode (Not Tuesday)
+    // Normal Wordle Mode
     activeTiles.forEach((...params) => flipTile(...params, guess));
   }
 }
@@ -16065,7 +16173,7 @@ function showShareModal(resultType) {
   }
   else
   {
-    modalText.textContent = "The race is over, but the horse's legacy doesn't have to be \n share your result?";
+    modalText.textContent = resultType;
   }
 
   yesBtn.textContent = "Copy Result";
@@ -16079,14 +16187,11 @@ function generateShareString() {
   const secretRow = document.getElementById("secret-row");
   const isSecretActive = secretRow && !secretRow.classList.contains("hidden");
 
-  // 1. Dynamic Header Logic
-  // If the secret row is out, it's 10/9. Otherwise, use the standard guessCount.
+  // Dynamic Header
   const displayCount = isSecretActive ? 10 : guessCount;
-  let shareText = `Daily Brongle #274 ${displayCount}/9\n\n`;
+  let shareText = `Daily Brongle #${dayOffset} ${displayCount}/9\n\n`;
 
-  // 2. Main Grid Rows (Rows 1-9)
-  // Note: We use querySelectorAll(".guess-grid .tile") to avoid accidentally 
-  // grabbing the secret tiles in this first loop.
+  // Main Grid (Maintains alignment even with gaps)
   const gridTiles = [...document.querySelectorAll(".guess-grid .tile")];
 
   for (let row = 0; row < gridTiles.length; row += 5) {
@@ -16099,7 +16204,14 @@ function generateShareString() {
 
       if (state) {
         rowHasData = true;
-        if (state === "emoji") rowText += tile.textContent;
+        
+        if (state === "emoji") {
+          // THE FIX: If the emoji tile is empty, use a Braille Blank (\u2800)
+          // This keeps the car and the house on opposite sides!
+          const char = tile.textContent.trim();
+          // 2 braille characters so text doesn't get collapsed
+          rowText += (char === "") ? "⠀⠀" : char; 
+        } 
         else if (state === "purple") rowText += "🟪";
         else if (state === "red") rowText += "🟥";
         else if (state === "empty") rowText += "⬜";
@@ -16116,13 +16228,15 @@ function generateShareString() {
     }
   }
 
-  // 3. Secret Row (Row 10)
-  // No label, just the squares/emojis appended directly after row 9
+  // Handle the secret row (if applicable)
   if (isSecretActive) {
     const secretTiles = secretRow.querySelectorAll(".tile");
     secretTiles.forEach(t => {
       const state = t.dataset.state;
-      if (state === "emoji") shareText += t.textContent;
+      if (state === "emoji") {
+        const char = t.textContent.trim();
+        shareText += (char === "") ? "⠀" : char;
+      }
       else if (state === "purple") shareText += "🟪";
       else if (state === "red") shareText += "🟥";
       else if (state === "empty") shareText += "⬜";
@@ -16135,6 +16249,6 @@ function generateShareString() {
   shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
   navigator.clipboard.writeText(shareText);
-  // Optional: let the user know it worked
-  if (typeof showAlert === "function") showAlert("Copied to clipboard!");
+  
+  // showAlert("Wedding photos copied to clipboard!");
 }
