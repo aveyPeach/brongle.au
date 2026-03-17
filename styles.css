@@ -109,6 +109,35 @@ body {
   margin: 0 auto; 
 }
 
+#secret-row {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  
+  /* Center it vertically on the screen */
+  top: 50%;
+  transform: translateY(-50%);
+  
+  /* Push it to the right of the center */
+  /* 50% is the middle, 190px pushes it just past the main grid */
+  left: calc(50% + 190px); 
+  
+  z-index: 100;
+}
+
+#secret-row.hidden {
+  display: none;
+}
+
+/* Make these tiles look like the grid tiles */
+#secret-row .tile {
+  width: 4em; /* Or whatever your tile width is */
+  aspect-ratio: 1/1;
+  border: 2px solid #3a3a3c;
+}
+
+
+
 .tile {
   font-size: 1.5em;
   color: white;
@@ -128,6 +157,7 @@ body {
   border: 2px solid #3a3a3c; /* A brighter, more "Wordle" grey */
   background-color: transparent; /* Ensure it's not accidentally black-on-black */
 }
+
 
 .tile[data-state="active"] {
   border-color: hsl(200, 1%, 34%);
@@ -318,4 +348,29 @@ body {
   background-color: transparent;
   border-color: #3a3a3c;
   font-size: 2rem; /* Make the emojis nice and big */
+}
+
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  50% { transform: translate(-1px, 2px) rotate(1deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.shake {
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
+}
+
+@media (max-width: 800px) {
+  #secret-row {
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9); /* Adds a dark box behind it */
+    padding: 10px;
+    border-radius: 8px;
+  }
 }

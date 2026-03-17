@@ -15349,15 +15349,15 @@ const storySequence = [
     // After Guess 1
     question: "Is your favourite colour white?",
     btnYes: "YES", btnNo: "NO",
-    msgYes: "Yay !", msgNo: "Please don't tell lies ;~;",
+    msgYes: "yay !", msgNo: "too bad",
     actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"]),
     actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"])
   },
   {
     // After Guess 2
     question: "Do you like my horse?",
-    btnYes: "Yes", btnNo: "What horse?",
-    msgYes: "Me too...", msgNo: "Oh you know",
+    btnYes: "yes", btnNo: "what horse?",
+    msgYes: "me too...", msgNo: "oh you know",
     actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "empty", "empty", "empty", "emoji"]),
     actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "empty", "empty", "empty", "emoji"])
   },
@@ -15365,7 +15365,7 @@ const storySequence = [
     // After Guess 3
     question: "Is the horse fast?",
     btnYes: "Yes", btnNo: "No",
-    msgYes: "Zoom !", msgNo: "she's fast enough!!",
+    msgYes: "ZOOM !", msgNo: "she's fast enough!!",
     actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"]),
     actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"])
   },
@@ -15373,7 +15373,7 @@ const storySequence = [
     // After Guess 4
     question: "Does the horse want to win?",
     btnYes: "Yes", btnNo: "No",
-    msgYes: "Rahh !", msgNo: "that's fair",
+    msgYes: "RAHH !", msgNo: "that's fair",
     actionYes: (tiles) => {
       horseWantsWin = true;
       revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "empty", "emoji", "purple", "purple"]);
@@ -15393,13 +15393,13 @@ const storySequence = [
     {
         return horseWantsWin 
           ? "oh bet i've gotchu" 
-          : "she horse appreciates your support and is ready to lock in!!";
+          : "she appreciates your support and is ready to lock in!!";
     },
     get msgNo() 
     {
         return horseWantsWin 
           ? "a true winner keeps her priorities straight" 
-          : "see you tomorrow :3?";
+          : "see you tomorrow :3 (?)";
     },
 
     get btnYes() { return horseWantsWin ? "YES" : "YES"; },
@@ -15437,22 +15437,55 @@ const storySequence = [
     }
   },
   {
+
     // Guess 6 (BRANCH)
     get question() { 
       return horseWasHungry 
-        ? "He's still eating... wait for him?" 
+        ? "awagwagawa?" 
         : "Does the horse deserve to win?"; 
     },
-    get btnYes() { return horseWasHungry ? "Okay..." : "Absolutely"; },
-    get btnNo() { return horseWasHungry ? "Hurry up!" : "Not really"; },
+    get btnYes() { return horseWasHungry ? "go my noble steed" : "Absolutely"; },
+    get btnNo() { return horseWasHungry ? "go my noble steed" : "not yet"; },
     
+    get msgYes() 
+    {
+        if (youWantWin)
+          return "no !!!! she hasn't put in the work yet! !!"
+        else if (horseWasHungry)
+          return "she trots gallantly"
+        else
+        return horseWantsWin 
+          ? "oh bet i've gotchu" 
+          : "she appreciates your support and is ready to lock in!!";
+    },
+    get msgNo() 
+    {
+        if (youWantWin)
+          return "that's right, she still needs to reach the finish line"
+
+        if (horseWasHungry)
+          return "she trots gallantly"
+        else
+         return "she admires the goalpost";
+    },
+
     // We handle the logic in the action function
     actionYes: (tiles) => {
       if (horseWasHungry) {
-        // Path A: User waited for the eating horse
-        revealCustomTiles(tiles, ["🏁", "🐎", "🍎", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]);
+        revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]);
       } else {
-        // Path B: User said he deserves to win
+        // HORSE DIDN'T WANT WIN BUT YOU DO, NOW YOU SAY "ABSOLUTELY" TO "DOES THE HORSE DESERVE TO WIN"
+        if (youWantWin)
+        {
+          revealCustomTiles(tiles, ["🏁", "", "🥫", "", ""], ["emoji", "empty","emoji","purple","purple"]);
+          setTimeout(() => 
+          {
+            stopInteraction(); // 1. KILL INPUTS: No more typing allowed
+            showShareModal("glue time"); // 2. TRIGGER POPUP
+          }, 1500); 
+        }
+        else 
+        {
         youWon = true;
         revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]);
         setTimeout(() => {
@@ -15461,27 +15494,159 @@ const storySequence = [
             stopInteraction(); // Locks the game
             showShareModal("win")
         }, 2000);
+        }
       }
     },
     actionNo: (tiles) => {
-      horseDeservesWin = false;
-      revealCustomTiles(tiles, ["❌", "🐎", "", "", ""], ["emoji", "emoji", "empty", "empty", "empty"]);
+      if (youWantWin)
+        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
+
+      if (horseWasHungry)
+             revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]);
+      else
+        {
+         horseDeservesWin = false;
+         revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple","purple","purple",]);
+        }
     }
   },
   {
     // Guess 7 (THE REACTION)
     get question() {
-      if (horseWasHungry) return "He finished the apple. Now what?";
-      if (horseDeservesWin) return "The crowd is cheering! One last trot?";
-      return "The horse is sad. Give him a hug?";
+      if (horseWasHungry) return "awigugi??";
+      else return "The crowd is cheering! One last trot?";
     },
-    btnYes: "Yes", btnNo: "No",
+    get btnYes() 
+    {
+       return horseWasHungry ? "go my noble steed" : "lets go"; 
+    },
+    get btnNo() 
+    {
+       return horseWasHungry ? "go my noble steed" : "sleepy horsie."; 
+    },
+
+    get msgYes() 
+    {
+        if (horseWasHungry)
+          return "she trots gallantly"
+        else
+          return "lets go!"
+    },
+    get msgNo() 
+    {
+        if (horseWasHungry)
+          return "she trots gallantly"
+        else 
+          return "mimimimi";
+    },
+
     actionYes: (tiles) => {
         // You can keep adding specific reveals here!
-        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
+        if (horseWasHungry)
+          revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]);
+        else
+        {
+          revealCustomTiles(tiles, ["🏆", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
+          
+          showAlert("CHAMPION!", 5000);
+          danceTiles(tiles); // The victory dance
+          stopInteraction(); // Locks the game
+          showShareModal("win")
+        }
     },
     actionNo: (tiles) => {
-        revealCustomTiles(tiles, ["🛑", "🐎", "", "", ""], ["emoji", "emoji", "empty", "empty", "empty"]);
+      if (horseWasHungry)
+        revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]);
+      else
+      {
+        revealCustomTiles(tiles, ["💤", "🐎", "💤", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]);
+
+        showAlert("eepy sneepy", 5000);
+        danceTiles(tiles); // The victory dance
+        stopInteraction(); // Locks the game
+        showShareModal("sleepy horsie")
+      }
+    },
+  },
+  {
+    // Guess 8 
+    get question() {
+      return "could the apple be poisoned??";
+    },
+    get btnYes() 
+    {
+       return "probably ya"
+    },
+    get btnNo() 
+    {
+       return "don't care, horsie hungry"
+    },
+
+        get msgYes() 
+    {
+      return "*sound of apple being crushed in a mare's maw*"
+    },
+    get msgNo() 
+    {
+      return "*sound of apple being crushed in a mare's maw*"
+    },
+
+    actionYes: (tiles) => {
+      revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "red", "red", "red", "emoji"]);
+    },
+    actionNo: (tiles) => {
+      revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "red", "red", "red", "emoji"]);
+    }
+  },
+{
+    // Guess 9 (The one that unlocks the secret row)
+    get question() { return "are you stupid?"; },
+    btnYes: "i don't kno", btnNo: "i don't knowe",
+    
+    get msgYes() 
+    {
+      return "please take one last good look at horsie"
+    },
+    get msgNo() 
+    {
+      return "please take one last good look at horsie"
+    },
+
+    // Notice these actions ONLY flip the 9th row tiles. 
+    // The secret row is revealed by submitGuess.
+    actionYes: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); },
+    actionNo: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); }
+  },
+  {
+    // Guess 10 (The Heaven/Hell Finale)
+    // This modal will trigger after they type into the secret row
+    get question() { return "Where shall Mrs. Horsie go?"; },
+    btnYes: "SEE YOU IN HELL.", btnNo: "I WANT TO SEE YOU IN HEAVEN.",
+
+    get msgYes() 
+    {
+      return "what the fuck dude"
+    },
+    get msgNo() 
+    {
+      return "eaven..."
+    },
+
+    actionYes: (tiles) => { // 'tiles' is now the secret row!
+      revealCustomTiles(tiles, ["🏁", "", "", "", "💥"], ["emoji", "red", "red", "red", "emoji"]);
+      document.body.classList.add("shake");
+      setTimeout(() => {
+        document.body.classList.remove("shake");
+        stopInteraction(); 
+        showShareModal("hell"); 
+      }, 1500); 
+    },
+    actionNo: (tiles) => { // 'tiles' is now the secret row!
+      revealCustomTiles(tiles, ["☁️", "☁️", "🐎", "☁️", "☁️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        stopInteraction(); 
+        showShareModal("eaven"); 
+      }, 1500);
     }
   }
 ];
@@ -15593,12 +15758,24 @@ function handleKeyPress(e) {
 }
 
 function pressKey(key) {
-  const activeTiles = getActiveTiles()
+  const activeTiles = getActiveTiles() // We already made this 'Secret Row' aware
   if (activeTiles.length >= WORD_LENGTH) return
-  const nextTile = guessGrid.querySelector(":not([data-letter])")
-  nextTile.dataset.letter = key.toLowerCase()
-  nextTile.textContent = key
-  nextTile.dataset.state = "active"
+
+  // 1. Determine which container to look in
+  let container = guessGrid;
+  if (guessCount === 9) {
+    container = document.getElementById("secret-row");
+  }
+
+  // 2. Find the next empty tile in THAT specific container
+  const nextTile = container.querySelector(":not([data-letter])")
+
+  // 3. If a tile exists, fill it
+  if (nextTile) {
+    nextTile.dataset.letter = key.toLowerCase()
+    nextTile.textContent = key
+    nextTile.dataset.state = "active"
+  }
 }
 
 function deleteKey() {
@@ -15612,73 +15789,81 @@ function deleteKey() {
 
 // EDITED
 function submitGuess() {
-  const activeTiles = [...getActiveTiles()]
+  const activeTiles = [...getActiveTiles()];
   if (activeTiles.length !== WORD_LENGTH) {
-    showAlert("Not enough letters")
-    shakeTiles(activeTiles)
-    return
+    showAlert("Not enough letters");
+    shakeTiles(activeTiles);
+    return;
   }
 
   const guess = activeTiles.reduce((word, tile) => {
-    return word + tile.dataset.letter
-  }, "").toLowerCase()
+    return word + tile.dataset.letter;
+  }, "").toLowerCase();
 
   if (!dictionary.includes(guess)) {
-    showAlert("Not in word list")
-    shakeTiles(activeTiles)
-    return
+    showAlert("Not in word list");
+    shakeTiles(activeTiles);
+    return;
   }
 
-  if (currentMode === GAME_MODES.YES_NO) {
-    stopInteraction();
-    
-    // Safety check: Make sure we haven't run out of story!
-    if (guessCount >= storySequence.length) {
-       showAlert("The story is over.", 2000);
-       return;
-    }
+  // Stop typing while the modal and animations happen
+  stopInteraction();
 
-    // 1. Get the current story beat
+  if (currentMode === GAME_MODES.YES_NO) {
     const currentStory = storySequence[guessCount];
 
-    // 2. Set up the modal
+    // The handler for clicking Yes/No
+    const handleChoice = (isYes) => {
+      // Show reaction text and hide buttons
+      modalText.textContent = isYes ? currentStory.msgYes : currentStory.msgNo;
+      yesBtn.style.display = 'none';
+      noBtn.style.display = 'none';
+
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        // Reset button visibility for the next time the modal opens
+        yesBtn.style.display = 'inline-block';
+        noBtn.style.display = 'inline-block';
+
+        // Run the visual update (flips horses, apples, or explosions)
+        if (isYes) currentStory.actionYes(activeTiles);
+        else currentStory.actionNo(activeTiles);
+
+        // --- TUESDAY SEQUENCE LOGIC ---
+        
+        if (guessCount === 8) { 
+          // 1. User just finished the 9th grid guess.
+          // 2. Reveal the Secret Row and move state to 9 (The 10th guess).
+          const secretRow = document.getElementById("secret-row");
+          secretRow.classList.remove("hidden");
+          
+          guessCount++; 
+          // 3. Unlock keyboard so they can type into the secret row
+          setTimeout(startInteraction, 1500); 
+
+        } else if (guessCount < 8) {
+          // Normal Tuesday flow: move to next row and let them type
+          guessCount++;
+          setTimeout(startInteraction, 1500);
+
+        } else if (guessCount === 9) {
+          // End of the road! Mrs. Horsie has reached her final destination.
+          // Interaction remains stopped (stopInteraction was called at the top).
+        }
+      }, 1500);
+    };
+
+    // Open the Modal with the current story question
     modalText.textContent = currentStory.question;
     yesBtn.textContent = currentStory.btnYes;
     noBtn.textContent = currentStory.btnNo;
     modal.classList.remove("hidden");
 
-    // 3. Handle the choices
-    const handleChoice = (isYes) => {
-      // Show the reaction message briefly
-      modalText.textContent = isYes ? currentStory.msgYes : currentStory.msgNo;
-      yesBtn.style.display = 'none'; // Hide buttons temporarily
-      noBtn.style.display = 'none';
-
-      // Wait 1.5 seconds so they can read the reaction, then reveal tiles
-      setTimeout(() => {
-        modal.classList.add("hidden");
-        // Restore buttons for the NEXT question
-        yesBtn.style.display = 'inline-block'; 
-        noBtn.style.display = 'inline-block';
-        
-        // Run the specific visual action
-        if (isYes) currentStory.actionYes(activeTiles);
-        else currentStory.actionNo(activeTiles);
-
-        guessCount++; // Move to the next sequence
-        
-        // Wait for tiles to finish flipping before letting them type again
-        setTimeout(startInteraction, 1500); 
-
-      }, 1500);
-    };
-
     yesBtn.onclick = () => handleChoice(true);
     noBtn.onclick = () => handleChoice(false);
 
   } else {
-    // Standard game flow
-    stopInteraction();
+    // Normal Wordle Mode (Not Tuesday)
     activeTiles.forEach((...params) => flipTile(...params, guess));
   }
 }
@@ -15721,7 +15906,14 @@ function flipTile(tile, index, array, guess) {
 }
 
 function getActiveTiles() {
-  return guessGrid.querySelectorAll('[data-state="active"]')
+  // If we are on the secret 10th guess, look inside the secret row
+  if (guessCount === 9) {
+    const secretRow = document.getElementById("secret-row");
+    return secretRow.querySelectorAll('[data-state="active"]');
+  }
+  
+  // Otherwise, behave exactly as it originally did
+  return guessGrid.querySelectorAll('[data-state="active"]');
 }
 
 function showAlert(message, duration = 1000) {
@@ -15788,10 +15980,29 @@ function showShareModal(resultType) {
   yesBtn.style.display = "inline-block";
   noBtn.style.display = "none"; // Hide the No button
 
-  if (resultType === "win") {
+  if (resultType === "win") 
+  {
     modalText.textContent = "The Horse Won! Share your glory?";
-  } else {
-    modalText.textContent = "The Horse Retired. Share the tragedy?";
+  } 
+  else if (resultType === "glue time")
+  {
+     modalText.textContent = "something happened to the horse.\n do you wish to share her legacy?";
+  }
+    else if (resultType === "sleepy horsie")
+  {
+     modalText.textContent = "the horse sleeps soundly until tomorrow \n let the people know?";
+  }
+      else if (resultType === "hell")
+  {
+     modalText.textContent = "it's hot in here\n BUT YOU KNOW WHAT'S EVEN HOTTER THAT'S RIGHT SHARING YOUR SCORE";
+  }
+      else if (resultType === "eaven")
+  {
+     modalText.textContent = "blessed be your mared friend \n share if you cried?";
+  }
+  else
+  {
+    modalText.textContent = "The race is over, but the horse's legacy doesn't have to be \n share your result?";
   }
 
   yesBtn.textContent = "Copy Result";
@@ -15825,6 +16036,7 @@ function generateShareString() {
     // Map states to emojis
     if (state === "emoji") shareText += allTiles[i].textContent;
     else if (state === "purple") shareText += "🟪";
+    else if (state === "red") shareText += "🟥";
     else if (state === "empty") shareText += "⬜";
     else if (state === "correct") shareText += "🟩";
     else shareText += ""; // Default empty tile
