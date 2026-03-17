@@ -15429,10 +15429,19 @@ const storySequence = [
       else
       {
         revealCustomTiles(tiles, ["❌", "❌", "❌", "❌", "❌"], ["emoji", "emoji","emoji","emoji","emoji"]);
-        setTimeout(() => {
-            stopInteraction(); // 1. KILL INPUTS: No more typing allowed
-            showShareModal("THE HORSE AND YOU ALIKE ARE SIMPLY CHILLING"); // 2. TRIGGER POPUP
-          }, 1500); 
+        setTimeout(() => 
+        {
+          danceTiles(tiles);
+          
+            showAlert("the horse and you alike are simply chilling", 5000);
+
+          // wait 2 seconds 4 dance to play out 
+          // before the share modal covers the screen
+          setTimeout(() => {
+              stopInteraction(); // Kill inputs
+              showShareModal("THE HORSE AND YOU ALIKE ARE SIMPLY CHILLING");
+          }, 2000); 
+        }, 1500);
       }
     }
   },
@@ -15480,20 +15489,35 @@ const storySequence = [
           revealCustomTiles(tiles, ["🏁", "", "🥫", "", ""], ["emoji", "empty","emoji","purple","purple"]);
           setTimeout(() => 
           {
-            stopInteraction(); // 1. KILL INPUTS: No more typing allowed
-            showShareModal("glue time"); // 2. TRIGGER POPUP
-          }, 1500); 
+            danceTiles(tiles);
+            
+           showAlert("*loud error buzzer*", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("glue time");
+            }, 2000); 
+          }, 1500);
         }
         else 
         {
         youWon = true;
         revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]);
-        setTimeout(() => {
-            showAlert("CHAMPION!", 5000);
-            danceTiles(tiles); // The victory dance
-            stopInteraction(); // Locks the game
-            showShareModal("win")
-        }, 2000);
+          setTimeout(() => 
+          {
+            danceTiles(tiles);
+            
+           showAlert("CHAMPION!!", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("win");
+            }, 2000); 
+          }, 1500);
         }
       }
     },
@@ -15548,10 +15572,19 @@ const storySequence = [
         {
           revealCustomTiles(tiles, ["🏆", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
           
-          showAlert("CHAMPION!", 5000);
-          danceTiles(tiles); // The victory dance
-          stopInteraction(); // Locks the game
-          showShareModal("win")
+           setTimeout(() => 
+          {
+            danceTiles(tiles);
+            
+           showAlert("CHAMPION!!", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("win");
+            }, 2000); 
+          }, 1500);
         }
     },
     actionNo: (tiles) => {
@@ -15561,10 +15594,20 @@ const storySequence = [
       {
         revealCustomTiles(tiles, ["💤", "🐎", "💤", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]);
 
-        showAlert("eepy sneepy", 5000);
-        danceTiles(tiles); // The victory dance
-        stopInteraction(); // Locks the game
-        showShareModal("sleepy horsie")
+        
+          setTimeout(() => 
+          {
+            danceTiles(tiles);
+            
+           showAlert("eepy sneep", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("sleepy horsie");
+            }, 2000); 
+          }, 1500);
       }
     },
   },
@@ -15635,18 +15678,38 @@ const storySequence = [
     actionYes: (tiles) => { // 'tiles' is now the secret row!
       revealCustomTiles(tiles, ["🏁", "", "", "", "💥"], ["emoji", "red", "red", "red", "emoji"]);
       document.body.classList.add("shake");
-      setTimeout(() => {
-        document.body.classList.remove("shake");
-        stopInteraction(); 
-        showShareModal("hell"); 
-      }, 1500); 
+
+          setTimeout(() => 
+          {
+            danceTiles(tiles);
+            
+          document.body.classList.remove("shake");
+
+           showAlert("THE HORSE DESCENDS", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("hell");
+            }, 2000); 
+          }, 1500);
     },
     actionNo: (tiles) => { // 'tiles' is now the secret row!
       revealCustomTiles(tiles, ["☁️", "☁️", "🐎", "☁️", "☁️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-      setTimeout(() => {
-        stopInteraction(); 
-        showShareModal("eaven"); 
-      }, 1500);
+          setTimeout(() => 
+          {
+            danceTiles(tiles);
+            
+           showAlert("THE HORSE ASCENDS", 5000);
+
+            // wait 2 seconds 4 dance to play out 
+            // before the share modal covers the screen
+            setTimeout(() => {
+                stopInteraction(); // Kill inputs
+                showShareModal("eaven");
+            }, 2000); 
+          }, 1500);
     }
   }
 ];
@@ -15990,7 +16053,7 @@ function showShareModal(resultType) {
   }
     else if (resultType === "sleepy horsie")
   {
-     modalText.textContent = "the horse sleeps soundly until tomorrow \n let the people know?";
+     modalText.textContent = "the horse sleeps soundly until tomorrow \n\n let the people know?";
   }
       else if (resultType === "hell")
   {
