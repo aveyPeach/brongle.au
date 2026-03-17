@@ -1,3 +1,30 @@
+const modal = document.getElementById("question-modal")
+const yesBtn = document.getElementById("yes-btn")
+const noBtn = document.getElementById("no-btn")
+const modalText = document.getElementById("modal-text")
+
+// At the top of your script
+let currentQuestionIndex = 0;
+const jokeQuestions = [
+  "Welcome to Brongle everypony \n do you want to guess your first word?",
+];
+
+let horseWasHungry = false;
+let horseDeservesWin = false;
+let horseWantsWin = false;
+let youWantWin = false;
+
+let youWon = false;
+
+let currentMode; 
+const GAME_MODES = {
+  STANDARD: "standard",
+  YES_NO: "yes_no"
+}
+
+// not needed?
+// const today = new Date().toDateString();
+
 const targetWords = [
   "cigar",
   "rebut",
@@ -15300,7 +15327,226 @@ const msOffset = Date.now() - offsetFromDate
 const dayOffset = msOffset / 1000 / 60 / 60 / 24
 const targetWord = targetWords[Math.floor(dayOffset)]
 
-startInteraction()
+let guessCount = 0; // Tracks which guess we are on
+
+// A generic helper to animate custom tile setups
+function revealCustomTiles(tiles, contents, states) {
+  tiles.forEach((tile, index) => {
+    setTimeout(() => {
+      tile.classList.add("flip");
+      tile.addEventListener("transitionend", () => {
+        tile.classList.remove("flip");
+        tile.textContent = contents[index];
+        tile.dataset.state = states[index]; 
+      }, { once: true });
+    }, index * 100); // 250ms stagger
+  });
+}
+
+// The State Machine data
+const storySequence = [
+  {
+    // After Guess 1
+    question: "Is your favourite colour white?",
+    btnYes: "YES", btnNo: "NO",
+    msgYes: "Yay !", msgNo: "Please don't tell lies ;~;",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"]),
+    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"])
+  },
+  {
+    // After Guess 2
+    question: "Do you like my horse?",
+    btnYes: "Yes", btnNo: "What horse?",
+    msgYes: "Me too...", msgNo: "Oh you know",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "empty", "empty", "empty", "emoji"]),
+    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "empty", "empty", "empty", "emoji"])
+  },
+  {
+    // After Guess 3
+    question: "Is the horse fast?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "Zoom !", msgNo: "she's fast enough!!",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"]),
+    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"])
+  },
+  {
+    // After Guess 4
+    question: "Does the horse want to win?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "Rahh !", msgNo: "that's fair",
+    actionYes: (tiles) => {
+      horseWantsWin = true;
+      revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "empty", "emoji", "purple", "purple"]);
+    },
+    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "empty", "empty", "emoji", "purple"])
+  },
+  {
+    // Guess 5 (BRANCH)
+    get question() 
+    { 
+      return horseWantsWin 
+        ? "Is the horse hungry?" 
+        : "Do you want the horse to win?"; 
+    },
+
+    get msgYes() 
+    {
+        return horseWantsWin 
+          ? "oh bet i've gotchu" 
+          : "she horse appreciates your support and is ready to lock in!!";
+    },
+    get msgNo() 
+    {
+        return horseWantsWin 
+          ? "a true winner keeps her priorities straight" 
+          : "see you tomorrow :3?";
+    },
+
+    get btnYes() { return horseWantsWin ? "YES" : "YES"; },
+    get btnNo() { return horseWantsWin ? "NO" : "NO"; },
+
+    actionYes: (tiles) => 
+    {
+      if (horseWantsWin) 
+      {
+        horseWasHungry = true; 
+        revealCustomTiles(tiles, ["🏁", "🐎", "", "", "🍎"], ["emoji", "emoji", "purple", "purple", "emoji"]);
+      }
+      else
+      {
+        youWantWin = true;
+        revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "empty", "emoji", "purple", "purple"]);
+      }
+    },
+
+    actionNo: (tiles) => 
+    {
+      if (horseWantsWin) 
+      {
+        horseWasHungry = false; 
+        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
+      }
+      else
+      {
+        revealCustomTiles(tiles, ["❌", "❌", "❌", "❌", "❌"], ["emoji", "emoji","emoji","emoji","emoji"]);
+        setTimeout(() => {
+            stopInteraction(); // 1. KILL INPUTS: No more typing allowed
+            showShareModal("THE HORSE AND YOU ALIKE ARE SIMPLY CHILLING"); // 2. TRIGGER POPUP
+          }, 1500); 
+      }
+    }
+  },
+  {
+    // Guess 6 (BRANCH)
+    get question() { 
+      return horseWasHungry 
+        ? "He's still eating... wait for him?" 
+        : "Does the horse deserve to win?"; 
+    },
+    get btnYes() { return horseWasHungry ? "Okay..." : "Absolutely"; },
+    get btnNo() { return horseWasHungry ? "Hurry up!" : "Not really"; },
+    
+    // We handle the logic in the action function
+    actionYes: (tiles) => {
+      if (horseWasHungry) {
+        // Path A: User waited for the eating horse
+        revealCustomTiles(tiles, ["🏁", "🐎", "🍎", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]);
+      } else {
+        // Path B: User said he deserves to win
+        youWon = true;
+        revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]);
+        setTimeout(() => {
+            showAlert("CHAMPION!", 5000);
+            danceTiles(tiles); // The victory dance
+            stopInteraction(); // Locks the game
+            showShareModal("win")
+        }, 2000);
+      }
+    },
+    actionNo: (tiles) => {
+      horseDeservesWin = false;
+      revealCustomTiles(tiles, ["❌", "🐎", "", "", ""], ["emoji", "emoji", "empty", "empty", "empty"]);
+    }
+  },
+  {
+    // Guess 7 (THE REACTION)
+    get question() {
+      if (horseWasHungry) return "He finished the apple. Now what?";
+      if (horseDeservesWin) return "The crowd is cheering! One last trot?";
+      return "The horse is sad. Give him a hug?";
+    },
+    btnYes: "Yes", btnNo: "No",
+    actionYes: (tiles) => {
+        // You can keep adding specific reveals here!
+        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
+    },
+    actionNo: (tiles) => {
+        revealCustomTiles(tiles, ["🛑", "🐎", "", "", ""], ["emoji", "emoji", "empty", "empty", "empty"]);
+    }
+  }
+];
+
+// removed a blank call to "startInteraction()"
+initGame()
+
+function initGame() {
+  // 1. Determine the mode (Logic we discussed earlier)
+  const dayName = new Date().getDay();
+  if (dayName === 2) { // Tuesday
+      currentMode = GAME_MODES.YES_NO;
+  } else {
+      currentMode = GAME_MODES.STANDARD;
+  }
+
+  // 2. Decide how to start
+  if (currentMode === GAME_MODES.YES_NO) {
+    showNextQuestion(); // Change showIntroModal() to this
+  } else {
+    startInteraction();
+  }
+}
+
+function showNextQuestion() {
+  if (currentQuestionIndex < jokeQuestions.length) {
+    stopInteraction();
+    modalText.textContent = jokeQuestions[currentQuestionIndex];
+    modal.classList.remove("hidden");
+
+    // The logic for BOTH buttons is the same for now
+    const handleChoice = () => {
+      modal.classList.add("hidden");
+      revealEmptyBoxes(); // Trigger the visual change
+      currentQuestionIndex++;
+      
+      // Small delay before the next question pops up
+      setTimeout(showNextQuestion, 300); 
+    };
+
+    yesBtn.onclick = handleChoice;
+    noBtn.onclick = handleChoice;
+  } else {
+    // No more questions? Start the actual game.
+    startInteraction();
+    showAlert("Begin!", 300);
+  }
+}
+
+function revealEmptyBoxes() {
+  const activeTiles = getActiveTiles();
+  activeTiles.forEach((tile, index) => {
+    setTimeout(() => {
+      tile.classList.add("flip");
+      
+      // Listen for the flip to finish, then turn it white
+      tile.addEventListener("transitionend", () => {
+        tile.classList.remove("flip");
+        tile.dataset.state = "empty"; // Apply our white CSS
+        tile.textContent = ""; // Truly empty it
+      }, { once: true });
+      
+    }, index * 100); // Staggered reveal like the real Wordle
+  });
+}
 
 function startInteraction() {
   document.addEventListener("click", handleMouseClick)
@@ -15364,6 +15610,7 @@ function deleteKey() {
   delete lastTile.dataset.letter
 }
 
+// EDITED
 function submitGuess() {
   const activeTiles = [...getActiveTiles()]
   if (activeTiles.length !== WORD_LENGTH) {
@@ -15374,7 +15621,7 @@ function submitGuess() {
 
   const guess = activeTiles.reduce((word, tile) => {
     return word + tile.dataset.letter
-  }, "")
+  }, "").toLowerCase()
 
   if (!dictionary.includes(guess)) {
     showAlert("Not in word list")
@@ -15382,8 +15629,58 @@ function submitGuess() {
     return
   }
 
-  stopInteraction()
-  activeTiles.forEach((...params) => flipTile(...params, guess))
+  if (currentMode === GAME_MODES.YES_NO) {
+    stopInteraction();
+    
+    // Safety check: Make sure we haven't run out of story!
+    if (guessCount >= storySequence.length) {
+       showAlert("The story is over.", 2000);
+       return;
+    }
+
+    // 1. Get the current story beat
+    const currentStory = storySequence[guessCount];
+
+    // 2. Set up the modal
+    modalText.textContent = currentStory.question;
+    yesBtn.textContent = currentStory.btnYes;
+    noBtn.textContent = currentStory.btnNo;
+    modal.classList.remove("hidden");
+
+    // 3. Handle the choices
+    const handleChoice = (isYes) => {
+      // Show the reaction message briefly
+      modalText.textContent = isYes ? currentStory.msgYes : currentStory.msgNo;
+      yesBtn.style.display = 'none'; // Hide buttons temporarily
+      noBtn.style.display = 'none';
+
+      // Wait 1.5 seconds so they can read the reaction, then reveal tiles
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        // Restore buttons for the NEXT question
+        yesBtn.style.display = 'inline-block'; 
+        noBtn.style.display = 'inline-block';
+        
+        // Run the specific visual action
+        if (isYes) currentStory.actionYes(activeTiles);
+        else currentStory.actionNo(activeTiles);
+
+        guessCount++; // Move to the next sequence
+        
+        // Wait for tiles to finish flipping before letting them type again
+        setTimeout(startInteraction, 1500); 
+
+      }, 1500);
+    };
+
+    yesBtn.onclick = () => handleChoice(true);
+    noBtn.onclick = () => handleChoice(false);
+
+  } else {
+    // Standard game flow
+    stopInteraction();
+    activeTiles.forEach((...params) => flipTile(...params, guess));
+  }
 }
 
 function flipTile(tile, index, array, guess) {
@@ -15483,4 +15780,59 @@ function danceTiles(tiles) {
       )
     }, (index * DANCE_ANIMATION_DURATION) / 5)
   })
+}
+
+
+function showShareModal(resultType) {
+  modal.classList.remove("hidden");
+  yesBtn.style.display = "inline-block";
+  noBtn.style.display = "none"; // Hide the No button
+
+  if (resultType === "win") {
+    modalText.textContent = "The Horse Won! Share your glory?";
+  } else {
+    modalText.textContent = "The Horse Retired. Share the tragedy?";
+  }
+
+  yesBtn.textContent = "Copy Result";
+  yesBtn.onclick = () => {
+    generateShareString();
+    showAlert("Result copied to clipboard!", 2000);
+  };
+}
+
+function generateShareString() {
+
+
+  let shareText = ""
+  
+  if (youWon)
+  {
+    shareText = `Daily Brongle #274 ${guessCount}/9\n\n`;
+  }
+  else 
+  {
+    shareText = `Daily Brongle #274 X/9\n\n`;
+  }
+
+
+  // Get all rows
+  const allTiles = [...document.querySelectorAll(".tile")];
+  
+  for (let i = 0; i < allTiles.length; i++) {
+    const state = allTiles[i].dataset.state;
+    
+    // Map states to emojis
+    if (state === "emoji") shareText += allTiles[i].textContent;
+    else if (state === "purple") shareText += "🟪";
+    else if (state === "empty") shareText += "⬜";
+    else if (state === "correct") shareText += "🟩";
+    else shareText += ""; // Default empty tile
+
+    // Add a new line after every 5 tiles
+    if ((i + 1) % 5 === 0) shareText += "\n";
+  }
+
+  // Copy to clipboard
+  navigator.clipboard.writeText(shareText);
 }

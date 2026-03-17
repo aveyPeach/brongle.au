@@ -4,21 +4,30 @@
 }
 
 body {
-  background-color: hsl(240, 3%, 7%);
+  background-color: #121213;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  align-items: center; /* Centers everything horizontally */
+  justify-content: space-between; /* Pushes grid up and keyboard down */
+  height: 100vh;
   margin: 0;
-  padding: 1em;
-  font-size: clamp(.5rem, 2.5vmin, 1.5rem);
+  padding: 10px 0; /* Gives a little breathing room at the very top/bottom */
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .keyboard {
   display: grid;
-  grid-template-columns: repeat(20, minmax(auto, 1.25em));
+  grid-template-columns: repeat(20, 1fr);
   grid-auto-rows: 3em;
   gap: .25em;
-  justify-content: center;
+  padding: 10px;
+  user-select: none;
+
+  /* ADD THESE LINES */
+  width: 100%;
+  max-width: 500px; /* This keeps it from stretching too wide */
+  margin: 0 auto;   /* This centers it */
 }
 
 .key {
@@ -71,19 +80,37 @@ body {
   --lightness: 43%;
 }
 
+.title {
+  color: white;
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  border-bottom: 1px solid #3a3a3c; /* Adds that nice line under the name */
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 10px auto; /* The 10px at the end controls the gap below the title */
+  padding-bottom: 5px;
+}
+
 .guess-grid {
   display: grid;
-  justify-content: center;
-  align-content: center;
-  flex-grow: 1;
-  grid-template-columns: repeat(5, 4em);
-  grid-template-rows: repeat(6, 4em);
-  gap: .25em;
-  margin-bottom: 1em;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 5px;
+  
+  width: 90%;
+  max-width: 350px; 
+  
+  /* We removed the red border and fixed height */
+  /* This lets the grid take as much space as the tiles need */
+  height: auto; 
+  margin: 0 auto; 
 }
 
 .tile {
-  font-size: 2em;
+  font-size: 1.5em;
   color: white;
   border: .05em solid hsl(240, 2%, 23%);
   text-transform: uppercase;
@@ -93,6 +120,13 @@ body {
   align-items: center;
   user-select: none;
   transition: transform 250ms linear;
+
+  /* FIXED: Removed the extra "/" and the fixed width */
+  aspect-ratio: 1 / 1; 
+  width: 100%; 
+
+  border: 2px solid #3a3a3c; /* A brighter, more "Wordle" grey */
+  background-color: transparent; /* Ensure it's not accidentally black-on-black */
 }
 
 .tile[data-state="active"] {
@@ -205,4 +239,83 @@ body {
 
 .alert.hide {
   opacity: 0;
+}
+
+/* The background overlay that covers the whole screen */
+.modal-overlay {
+  position: fixed; /* Stays in place even if you scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent tint */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* High number to stay above the keyboard/grid */
+}
+
+/* Hide the modal when we don't want it */
+.modal-overlay.hidden {
+  display: none;
+}
+
+/* The actual box in the middle */
+.modal-content {
+  background-color: #121213; /* Matching Wordle dark theme */
+  border: 1px solid #3a3a3c;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+}
+
+/* Style your specific text */
+#modal-text {
+  color: #ffffff; /* Change this to any color you like! */
+  font-family: Arial, sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Make the modal buttons look like Wordle keys */
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* We already have "empty" for the white boxes */
+.tile[data-state="empty"] {
+  background-color: white;
+  border-color: white;
+  color: white;
+}
+
+/* The path the horse leaves behind */
+.tile[data-state="purple"] {
+  background-color: #a020f0; /* Purple */
+  border-color: #a020f0;
+  color: #a020f0; /* Hides text if any */
+}
+
+.tile[data-state="red"] {
+  background-color: #f02020; 
+  border-color: #f02020;
+  color: #f02020; /* Hides text if any */
+}
+
+/* For the emojis, we want no background color so they look like items */
+.tile[data-state="emoji"] {
+  background-color: transparent;
+  border-color: #3a3a3c;
+  font-size: 2rem; /* Make the emojis nice and big */
 }
