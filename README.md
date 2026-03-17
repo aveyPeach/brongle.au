@@ -9,3 +9,5 @@ https://github.com/WebDevSimplified/wordle-clone
 Oh and also based off Wordle of course, shoutout mr wardle n if you somehow don't know abt it pls go play it on:
 ---
 https://www.nytimes.com/games/wordle/index.html
+---
+Shoutout Novie for sparking my interest in the brongle project ₍^. .^₎Ⳋ 
