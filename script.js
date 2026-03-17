@@ -16062,7 +16062,7 @@ function generateShareString() {
       shareText += "\n";
   }
 
-shareText += "\nhttps://aveypeach.github.io/brongle.au/"
+  shareText += "\nhttps://aveypeach.github.io/brongle.au/"
 
   navigator.clipboard.writeText(shareText);
 }
