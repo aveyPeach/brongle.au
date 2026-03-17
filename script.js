@@ -15529,15 +15529,15 @@ const storySequence = [
     {
         if (horseWasHungry)
           return "she trots gallantly"
-        else
-          return "lets go!"
+
+        return "lets go!"
     },
     get msgNo() 
     {
         if (horseWasHungry)
           return "she trots gallantly"
-        else 
-          return "mimimimi";
+        
+        return "mimimimi";
     },
 
     actionYes: (tiles) => {
@@ -16013,38 +16013,56 @@ function showShareModal(resultType) {
 }
 
 function generateShareString() {
-
-
-  let shareText = ""
-  
-  if (youWon)
-  {
-    shareText = `Daily Brongle #274 ${guessCount}/9\n\n`;
-  }
-  else 
-  {
-    shareText = `Daily Brongle #274 X/9\n\n`;
-  }
-
-
-  // Get all rows
+  let shareText = `Daily Brongle #${dayOffset} ${guessCount}/9\n\n`;
   const allTiles = [...document.querySelectorAll(".tile")];
-  
-  for (let i = 0; i < allTiles.length; i++) {
-    const state = allTiles[i].dataset.state;
-    
-    // Map states to emojis
-    if (state === "emoji") shareText += allTiles[i].textContent;
-    else if (state === "purple") shareText += "🟪";
-    else if (state === "red") shareText += "🟥";
-    else if (state === "empty") shareText += "⬜";
-    else if (state === "correct") shareText += "🟩";
-    else shareText += ""; // Default empty tile
 
-    // Add a new line after every 5 tiles
-    if ((i + 1) % 5 === 0) shareText += "\n";
+  // Loop through tiles in steps of 5 (one row at a time)
+  for (let row = 0; row < allTiles.length; row += 5) {
+    let rowText = "";
+    let rowHasData = false;
+
+    // Process the 5 tiles in this specific row
+    for (let i = 0; i < 5; i++) {
+      const tile = allTiles[row + i];
+      const state = tile.dataset.state;
+
+      if (state) {
+        rowHasData = true; // We found a played tile!
+        
+        if (state === "emoji") rowText += tile.textContent;
+        else if (state === "purple") rowText += "🟪";
+        else if (state === "red") rowText += "🟥";
+        else if (state === "empty") rowText += "⬜";
+        else if (state === "correct") rowText += "🟩";
+      } else {
+        // If the tile is totally empty/unplayed
+        rowText += "⬛"; 
+      }
+    }
+
+    // ONLY add the row to the final text if someone actually played it
+    if (rowHasData) {
+      shareText += rowText + "\n";
+    } else {
+      // If we hit a completely empty row, we stop adding rows 
+      // (This prevents the trailing empty lines on an early win)
+      break; 
+    }
   }
 
-  // Copy to clipboard
+  // Include the Secret Row if it's visible
+  const secretRow = document.getElementById("secret-row");
+  if (secretRow && !secretRow.classList.contains("hidden")) {
+      shareText += "\nSECRET ROW:\n";
+      const secretTiles = secretRow.querySelectorAll(".tile");
+      secretTiles.forEach(t => {
+          if (t.dataset.state === "emoji") shareText += t.textContent;
+          else shareText += "⬛";
+      });
+      shareText += "\n";
+  }
+
+shareText += "\nhttps://aveypeach.github.io/brongle.au/"
+
   navigator.clipboard.writeText(shareText);
 }
