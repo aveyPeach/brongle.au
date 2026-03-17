@@ -16076,7 +16076,7 @@ function showShareModal(resultType) {
 }
 
 function generateShareString() {
-  let shareText = `Daily Brongle #${dayOffset} ${guessCount}/9\n\n`;
+  let shareText = `Daily Brongle #274 ${guessCount}/9\n\n`;
   const allTiles = [...document.querySelectorAll(".tile")];
 
   // Loop through tiles in steps of 5 (one row at a time)
