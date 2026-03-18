@@ -15834,8 +15834,8 @@ const elephantDanceSequence =
 [
   {
     //GUESS 1
-    question: "welcome, will you torture my elephant?",
-    btnYes: "okay!", btnNo: "okay.",
+    question: "welcome, will you take good care of my elephant?",
+    btnYes: "yeah!", btnNo: "yeah...",
     msgYes: "", msgNo: "",
     actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
     actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
