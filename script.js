@@ -27,6 +27,8 @@ const spazzmaticaPolka = new Audio('polka.mp3');
 const chains = new Audio('trimmed chain sounds.mp3');
 const runningOnMetal = new Audio('running on metal.mp3');
 
+spazzmaticaPolka.volume = 0.4;
+
 spazzmaticaPolka.loop = true;
 chains.loop = true;
 runningOnMetal.loop = true;
