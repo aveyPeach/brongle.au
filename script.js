@@ -16183,7 +16183,7 @@ function showShareModal(resultType) {
   yesBtn.textContent = "Copy Result";
   yesBtn.onclick = () => {
     generateShareString();
-    showAlert("Result copied to clipboard!", 2000);
+    //showAlert("Result copied to clipboard!", 2000);
   };
 }
 
@@ -16327,7 +16327,7 @@ const textArea = document.createElement("textarea");
     // 4. The "Old Reliable" copy command
     const successful = document.execCommand('copy');
     if (successful) {
-      showAlert("Tale copied to clipboard!");
+      showAlert("Result copied to clipboard!");
     }
   } catch (err) {
     console.error("Copy failed", err);
