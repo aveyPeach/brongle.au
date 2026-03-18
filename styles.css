@@ -254,6 +254,20 @@ body {
   }
 }
 
+@keyframes elephant-shuffle {
+  0%, 100% {
+    transform: scaleX(1); /* Normal facing */
+  }
+  50% {
+    transform: scaleX(-1); /* Mirrored facing */
+  }
+}
+
+.tile.elephant-dance {
+  display: inline-block;
+  animation: elephant-shuffle 0.6s infinite ease-in-out;
+}
+
 .alert-container {
   position: fixed;
   top: 10vh;
@@ -382,6 +396,24 @@ body {
   background-color: #f02020; 
   border-color: #f02020;
   color: #f02020; /* Hides text if any */
+}
+
+.tile[data-state="green"] {
+  background-color: #62f020; 
+  border-color: #62f020;
+  color: #62f020; /* Hides text if any */
+}
+
+.tile[data-state="yellow"] {
+  background-color: #f0e220; 
+  border-color: #f0e220;
+  color: #f0e220; /* Hides text if any */
+}
+
+.tile[data-state="blue"] {
+  background-color: #20b5f0; 
+  border-color: #20b5f0;
+  color: #20b5f0; /* Hides text if any */
 }
 
 /* For the emojis, we want no background color so they look like items */

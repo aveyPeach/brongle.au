@@ -23,6 +23,17 @@ const GAME_MODES = {
   YES_NO: "yes_no"
 }
 
+const spazzmaticaPolka = new Audio('polka.mp3');
+const chains = new Audio('trimmed chain sounds.mp3');
+const runningOnMetal = new Audio('running on metal.mp3');
+
+spazzmaticaPolka.loop = true;
+chains.loop = true;
+runningOnMetal.loop = true;
+
+const allTracks = [spazzmaticaPolka, chains, runningOnMetal];
+let tracksToResume = []; // This is our "memory" bucket
+
 const targetWords = [
   "cigar",
   "rebut",
@@ -15819,6 +15830,105 @@ const twosevenfourSequence = [
   }
 ];
 
+const elephantDanceSequence = 
+[
+  {
+    //GUESS 1
+    question: "welcome, will you torture my elephant?",
+    btnYes: "okay!", btnNo: "okay.",
+    msgYes: "", msgNo: "",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
+    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
+  },
+  {
+    //GUESS 2
+    question: "the elephant stands by idly",
+    btnYes: "HIT IT", btnNo: "HIT IT",
+    // msgYes: "", msgNo: "",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
+    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["empty", "empty", "emoji", "empty", "empty"]),
+  },
+  {
+    //GUESS 3
+    question: "the elephant stands by idly",
+    btnYes: "I SAID", btnNo: "HIT IT",
+    msgYes: "Dance music fills the room. It's an elephant party.", msgNo: "Dance music fills the room. It's an elephant party.",
+    actionYes: (tiles) => 
+    {
+      spazzmaticaPolka.play();
+      // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
+      revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
+
+      setTimeout(() => {
+          tiles[2].classList.add("elephant-dance"); 
+        }, 500);
+    },
+    actionNo: (tiles) => 
+    {
+      spazzmaticaPolka.play();
+      
+      revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
+      
+      setTimeout(() => {
+        tiles[2].classList.add("elephant-dance"); 
+      }, 500);
+
+    },
+  },
+  {
+    //GUESS 4
+    question: "do you wish to tango?",
+    btnYes: "i thought you'd never ask!", btnNo: "actually, i prefer metal",
+    msgYes: "you dance into the night, what a delight!", msgNo: "say no more.",
+    actionYes: (tiles) => 
+    {
+      revealCustomTiles(tiles, ["💃", "🟥", "🐘", "🟨", "🕺"], ["emoji", "emoji","emoji","emoji","emoji",])
+
+      setTimeout(() => 
+      {
+        [0, 2, 4].forEach(i => tiles[i].classList.add("elephant-dance"));
+      }, 500);
+      stopInteraction();
+
+      setTimeout(() => {
+        showAlert("woo !!", 5000);
+        danceTiles(tiles);
+        setTimeout(() => {
+          showShareModal("invite others to the party?");
+        }, 2000);
+      }, 1500);
+    },
+
+    actionNo: (tiles) => 
+    {
+      spazzmaticaPolka.pause()
+
+      runningOnMetal.play()
+      chains.play()
+      revealCustomTiles(tiles, ["🛢️", "⛓️", "🐘", "⛓️", "🛢️"], ["emoji","emoji","emoji","emoji","emoji",])
+
+      stopInteraction();
+
+      setTimeout(() => {
+        showAlert("it's... \n beautiful", 5000);
+        // danceTiles(tiles);
+        setTimeout(() => {
+          showShareModal("invite the rest of the metal community?");
+        }, 2000);
+      }, 1500);
+    }
+  },
+  {
+    //GUESS 5
+    question: "",
+    btnYes: "", btnNo: "",
+    msgYes: "", msgNo: "",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"]),
+    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["empty", "empty", "empty", "empty", "empty"])
+  },
+];
+
+
 // removed a blank call to "startInteraction()"
 initGame()
 
@@ -15833,6 +15943,10 @@ function initGame() {
     // Ogre Story (Tomorrow)
     currentMode = GAME_MODES.YES_NO;
     storySequence = ogreStorySequence;
+  } else if (dayOffset === 276) { 
+    // Ogre Story (Tomorrow)
+    currentMode = GAME_MODES.YES_NO;
+    storySequence = elephantDanceSequence;
   } else {
     // Standard Wordle Mode (Other days)
     currentMode = GAME_MODES.NORMAL; 
@@ -15857,7 +15971,7 @@ function showNextQuestion() {
     // The logic for BOTH buttons is the same for now
     const handleChoice = () => {
       modal.classList.add("hidden");
-      revealEmptyBoxes(); // Trigger the visual change
+      revealEmptyBoxes(); // Trigger visual change
       currentQuestionIndex++;
       
       // Small delay before the next question pops up
@@ -15867,9 +15981,9 @@ function showNextQuestion() {
     yesBtn.onclick = handleChoice;
     noBtn.onclick = handleChoice;
   } else {
-    // No more questions? Start the actual game.
+    // start the actual game.
     startInteraction();
-    showAlert("Begin!", 300);
+    showAlert("go!!", 300);
   }
 }
 
@@ -15986,46 +16100,55 @@ function submitGuess() {
   // Stop typing while the modal and animations happen
   stopInteraction();
 
-  if (currentMode === GAME_MODES.YES_NO) {
-    // 1. Use the generic sequence assigned in initGame()
+  if (currentMode === GAME_MODES.YES_NO) 
+  {
+  // 1. Use the generic sequence assigned in initGame()
     const currentStory = storySequence[guessCount];
 
-    // 2. The handler for clicking the buttons
-    const handleChoice = (isYes) => {
-      // Show reaction text and hide buttons
-      modalText.textContent = isYes ? currentStory.msgYes : currentStory.msgNo;
-      yesBtn.style.display = 'none';
-      noBtn.style.display = 'none';
+  // 2. The handler for clicking the buttons
+    const handleChoice = (isYes) => 
+    {
+      const message = isYes ? currentStory.msgYes : currentStory.msgNo;
 
-      setTimeout(() => {
+      // 1. Define what happens when we're DONE with the modal
+      const finishTurn = () => 
+      {
         modal.classList.add("hidden");
-        // Reset button visibility for the next row
         yesBtn.style.display = 'inline-block';
         noBtn.style.display = 'inline-block';
 
-        // Run the specific visual animations for this step
+        // Run animations (Music, 🐘 Dance, etc.)
         if (isYes) currentStory.actionYes(activeTiles);
         else currentStory.actionNo(activeTiles);
 
-        // --- DYNAMIC PROGRESSION LOGIC ---
-        
-        // A. Special Case: The Horse's Secret Row (Day 274 Only)
-        if (dayOffset === 274 && guessCount === 8) { 
+        // --- PROGRESSION LOGIC ---
+        if (dayOffset === 274 && guessCount === 8) 
+        { 
           const secretRow = document.getElementById("secret-row");
           secretRow.classList.remove("hidden");
           guessCount++; 
           setTimeout(startInteraction, 1500); 
         } 
-        // B. General Case: Move to the next step if one exists
-        else if (guessCount < storySequence.length - 1) {
+        else if (guessCount < storySequence.length - 1) 
+        {
           guessCount++;
           setTimeout(startInteraction, 1500);
         } 
-        // C. End Case: No more steps, leave interaction stopped so they can share
-        else {
-          console.log("Brongle Story Complete.");
+      };
+
+        // 2. THE GATEKEEPER: Check if we actually have a message
+        if (!message || message.trim() === "") 
+        {
+          // No message? Skip the wait and finish NOW.
+          finishTurn();
+        } else 
+        {
+          // Has a message? Show it, hide buttons, and wait 1.5s.
+          modalText.textContent = message;
+          yesBtn.style.display = 'none';
+          noBtn.style.display = 'none';
+          setTimeout(finishTurn, 1500);
         }
-      }, 1500);
     };
 
     // 3. Open the Modal with the dynamic question and button labels
@@ -16337,5 +16460,20 @@ const textArea = document.createElement("textarea");
   document.body.removeChild(textArea);
 
   // showAlert("Wedding photos copied to clipboard!");
-
 } 
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // 1. Find tracks that are NOT paused and save them to our memory bucket
+    tracksToResume = allTracks.filter(track => !track.paused);
+
+    // 2. Pause every track in the game
+    allTracks.forEach(track => track.pause());
+  } else {
+    // 3. When we come back, only play the ones that were in our bucket
+    tracksToResume.forEach(track => track.play());
+
+    // 4. Clear the bucket so it's ready for next time
+    tracksToResume = [];
+  }
+});
