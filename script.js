@@ -16187,82 +16187,131 @@ function showShareModal(resultType) {
   };
 }
 
-async function generateShareString() {
+ function generateShareString() {
+
   const secretRow = document.getElementById("secret-row");
+
   const isSecretActive = secretRow && !secretRow.classList.contains("hidden");
 
-  // 1. Better Header Logic
-  // Assuming 'won' is a boolean you set when the game ends
-  const score = won ? (isSecretActive ? 10 : guessCount) : "X";
-  let shareText = `Daily Brongle #${dayOffset} ${score}/9\n\n`;
+
+  // Dynamic Header
+
+  const displayCount = isSecretActive ? 10 : guessCount;
+
+  let shareText = `Daily Brongle #${dayOffset} ${displayCount}/9\n\n`;
+
+
+  // Main Grid (Maintains alignment even with gaps)
 
   const gridTiles = [...document.querySelectorAll(".guess-grid .tile")];
 
+
   for (let row = 0; row < gridTiles.length; row += 5) {
+
     let rowText = "";
+
     let rowHasData = false;
 
+
     for (let i = 0; i < 5; i++) {
+
       const tile = gridTiles[row + i];
+
       const state = tile?.dataset.state;
 
+
       if (state) {
+
         rowHasData = true;
+
+       
+
         if (state === "emoji") {
+
+          // THE FIX: If the emoji tile is empty, use a Braille Blank (\u2800)
+
+          // This keeps the car and the house on opposite sides!
+
           const char = tile.textContent.trim();
-          // Using your braille blank fix
-          rowText += (char === "") ? "⠀⠀" : char; 
-        } 
+
+          // 2 braille characters so text doesn't get collapsed
+
+          rowText += (char === "") ? "⠀⠀" : char;
+
+        }
+
         else if (state === "purple") rowText += "🟪";
+
         else if (state === "red") rowText += "🟥";
+
         else if (state === "empty") rowText += "⬜";
+
         else if (state === "correct") rowText += "🟩";
-        else rowText += "⬛"; // Default for filled but uncolored tiles
+
+      } else {
+
+        rowText += "⬛";
+
       }
+
     }
+
 
     if (rowHasData) {
+
       shareText += rowText + "\n";
+
     } else {
-      break; 
+
+      break;
+
     }
+
   }
 
-  // Handle secret row
+
+  // Handle the secret row (if applicable)
+
   if (isSecretActive) {
+
     const secretTiles = secretRow.querySelectorAll(".tile");
+
     secretTiles.forEach(t => {
+
       const state = t.dataset.state;
-      const char = t.textContent.trim();
-      if (state === "emoji") shareText += (char === "") ? "⠀" : char;
+
+      if (state === "emoji") {
+
+        const char = t.textContent.trim();
+
+        shareText += (char === "") ? "⠀" : char;
+
+      }
+
       else if (state === "purple") shareText += "🟪";
+
       else if (state === "red") shareText += "🟥";
+
+      else if (state === "empty") shareText += "⬜";
+
       else if (state === "correct") shareText += "🟩";
+
       else shareText += "⬛";
+
     });
+
     shareText += "\n";
+
   }
+
 
   shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
-  // 2. THE MOBILE FIX: Try Native Share first, then Clipboard
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: 'BRONGLE',
-        text: shareText
-      });
-    } else {
-      await navigator.clipboard.writeText(shareText);
-      showAlert("Tale copied to clipboard!");
-    }
-  } catch (err) {
-    // If user cancels the share sheet, we don't want to show an error
-    if (err.name !== 'AbortError') {
-      console.error("Share failed:", err);
-      // Final fallback
-      await navigator.clipboard.writeText(shareText);
-      showAlert("Tale copied to clipboard!");
-    }
-  }
-}
+
+  navigator.clipboard.writeText(shareText);
+
+ 
+
+  // showAlert("Wedding photos copied to clipboard!");
+
+} 
