@@ -15323,7 +15323,7 @@ const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 
-const offsetFromDate = new Date(2025, 5, 17).getTime();
+const offsetFromDate = new Date(2025, 5, 16).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
