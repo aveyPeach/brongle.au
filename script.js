@@ -15314,13 +15314,16 @@ const dictionary = [
   "rural",
   "shave",
 ]
+
 const WORD_LENGTH = 5;
 const FLIP_ANIMATION_DURATION = 500;
 const DANCE_ANIMATION_DURATION = 500;
+
 const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
-const offsetFromDate = new Date(2025, 5, 16).getTime();
+
+const offsetFromDate = new Date(2025, 5, 17).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
@@ -16184,15 +16187,15 @@ function showShareModal(resultType) {
   };
 }
 
-function generateShareString() {
+async function generateShareString() {
   const secretRow = document.getElementById("secret-row");
   const isSecretActive = secretRow && !secretRow.classList.contains("hidden");
 
-  // Dynamic Header
-  const displayCount = isSecretActive ? 10 : guessCount;
-  let shareText = `Daily Brongle #${dayOffset} ${displayCount}/9\n\n`;
+  // 1. Better Header Logic
+  // Assuming 'won' is a boolean you set when the game ends
+  const score = won ? (isSecretActive ? 10 : guessCount) : "X";
+  let shareText = `Daily Brongle #${dayOffset} ${score}/9\n\n`;
 
-  // Main Grid (Maintains alignment even with gaps)
   const gridTiles = [...document.querySelectorAll(".guess-grid .tile")];
 
   for (let row = 0; row < gridTiles.length; row += 5) {
@@ -16205,20 +16208,16 @@ function generateShareString() {
 
       if (state) {
         rowHasData = true;
-        
         if (state === "emoji") {
-          // THE FIX: If the emoji tile is empty, use a Braille Blank (\u2800)
-          // This keeps the car and the house on opposite sides!
           const char = tile.textContent.trim();
-          // 2 braille characters so text doesn't get collapsed
+          // Using your braille blank fix
           rowText += (char === "") ? "⠀⠀" : char; 
         } 
         else if (state === "purple") rowText += "🟪";
         else if (state === "red") rowText += "🟥";
         else if (state === "empty") rowText += "⬜";
         else if (state === "correct") rowText += "🟩";
-      } else {
-        rowText += "⬛"; 
+        else rowText += "⬛"; // Default for filled but uncolored tiles
       }
     }
 
@@ -16229,18 +16228,15 @@ function generateShareString() {
     }
   }
 
-  // Handle the secret row (if applicable)
+  // Handle secret row
   if (isSecretActive) {
     const secretTiles = secretRow.querySelectorAll(".tile");
     secretTiles.forEach(t => {
       const state = t.dataset.state;
-      if (state === "emoji") {
-        const char = t.textContent.trim();
-        shareText += (char === "") ? "⠀" : char;
-      }
+      const char = t.textContent.trim();
+      if (state === "emoji") shareText += (char === "") ? "⠀" : char;
       else if (state === "purple") shareText += "🟪";
       else if (state === "red") shareText += "🟥";
-      else if (state === "empty") shareText += "⬜";
       else if (state === "correct") shareText += "🟩";
       else shareText += "⬛";
     });
@@ -16249,7 +16245,24 @@ function generateShareString() {
 
   shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
-  navigator.clipboard.writeText(shareText);
-  
-  // showAlert("Wedding photos copied to clipboard!");
+  // 2. THE MOBILE FIX: Try Native Share first, then Clipboard
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: 'BRONGLE',
+        text: shareText
+      });
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      showAlert("Tale copied to clipboard!");
+    }
+  } catch (err) {
+    // If user cancels the share sheet, we don't want to show an error
+    if (err.name !== 'AbortError') {
+      console.error("Share failed:", err);
+      // Final fallback
+      await navigator.clipboard.writeText(shareText);
+      showAlert("Tale copied to clipboard!");
+    }
+  }
 }
