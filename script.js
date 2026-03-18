@@ -16250,7 +16250,7 @@ function showShareModal(resultType) {
 
       } else {
 
-        rowText += "⬛";
+        rowText += "⠀⠀";
 
       }
 
@@ -16284,7 +16284,7 @@ function showShareModal(resultType) {
 
         const char = t.textContent.trim();
 
-        shareText += (char === "") ? "⠀" : char;
+        shareText += (char === "") ? "⠀⠀" : char;
 
       }
 
@@ -16296,7 +16296,7 @@ function showShareModal(resultType) {
 
       else if (state === "correct") shareText += "🟩";
 
-      else shareText += "⬛";
+      else shareText += "⠀⠀";
 
     });
 
@@ -16308,9 +16308,33 @@ function showShareModal(resultType) {
   shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
 
-  navigator.clipboard.writeText(shareText);
+  // needed to bypass clipboard shenanigans
+const textArea = document.createElement("textarea");
+  textArea.value = shareText;
+  
+  // 2. Hide it from the user
+  textArea.style.position = "fixed";
+  textArea.style.left = "-9999px";
+  textArea.style.top = "0";
+  document.body.appendChild(textArea);
 
- 
+  // 3. Select the text inside the bucket
+  textArea.focus();
+  textArea.select();
+  textArea.setSelectionRange(0, 99999); // Extra insurance for mobile
+
+  try {
+    // 4. The "Old Reliable" copy command
+    const successful = document.execCommand('copy');
+    if (successful) {
+      showAlert("Tale copied to clipboard!");
+    }
+  } catch (err) {
+    console.error("Copy failed", err);
+  }
+
+  // 5. Clean up
+  document.body.removeChild(textArea);
 
   // showAlert("Wedding photos copied to clipboard!");
 
