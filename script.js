@@ -10,8 +10,6 @@ let youWantWin = false;
 
 let youWon = false;
 
-let storySequence = [];
-
 const WORD_LENGTH = 5;
 const FLIP_ANIMATION_DURATION = 500;
 const DANCE_ANIMATION_DURATION = 500;
@@ -27,20 +25,6 @@ const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
 
-const spazzmaticaPolka = new Audio('polka.mp3');
-const chains = new Audio('trimmed chain sounds.mp3');
-const runningOnMetal = new Audio('running on metal.mp3');
-
-spazzmaticaPolka.volume = 0.4;
-
-spazzmaticaPolka.loop = true;
-chains.loop = true;
-runningOnMetal.loop = true;
-
-// needed for pausing music when you tab out
-const allTracks = [spazzmaticaPolka, chains, runningOnMetal];
-let tracksToResume = []; 
-
 let currentMode; 
 const GAME_MODES = {
   STANDARD: "standard",
@@ -53,7 +37,11 @@ const jokeQuestions = [
   "Welcome to Brongle everypony\n do you want to guess your first word?",
 ];
 
+let currentSceneId = "start";
+let storySequence = {};
 
+const activeSounds = {};
+let tracksToResume = [];
 
 
 // state machine data hence4th
@@ -163,7 +151,7 @@ function playOgreEnd(tiles) {
 }
 
 
-// disgusting branching but i'll clean that up in the future trust
+// TODO: clean up 274 sequence and ogrestorysequence
 const twosevenfourSequence = [
   {
     // Guess 1
@@ -531,32 +519,47 @@ const twosevenfourSequence = [
   }
 ];
 
-const elephantDanceSequence = 
-[
+const eleDanceSequence = 
+{
+  "start":
   {
-    //GUESS 1
     question: "welcome, will you take good care of my elephant?",
     btnYes: "yeah!", btnNo: "yeah...",
-    msgYes: "", msgNo: "",
+
+    nextYes: "hit it",
+    nextNo: "hit it",
+
     actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
     actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
   },
+
+  "hit it":
   {
-    //GUESS 2
     question: "the elephant stands by idly",
     btnYes: "HIT IT", btnNo: "HIT IT",
-    // msgYes: "", msgNo: "",
+
+    nextYes: "i said hit it",
+    nextNo: "i said hit it",
+
     actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
     actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
   },
+
+  "i said hit it":
   {
-    //GUESS 3
     question: "the elephant stands by idly",
     btnYes: "I SAID", btnNo: "HIT IT",
-    msgYes: "Dance music fills the room. It's an elephant party.", msgNo: "Dance music fills the room. It's an elephant party.",
+
+    msgYes: "Dance music fills the room. It's an elephant party.", 
+    msgNo:  "Dance music fills the room. It's an elephant party.",
+
+    nextYes: "tango or metal",
+    nextNo:  "tango or metal",
+
+
     actionYes: (tiles) => 
     {
-      spazzmaticaPolka.play();
+      playTrack('polka.mp3', { volume: 0.4, isBGM: true });
       // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
       revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
 
@@ -566,22 +569,26 @@ const elephantDanceSequence =
     },
     actionNo: (tiles) => 
     {
-      spazzmaticaPolka.play();
+      playTrack('polka.mp3', { volume: 0.4, isBGM: true });
       
       revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
       
       setTimeout(() => {
         tiles[2].classList.add("elephant-dance"); 
       }, 500);
-
     },
   },
+
+  "tango or metal":
   {
-    //GUESS 4
     question: "do you wish to tango?",
-    btnYes: "i thought you'd never ask!", btnNo: "actually, i prefer metal",
-    msgYes: "you dance into the night, what a delight!", msgNo: "say no more.",
-    actionYes: (tiles) => 
+    btnYes: "i thought you'd never ask!", 
+    btnNo: "actually, i prefer metal",
+
+    msgYes: "you dance into the night, what a delight!",
+    msgNo: "say no more.",
+
+        actionYes: (tiles) => 
     {
       revealCustomTiles(tiles, ["💃", "🟥", "🐘", "🟨", "🕺"], ["emoji", "emoji","emoji","emoji","emoji",])
 
@@ -602,10 +609,8 @@ const elephantDanceSequence =
 
     actionNo: (tiles) => 
     {
-      spazzmaticaPolka.pause()
-
-      runningOnMetal.play()
-      chains.play()
+      playTrack("runningOnMetal.mp3", {isBGM: true})
+      playTrack("chainSounds.mp3")
       revealCustomTiles(tiles, ["🛢️", "⛓️", "🐘", "⛓️", "🛢️"], ["emoji","emoji","emoji","emoji","emoji",])
 
       stopInteraction();
@@ -619,15 +624,7 @@ const elephantDanceSequence =
       }, 1500);
     }
   },
-  {
-    //GUESS 5
-    question: "",
-    btnYes: "", btnNo: "",
-    msgYes: "", msgNo: "",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["white", "white", "white", "white", "white"]),
-    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["white", "white", "white", "white", "white"])
-  },
-];
+}
 
 
 // generic helper to animate custom tile setups
@@ -661,7 +658,7 @@ function initGame() {
   } else if (dayOffset === 276) { 
     // elephant dance party
     currentMode = GAME_MODES.YES_NO;
-    storySequence = elephantDanceSequence;
+    storySequence = eleDanceSequence;
   } else {
     // standard wordle, failsafe although we never want this to trigger ofc
     currentMode = GAME_MODES.NORMAL; 
@@ -794,91 +791,87 @@ function deleteKey() {
   delete lastTile.dataset.letter
 }
 
-function submitGuess() {
-  const activeTiles = [...getActiveTiles()];
+function getValidGuess(activeTiles) 
+{
+  // check if enough letters
   if (activeTiles.length !== WORD_LENGTH) {
     showAlert("Not enough letters");
     shakeTiles(activeTiles);
-    return;
+    return null; 
   }
 
-  const guess = activeTiles.reduce((word, tile) => {
-    return word + tile.dataset.letter;
-  }, "").toLowerCase();
+  // this thing is beautiful imo u should study it
+  const guess = activeTiles.map(tile => tile.dataset.letter).join("").toLowerCase();
 
   if (!dictionary.includes(guess)) {
     showAlert("Not in word list");
     shakeTiles(activeTiles);
-    return;
+    return null;
   }
 
-  // stop user input (maybe just typing) while the modal and animations happen
+  return guess; 
+}
+
+function submitGuess() {
+  const activeTiles = [...getActiveTiles()];
+  const guess = getValidGuess(activeTiles);
+  if (!guess) return;
+
   stopInteraction();
 
   if (currentMode === GAME_MODES.YES_NO) 
   {
-  // use sequence assigned in initGame()
-    const currentStory = storySequence[guessCount];
+    const currentStory = storySequence[currentSceneId];
 
-  // handler for clicking buttons
     const handleChoice = (isYes) => 
     {
       const message = isYes ? currentStory.msgYes : currentStory.msgNo;
 
-      // define what happens when we're done with the modal
       const finishTurn = () => 
       {
         modal.classList.add("hidden");
         yesBtn.style.display = 'inline-block';
         noBtn.style.display = 'inline-block';
 
-        // run custom logic 
         if (isYes) currentStory.actionYes(activeTiles);
         else currentStory.actionNo(activeTiles);
 
-        // --- secret row reveal! ---
-        if (dayOffset === 274 && guessCount === 8) 
-        { 
-          const secretRow = document.getElementById("secret-row");
-          secretRow.classList.remove("hidden");
-          guessCount++; 
-          setTimeout(startInteraction, 1500); 
-        } 
-        else if (guessCount < storySequence.length - 1) 
-        {
-          guessCount++;
-          setTimeout(startInteraction, 1500);
-        } 
-      };
+        guessCount++;
 
-        // gatekeeper: checks if we actually have a message
-        if (!message || message.trim() === "") 
+        const nextId = isYes ? currentStory.nextYes : currentStory.nextNo;
+
+        if (nextId && storySequence[nextId]) 
         {
-          // if no message, finish turn
-          finishTurn();
+          currentSceneId = nextId; 
+          setTimeout(startInteraction, 1500);
         } else 
         {
-          // TODO: make timeout have default argument but be variable
-          // for longer pieces of text
-          // if message, display it, hide display(?), wait a bit
-          modalText.textContent = message;
-          yesBtn.style.display = 'none';
-          noBtn.style.display = 'none';
-          setTimeout(finishTurn, 1500);
+          console.log("Brongle Story Finalized.");
         }
+      };
+      if (!message || message.trim() === "") 
+      {
+        finishTurn();
+      } else 
+      {
+        modalText.textContent = message;
+        yesBtn.style.display = 'none';
+        noBtn.style.display = 'none';
+        setTimeout(finishTurn, 1500);
+      }
     };
 
-    // open Modal with dynamic question and button labels
     modalText.textContent = currentStory.question;
-    yesBtn.textContent = currentStory.btnYes; // e.g. "Marriage"
-    noBtn.textContent = currentStory.btnNo;   // e.g. "Rejection"
+    yesBtn.textContent = currentStory.btnYes;
+    noBtn.textContent = currentStory.btnNo;
     modal.classList.remove("hidden");
 
     yesBtn.onclick = () => handleChoice(true);
     noBtn.onclick = () => handleChoice(false);
 
-  } else {
-    // normal wordle mode
+  } else 
+  {
+    // standard wordle logic
     activeTiles.forEach((...params) => flipTile(...params, guess));
   }
 }
@@ -1170,19 +1163,54 @@ const textArea = document.createElement("textarea");
   document.body.removeChild(textArea);
 } 
 
-// called when we tab out or close our browser, stuff like that
+// this function is here to save us against performance hogs and/or dogs
+// will need to update in case you use different files than mp3
+function playTrack(fileName, { loop = true, volume = 1.0, isBGM = false,} = {}) {
+  // if BGM, stop any active bgm
+  if (isBGM && activeSounds["bgm"]) {
+    activeSounds["bgm"].pause();
+    activeSounds["bgm"].src = "";
+    delete activeSounds["bgm"];
+  }
+
+  const audio = new Audio(fileName);
+  audio.loop = loop;
+  audio.volume = volume;
+
+  // 3. Store it so we can manage it later
+  const key = isBGM ? "bgm" : fileName;
+  activeSounds[key] = audio;
+
+  // 4. Cleanup for non-looping sounds (SFX)
+  if (!loop) {
+    audio.onended = () => {
+      delete activeSounds[key];
+    };
+  }
+
+  audio.play().catch(e => console.log("Audio blocked: click required"));
+}
+
+
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    // flag all active tracks
-    tracksToResume = allTracks.filter(track => !track.paused);
+  const currentSounds = Object.values(activeSounds);
 
-    // pause every track in the game
-    allTracks.forEach(track => track.pause());
-  } else {
-    // when we come back, resume all active  tracks 
-    tracksToResume.forEach(track => track.play());
+  if (document.hidden) 
+  {
+    tracksToResume = currentSounds.filter(sound => !sound.paused);
 
-    // clear active track list to prep for next time
+    
+    tracksToResume.forEach(sound => sound.pause());
+    console.log(`Paused ${tracksToResume.length} tracks for backgrounding.`);
+
+  } 
+  else 
+  {
+    tracksToResume.forEach(sound => 
+    {
+      sound.play().catch(e => console.log("Playback resume blocked by browser"));
+    });
+
     tracksToResume = [];
   }
 });
