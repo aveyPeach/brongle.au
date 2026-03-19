@@ -27,6 +27,8 @@ const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
 
+// TODO: make songs load as needed, so that you don't kill people's RAM for no reason
+
 const spazzmaticaPolka = new Audio('polka.mp3');
 const chains = new Audio('trimmed chain sounds.mp3');
 const runningOnMetal = new Audio('running on metal.mp3');
@@ -794,23 +796,34 @@ function deleteKey() {
   delete lastTile.dataset.letter
 }
 
-function submitGuess() {
-  const activeTiles = [...getActiveTiles()];
+function getValidGuess(activeTiles) 
+{
+  // make sure we have enough letters
   if (activeTiles.length !== WORD_LENGTH) {
     showAlert("Not enough letters");
     shakeTiles(activeTiles);
-    return;
+    return null; 
   }
 
-  const guess = activeTiles.reduce((word, tile) => {
-    return word + tile.dataset.letter;
-  }, "").toLowerCase();
+  // create word
+  const guess = activeTiles.map(tile => tile.dataset.letter).join("").toLowerCase();
 
+  // check if word is in dictionary
   if (!dictionary.includes(guess)) {
     showAlert("Not in word list");
     shakeTiles(activeTiles);
-    return;
+    return null;
   }
+
+  return guess; // all check passed, safe 2 return word ^~^
+}
+
+function submitGuess() 
+{
+  const activeTiles = [...getActiveTiles()];
+
+  const guess = getValidGuess(activeTiles);
+  if (!guess) return;
 
   // stop user input (maybe just typing) while the modal and animations happen
   stopInteraction();
@@ -825,7 +838,10 @@ function submitGuess() {
     {
       const message = isYes ? currentStory.msgYes : currentStory.msgNo;
 
-      // define what happens when we're done with the modal
+      // if guess == TIGER 
+      // doTheThing()
+
+      // everything that happens after we're done with the modal
       const finishTurn = () => 
       {
         modal.classList.add("hidden");
@@ -877,7 +893,9 @@ function submitGuess() {
     yesBtn.onclick = () => handleChoice(true);
     noBtn.onclick = () => handleChoice(false);
 
-  } else {
+  }
+   else
+  {
     // normal wordle mode
     activeTiles.forEach((...params) => flipTile(...params, guess));
   }
