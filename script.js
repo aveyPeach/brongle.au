@@ -31,12 +31,6 @@ const GAME_MODES = {
   YES_NO: "yes_no"
 }
 
-// fix this to be pretty l8r, this is an artifact from a stranger time
-let currentQuestionIndex = 0;
-const jokeQuestions = [
-  "Welcome to Brongle everypony\n do you want to guess your first word?",
-];
-
 let currentSceneId = "start";
 let storySequence = {};
 
@@ -150,6 +144,8 @@ function playOgreEnd(tiles) {
   }, 1500);
 }
 
+
+// TODO: fix bug which breaks game if u type too fast after answering a question sometimes
 
 // TODO: clean up 274 sequence and ogrestorysequence
 const twosevenfourSequence = [
@@ -524,108 +520,456 @@ const eleDanceSequence =
   "start":
   {
     question: "welcome, will you take good care of my elephant?",
-    btnYes: "yeah!", btnNo: "yeah...",
 
-    nextYes: "hit it",
-    nextNo: "hit it",
-
-    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
-    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+    choices: 
+    [
+      { 
+        text: "Yeah!", 
+        next: "hit it", 
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+      },
+      { 
+        text: "Yeah...", 
+        next: "hit it", 
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+      },
+      { 
+        text: "hehe", 
+        next: "hit it", 
+        msg: "i'm a witch and i'm evil",
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+      },
+    ]
   },
 
   "hit it":
   {
     question: "the elephant stands by idly",
-    btnYes: "HIT IT", btnNo: "HIT IT",
-
-    nextYes: "i said hit it",
-    nextNo: "i said hit it",
-
-    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
-    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+    choices:
+    [
+      {
+        text: "HIT IT",
+        next: "i said hit it",
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+      },
+      {
+        text: "HIT IT",
+        next: "i said hit it",
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
+      }
+    ]
   },
 
   "i said hit it":
   {
     question: "the elephant stands by idly",
-    btnYes: "I SAID", btnNo: "HIT IT",
 
-    msgYes: "Dance music fills the room. It's an elephant party.", 
-    msgNo:  "Dance music fills the room. It's an elephant party.",
+    choices:
+    [
+      {
+         text: "I SAID",
+         next: "tango or metal",
+         msg: "Dance music fills the room. It's an elephant party.", 
+         action: (tiles) => 
+        {
+          playTrack('polka.mp3', { volume: 0.4, isBGM: true });
+          // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
+          revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
 
-    nextYes: "tango or metal",
-    nextNo:  "tango or metal",
+          setTimeout(() => {
+              tiles[2].classList.add("elephant-dance"); 
+            }, 500);
+        },
+      },
+      {
+         text: "HIT IT",
+         next: "tango or metal",
+         msg: "Dance music fills the room. It's an elephant party.", 
+         action: (tiles) => 
+        {
+          playTrack('polka.mp3', { volume: 0.4, isBGM: true });
+          // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
+          revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
 
-
-    actionYes: (tiles) => 
-    {
-      playTrack('polka.mp3', { volume: 0.4, isBGM: true });
-      // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
-      revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
-
-      setTimeout(() => {
-          tiles[2].classList.add("elephant-dance"); 
-        }, 500);
-    },
-    actionNo: (tiles) => 
-    {
-      playTrack('polka.mp3', { volume: 0.4, isBGM: true });
-      
-      revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
-      
-      setTimeout(() => {
-        tiles[2].classList.add("elephant-dance"); 
-      }, 500);
-    },
+          setTimeout(() => {
+              tiles[2].classList.add("elephant-dance"); 
+            }, 500);
+        },
+      },
+    ]
   },
 
   "tango or metal":
   {
     question: "do you wish to tango?",
-    btnYes: "i thought you'd never ask!", 
-    btnNo: "actually, i prefer metal",
 
-    msgYes: "you dance into the night, what a delight!",
-    msgNo: "say no more.",
+    choices:
+    [
+      {
+        text: "i thought you'd never ask!",
+        msg: "you dance into the night, what a delight!",
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["💃", "🟥", "🐘", "🟨", "🕺"], ["emoji", "emoji","emoji","emoji","emoji",])
 
-        actionYes: (tiles) => 
+          setTimeout(() => 
+          {
+            [0, 2, 4].forEach(i => tiles[i].classList.add("elephant-dance"));
+          }, 500);
+          stopInteraction();
+
+          setTimeout(() => {
+            showAlert("woo !!", 5000);
+            danceTiles(tiles);
+            setTimeout(() => {
+              showShareModal("invite others to the party?");
+            }, 2000);
+          }, 1500);
+        },
+      },
+      {
+        text: "actually, i prefer metal",
+        msg: "say no more.",
+        action: (tiles) => 
+        {
+          playTrack("runningOnMetal.mp3", {isBGM: true});
+          playTrack("chainSounds.mp3");
+          revealCustomTiles(tiles, ["🛢️", "⛓️", "🐘", "⛓️", "🛢️"], ["emoji","emoji","emoji","emoji","emoji",]);
+
+          stopInteraction();
+
+          setTimeout(() => 
+          {
+            showAlert("it's... \n beautiful", 5000);
+            // danceTiles(tiles);
+            setTimeout(() => 
+            {
+              showShareModal("invite the rest of the metal community?");
+            }, 2000);
+          }, 1500);
+        }
+      }
+    ]
+  },
+}
+
+const cutoutTigerSeq = 
+{
+  "start":
+  {
+    question: "WATCH OUT! \n a ferocious tiger sleeps in your path",
+
+    action: (tiles) => revealCustomTiles(tiles, ["🧍", "", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+    next: "sneak?",
+
+    choices:
+    [
+      {
+        text: "oh! thanks for letting me know!",
+      },
+      {
+        text: "ok??? \n did i ask?",
+      }
+    ],
+  },
+
+  // branching path
+  "sneak?":
+  {
+    question: "your only path forward is sneaking past the tiger.\n what will you do?",
+
+    choices:
+    [
+      {
+        text: "carefully move closer",
+
+        next: "sneak1",
+
+        action: (tiles) => revealCustomTiles(tiles, ["", "🚶‍➡️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "SCREAM LOUD AS FUCK",
+
+        next: "loud1",
+
+        action: (tiles) => revealCustomTiles(tiles, ["🧍", "📣", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      }
+    ]
+  },
+
+  "sneak1":
+  {
+    question: "the tiger is fast asleep",
+
+    choices:
+    [
+      {
+        text: "keep moving",
+        next: "sneak2",
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "🚶‍➡️", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      }
+    ]
+  },
+
+  "sneak2":
+  {
+    question: "the tiger is fast asleep",
+
+    choices:
+    [
+      {
+        text: "keep moving",
+        next: "sneak3",
+        action: (tiles) => revealCustomTiles(tiles, ["", "", "", "🧍", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      }
+    ]
+  },
+
+    "sneak3":
+  {
+    question: "wait, it's a trap! the tiger is a cardboard cutout !!",
+
+    msg: "you went where the grass is greener",
+    action: (tiles) => 
     {
-      revealCustomTiles(tiles, ["💃", "🟥", "🐘", "🟨", "🕺"], ["emoji", "emoji","emoji","emoji","emoji",])
+      revealCustomTiles(tiles, ["", "", "", "🕳️", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]);
+      stopInteraction();
+      
+      setTimeout(() => 
+      {
+        if (tiles[4]) {
+          tiles[4].classList.add("falling-cutout");
+        }
+      }, 1000);
 
       setTimeout(() => 
       {
-        [0, 2, 4].forEach(i => tiles[i].classList.add("elephant-dance"));
-      }, 500);
-      stopInteraction();
-
-      setTimeout(() => {
-        showAlert("woo !!", 5000);
-        danceTiles(tiles);
-        setTimeout(() => {
-          showShareModal("invite others to the party?");
+        showAlert(".....", 5000);
+        // danceTiles(tiles);
+        setTimeout(() => 
+        {
+          showShareModal("try to bring others down with you?");
         }, 2000);
       }, 1500);
     },
 
-    actionNo: (tiles) => 
+    choices:
+    [
+      {
+        text: "OH NO",
+      },
+      {
+        text: "OH noOOOOO",  
+      }
+    ],
+  },
+
+
+  "loud1":
+  {
+    question: "The Tiger remains fast asleep, better not test your luck again.",
+
+    choices:
+    [
+      {
+        text: "Start sneaking, while you still can.",
+        // TODO: make sure that the game ends in a satisfying way if you decide to sneak late
+        next: "sneak1",
+        action: (tiles) => revealCustomTiles(tiles, ["", "🚶‍➡️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "bang pots and pans",
+        next: "loud2",
+        action: (tiles) => revealCustomTiles(tiles, ["🧍", "🍳", "🥘", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+    ]
+  },
+
+  "loud2":
+  {
+    question: "The tiger is fast asleep, which might not be the case for much longer.",
+
+    choices:
+    [
+      {
+        text: "Start sneaking, before it's too late.",
+        // TODO: make sure that the game ends in a satisfying way if you decide to sneak late
+        next: "sneak1",
+        action: (tiles) => revealCustomTiles(tiles, ["", "🚶‍➡️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "practice your new guitar solo",
+        next: "loud3",
+        action: (tiles) => revealCustomTiles(tiles, ["🧍", "🎸", "🎶", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+    ]
+  },
+
+  "loud3":
+  {
+    question: "The Tiger is fast asleep. Not sure how.",
+
+    choices:
+    [
+      {
+        text: "Quit your charades immediately and start sneaking.",
+        // TODO: make sure that the game ends in a satisfying way if you decide to sneak late
+        next: "sneak1",
+        action: (tiles) => revealCustomTiles(tiles, ["", "🚶‍➡️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "do some minor construction",
+        next: "loud4",
+        action: (tiles) => revealCustomTiles(tiles, ["🧍", "🏗️", "🏠", "🚧", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+    ]
+  },
+
+  "loud4":
+  {
+    question: "The tiger is asleep, but perhaps hard of hearing.",
+
+    choices:
+    [
+      {
+        text: "Start sneaking or you will DIE",
+        // LAST CHANCE TO SNEAK ! can probably do smth with that
+        // probably activate a flag here :3
+        next: "sneak1",
+        action: (tiles) => revealCustomTiles(tiles, ["", "🚶‍➡️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "fire up a jet engine",
+        next: "loud5",
+        action: (tiles) => revealCustomTiles(tiles, ["🧍", "✈️", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+    ]
+  },
+
+  "loud5":
+  {
+    question:"HOW",
+
+    choices:
+    [
+      {
+        text: "if you can't beat em, join em",
+        msg: "*creaking noise*",
+
+        action: (tiles) => 
+        { 
+          revealCustomTiles(tiles, ["🐅", "💤", "", "", "🐅"], ["emoji","emoji","emoji","emoji","emoji"]);
+          
+          stopInteraction();
+
+          showAlert("?", 5000);
+
+          setTimeout(() => 
+          {
+            if (tiles[4]) {
+              tiles[4].classList.add("falling-cutout");
+            }
+          }, 1000);
+          
+          setTimeout(() => {
+            setTimeout(() => {
+              showShareModal("make it a sleepover?");
+            }, 2000);
+          }, 1500);
+        }, 
+      },
     {
-      playTrack("runningOnMetal.mp3", {isBGM: true})
-      playTrack("chainSounds.mp3")
-      revealCustomTiles(tiles, ["🛢️", "⛓️", "🐘", "⛓️", "🛢️"], ["emoji","emoji","emoji","emoji","emoji",])
+        text: "smash 10^23 deuterium nuclei together (epilepsy warning)",
+        next: "futureOrPast",
+        action: (tiles) => 
+        {
+          // 1. Reveal the radioactive tiles
+          revealCustomTiles(tiles, ["", "☢️", "💥", "☢️", ""], ["emoji","emoji","emoji","emoji","emoji"]);
 
-      stopInteraction();
+          // 2. Start the violent earthquake immediately
+          document.body.classList.add("nuke-shake");
 
-      setTimeout(() => {
-        showAlert("it's... \n beautiful", 5000);
-        // danceTiles(tiles);
-        setTimeout(() => {
-          showShareModal("invite the rest of the metal community?");
-        }, 2000);
-      }, 1500);
-    }
+          // 3. Spawn the "Flashbang" overlay
+          const flash = document.createElement("div");
+          flash.style.position = "fixed";
+          flash.style.top = "0";
+          flash.style.left = "0";
+          flash.style.width = "100vw";
+          flash.style.height = "100vh";
+          flash.style.backgroundColor = "white";
+          flash.style.opacity = "0"; // Starts invisible
+          flash.style.zIndex = "9999"; // Ensures it covers EVERYTHING
+          flash.style.pointerEvents = "none"; // Lets clicks pass through if needed
+          
+          // The magic line: tells CSS to smoothly animate the opacity over 2.5 seconds
+          flash.style.transition = "opacity 2.5s ease-in"; 
+          
+          document.body.appendChild(flash);
+
+          // 4. Trigger the blinding light a split second later (so the browser registers the CSS)
+          setTimeout(() => {
+            flash.style.opacity = "1";
+          }, 50);
+
+          // 5. The Aftermath (Clean up)
+          setTimeout(() => {
+            // Stop the earthquake
+            document.body.classList.remove("nuke-shake");
+            
+            // Fade the white screen back out over 2 seconds so they can read the next prompt
+            flash.style.transition = "opacity 2s ease-out";
+            flash.style.opacity = "0";
+            
+            // Delete the flashbang element entirely once it's invisible
+            setTimeout(() => flash.remove(), 2000);
+          }, 3000); // 3 seconds of total chaos before fading out
+        }
+      }
+     ]
+  },
+
+  "futureOrPast":
+  {
+    question: "perhaps the land will become hospitable again someday",
+
+    choices:
+    [
+      {
+        text: "see into the future",
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["🌳", "🐒", "🌳", "🐅", "🌲"], ["emoji","emoji","emoji","emoji","emoji"]);
+
+          setTimeout(() => 
+          {
+            showAlert(".....", 5000);
+            danceTiles(tiles);
+            setTimeout(() => 
+            {
+              showShareModal("fig 1. a tiger waiting to pounce on its prey");
+            }, 2000);
+          }, 2500);
+        },
+      },
+      {
+        text: "see into the past",
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["", "", "🧌", "🕳️", "🐅"], ["emoji","emoji","emoji","emoji","emoji"]);
+
+          setTimeout(() => 
+          {
+            danceTiles(tiles);
+            setTimeout(() => 
+            {
+              showShareModal("fig 2. a troll sets a clever trap");
+            }, 2000);
+          }, 2500);
+        }
+      }
+    ]
   },
 }
-
 
 // generic helper to animate custom tile setups
 function revealCustomTiles(tiles, contents, states) {
@@ -645,7 +989,7 @@ function revealCustomTiles(tiles, contents, states) {
 initGame()
 
 function initGame() {
-  showNextQuestion()
+  showAlert("BRONGLE TIME :]")
   // determine mode based on day number (dayOffset)
   if (dayOffset === 274) { 
     // horse Story 
@@ -659,44 +1003,22 @@ function initGame() {
     // elephant dance party
     currentMode = GAME_MODES.YES_NO;
     storySequence = eleDanceSequence;
-  } else {
+    
+  }
+  else if (dayOffset === 277) { 
+    // elephant dance party
+    currentMode = GAME_MODES.YES_NO;
+    storySequence = cutoutTigerSeq;
+    
+  }
+  else {
     // standard wordle, failsafe although we never want this to trigger ofc
     currentMode = GAME_MODES.NORMAL; 
   }
 
-  // for story days, wait for user to type their first word
-  if (currentMode === GAME_MODES.YES_NO) {
-    startInteraction(); 
-    // basic wordle day day, just start the game
-  } else {
-    startInteraction();
-  }
+  startInteraction();
 }
 
-function showNextQuestion() {
-  if (currentQuestionIndex < jokeQuestions.length) {
-    stopInteraction();
-    modalText.textContent = jokeQuestions[currentQuestionIndex];
-    modal.classList.remove("hidden");
-
-    // logic for BOTH buttons is the same for now
-    const handleChoice = () => {
-      modal.classList.add("hidden");
-      revealEmptyBoxes(); 
-      currentQuestionIndex++;
-      
-      // small delay before next question pops up
-      setTimeout(showNextQuestion, 300); 
-    };
-
-    yesBtn.onclick = handleChoice;
-    noBtn.onclick = handleChoice;
-  } else {
-    // start the actual game.
-    startInteraction();
-    showAlert("go!!", 300);
-  }
-}
 
 // probably not needed anymore ?
 function revealEmptyBoxes() {
@@ -819,57 +1141,76 @@ function submitGuess() {
 
   stopInteraction();
 
-  if (currentMode === GAME_MODES.YES_NO) 
-  {
-    const currentStory = storySequence[currentSceneId];
+  if (currentMode === GAME_MODES.YES_NO) {
+      const currentStory = storySequence[currentSceneId];
+      const buttonContainer = document.getElementById("choice-button-container");
+      
+      buttonContainer.innerHTML = ""; 
+      buttonContainer.style.display = "flex"; // Ensure it's visible
+      modalText.textContent = currentStory.question;
 
-    const handleChoice = (isYes) => 
-    {
-      const message = isYes ? currentStory.msgYes : currentStory.msgNo;
+      if (currentStory.choices && currentStory.choices.length > 0) {
+        currentStory.choices.forEach(choice => {
+          const btn = document.createElement("button");
+          btn.textContent = choice.text;
+          
+          // VITAL: Add the 'key' class so your CSS works!
+          btn.classList.add("key"); 
 
-      const finishTurn = () => 
-      {
-        modal.classList.add("hidden");
-        yesBtn.style.display = 'inline-block';
-        noBtn.style.display = 'inline-block';
+          btn.onclick = () => {
+            const message = choice.msg || "";
 
-        if (isYes) currentStory.actionYes(activeTiles);
-        else currentStory.actionNo(activeTiles);
+            const finishTurn = () => {
+              modal.classList.add("hidden");
+              
+              // 1. Run Global Action (node-wide)
+              if (currentStory.action) currentStory.action(activeTiles);
+              // 2. Run Choice Action (button-specific)
+              if (choice.action) choice.action(activeTiles);
+              
+              guessCount++;
 
-        guessCount++;
+              const nextId = choice.next || currentStory.next; 
 
-        const nextId = isYes ? currentStory.nextYes : currentStory.nextNo;
+              if (nextId && storySequence[nextId]) {
+                currentSceneId = nextId;
+                setTimeout(startInteraction, 1500);
+              }
+              else {
+                console.log("Brongle Story Finalized.");
+                // Usually, you'd trigger the share modal here!
+              }
+            };
 
-        if (nextId && storySequence[nextId]) 
-        {
-          currentSceneId = nextId; 
-          setTimeout(startInteraction, 1500);
-        } else 
-        {
-          console.log("Brongle Story Finalized.");
-        }
-      };
-      if (!message || message.trim() === "") 
-      {
-        finishTurn();
-      } else 
-      {
-        modalText.textContent = message;
-        yesBtn.style.display = 'none';
-        noBtn.style.display = 'none';
-        setTimeout(finishTurn, 1500);
+            if (!message || message.trim() === "") {
+              finishTurn();
+            } else {
+              modalText.textContent = message;
+              buttonContainer.style.display = "none"; 
+              setTimeout(finishTurn, 1500);
+            }
+          };
+
+          buttonContainer.appendChild(btn);
+        });
+      } else {
+        // CUTSCENE CASE (No Buttons)
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          if (currentStory.action) currentStory.action(activeTiles);
+          guessCount++;
+          
+          // Auto-advance if there's a next ID
+          if (currentStory.next && storySequence[currentStory.next]) {
+              currentSceneId = currentStory.next;
+              setTimeout(startInteraction, 1000);
+          }
+        }, 2000);
       }
-    };
 
-    modalText.textContent = currentStory.question;
-    yesBtn.textContent = currentStory.btnYes;
-    noBtn.textContent = currentStory.btnNo;
-    modal.classList.remove("hidden");
-
-    yesBtn.onclick = () => handleChoice(true);
-    noBtn.onclick = () => handleChoice(false);
-
-  } else 
+      modal.classList.remove("hidden");
+  }
+  else 
   {
     // standard wordle logic
     activeTiles.forEach((...params) => flipTile(...params, guess));
@@ -985,40 +1326,54 @@ function danceTiles(tiles) {
 
 
 function showShareModal(resultType) {
-  modal.classList.remove("hidden");
-  yesBtn.style.display = "inline-block";
-  noBtn.style.display = "none"; // hide the No button
+  const buttonContainer = document.getElementById("choice-button-container");
+  
+  // 1. Safety Check: If this container doesn't exist, we can't show buttons!
+  if (!buttonContainer) {
+    console.error("Ogre Error: Could not find 'choice-button-container' in your HTML!");
+    return;
+  }
 
-  if (resultType === "win") 
-  {
+  // 2. Clear out old story buttons and show the modal
+  buttonContainer.innerHTML = ""; 
+  buttonContainer.style.display = "flex"; // Ensure it's using your row layout
+  modal.classList.remove("hidden");
+
+  // 3. Set the text based on the result
+  if (resultType === "win") {
     modalText.textContent = "The Horse Won! Share your glory?";
-  } 
-  else if (resultType === "glue time")
-  {
-     modalText.textContent = "something happened to the horse.\n do you wish to share her legacy?";
-  }
-    else if (resultType === "sleepy horsie")
-  {
-     modalText.textContent = "the horse sleeps soundly until tomorrow \n\n let the people know?";
-  }
-      else if (resultType === "hell")
-  {
-     modalText.textContent = "it's hot in here\n BUT YOU KNOW WHAT'S EVEN HOTTER THAT'S RIGHT SHARING YOUR SCORE";
-  }
-      else if (resultType === "eaven")
-  {
-     modalText.textContent = "blessed be your mared friend \n share if you cried?";
-  }
-  else
-  {
+  } else if (resultType === "glue time") {
+    modalText.textContent = "Something happened to the horse...\nShare her legacy?";
+  } else if (resultType === "sleepy horsie") {
+    modalText.textContent = "The horse sleeps soundly until tomorrow.\nLet the people know?";
+  } else if (resultType === "hell") {
+    modalText.textContent = "It's hot in here...\nBUT SHARING YOUR SCORE IS HOTTER!";
+  } else if (resultType === "eaven") {
+    modalText.textContent = "Blessed be your mared friend.\nShare if you cried?";
+  } else {
+    // Falls back to whatever string you passed (like "invite others to the party?")
     modalText.textContent = resultType;
   }
 
-  yesBtn.textContent = "Copy Result";
-  yesBtn.onclick = () => {
+  // 4. Create the "Copy Result" button from scratch
+  const shareBtn = document.createElement("button");
+  shareBtn.textContent = "Copy Result";
+  
+  // VITAL: This gives it the Wordle key look from your CSS
+  shareBtn.classList.add("key"); 
+  
+  // Make it wide enough for the text
+  shareBtn.style.minWidth = "200px"; 
+
+  shareBtn.onclick = () => {
     generateShareString();
-    //showAlert("Result copied to clipboard!", 2000);
+    // Optional: add a little juice so the user knows it worked
+    shareBtn.textContent = "COPIED! ✅";
+    setTimeout(() => { shareBtn.textContent = "Copy Result"; }, 2000);
   };
+
+  // 5. Actually put the button on the screen
+  buttonContainer.appendChild(shareBtn);
 }
 
  function generateShareString() {
