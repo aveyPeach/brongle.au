@@ -50,7 +50,7 @@ const GAME_MODES = {
 // fix this to be pretty l8r, this is an artifact from a stranger time
 let currentQuestionIndex = 0;
 const jokeQuestions = [
-  "Welcome to Brongle everypony \n do you want to guess your first word?",
+  "Welcome to Brongle everypony\n do you want to guess your first word?",
 ];
 
 
