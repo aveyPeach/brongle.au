@@ -5,7 +5,7 @@ const modalText = document.getElementById("modal-text")
 
 let currentQuestionIndex = 0;
 const jokeQuestions = [
-  "Welcome to Brongle everypony \n do you want to guess your first word?",
+  "Welcome to Brongle everypony\n do you want to guess your first word?",
 ];
 
 let horseWasHungry = false;
