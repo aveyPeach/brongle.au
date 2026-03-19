@@ -7,11 +7,11 @@ body {
   background-color: #121213;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers everything horizontally */
-  justify-content: space-between; /* Pushes grid up and keyboard down */
+  align-items: center; /* centers everything horizontally */
+  justify-content: space-between; /* pushes grid up and keyboard down */
   height: 100vh;
   margin: 0;
-  padding: 10px 0; /* Gives a little breathing room at the very top/bottom */
+  padding: 10px 0; /* pads top/bottom */
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -24,18 +24,18 @@ body {
   padding: 10px;
   user-select: none;
 
-  /* ADD THESE LINES */
   width: 100%;
-  max-width: 500px; /* This keeps it from stretching too wide */
-  margin: 0 auto;   /* This centers it */
+  max-width: 500px; /* keeps keyboard from stretching too wide */
+  margin: 0 auto;   /* center it */
 }
 
-/* 1. Hide the vertical logos on computer screens */
+/* hide vertical logos on computer screens (might add them on purpose l8r, would need some testing though) */
+/* (might add them on purpose l8r, would need some testing though) */
 .vertical-logo {
   display: none; 
 }
 
-/* 2. Keep the container centered so the grid doesn't break */
+/* keep container centered so grid doesn't break */
 .game-board-container {
   display: flex;
   justify-content: center;
@@ -99,10 +99,10 @@ body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-align: center;
-  border-bottom: 1px solid #3a3a3c; /* Adds that nice line under the name */
+  border-bottom: 1px solid #3a3a3c; /* adds line under title */
   width: 100%;
   max-width: 500px;
-  margin: 0 auto 10px auto; /* The 10px at the end controls the gap below the title */
+  margin: 0 auto 10px auto; /* "10px" controls the gap below the title */
   padding-bottom: 5px;
 }
 
@@ -115,22 +115,23 @@ body {
   width: 90%;
   max-width: 350px; 
   
-  /* We removed the red border and fixed height */
-  /* This lets the grid take as much space as the tiles need */
+  
+  /* fixed height lets grid take as much space as the tiles need */
   height: auto; 
   margin: 0 auto; 
 }
 
+/* TODO: fix secret row on mobile*/
 #secret-row {
   display: flex;
   gap: 5px;
   position: absolute;
   
-  /* Center it vertically on the screen */
+  /* center it vertically */
   top: 50%;
   transform: translateY(-50%);
   
-  /* Push it to the right of the center */
+  /* push right of center */
   /* 50% is the middle, 190px pushes it just past the main grid */
   left: calc(50% + 190px); 
   
@@ -141,9 +142,9 @@ body {
   display: none;
 }
 
-/* Make these tiles look like the grid tiles */
+/* tiles should look like grid tiles */
 #secret-row .tile {
-  width: 4em; /* Or whatever your tile width is */
+  width: 4em; /* match with tile width */
   aspect-ratio: 1/1;
   border: 2px solid #3a3a3c;
 }
@@ -162,12 +163,11 @@ body {
   user-select: none;
   transition: transform 250ms linear;
 
-  /* FIXED: Removed the extra "/" and the fixed width */
   aspect-ratio: 1 / 1; 
   width: 100%; 
 
-  border: 2px solid #3a3a3c; /* A brighter, more "Wordle" grey */
-  background-color: transparent; /* Ensure it's not accidentally black-on-black */
+  border: 2px solid #3a3a3c;
+  background-color: transparent; /* ensure that it's not accidentally black on black */
 }
 
 
@@ -256,10 +256,10 @@ body {
 
 @keyframes elephant-shuffle {
   0%, 100% {
-    transform: scaleX(1); /* Normal facing */
+    transform: scaleX(1); /* normal facing */
   }
   50% {
-    transform: scaleX(-1); /* Mirrored facing */
+    transform: scaleX(-1); /* mirrored facing */
   }
 }
 
@@ -311,7 +311,7 @@ body {
   z-index: 1000; /* high number to stay above the keyboard/grid */
 }
 
-/* hide modal when we don't want it */
+/* hide modal when u don't want it */
 .modal-overlay.hidden {
   display: none;
 }
@@ -339,7 +339,7 @@ body {
   line-height: 1.5;
 }
 
-/* Make the modal buttons look like Wordle keys */
+/* make modal buttons look like Wordle keys */
 .modal-buttons {
   display: flex;
   gap: 10px;
@@ -355,12 +355,13 @@ body {
   transition: opacity 0.2s;
 }
 
+/* make keys feel responsive (for mobile specifically?)*/
 .modal-buttons button:active {
-  opacity: 0.7; /* Gives a "tapped" feel on your phone */
+  opacity: 0.7; 
 }
 
 #copy-button {
-  background-color: #538d4e; /* Wordle Green */
+  background-color: #538d4e; /* wordle Green */
   color: white;
   border: none;
   padding: 15px 30px;
@@ -368,59 +369,58 @@ body {
   font-size: 1rem;
   letter-spacing: 1px;
   transition: transform 0.1s;
-  width: 100%; /* Make it big and easy to tap on mobile */
+  width: 100%;
   margin-top: 10px;
 }
 
+/* make copy button feel a lil responsive*/
 #copy-button:active {
-  transform: scale(0.95); /* Little "click" feel when tapped */
+  transform: scale(0.95); 
 }
 
 
-
-/* We already have "empty" for the white boxes */
-.tile[data-state="empty"] {
+.tile[data-state="white"] {
   background-color: white;
   border-color: white;
   color: white;
 }
 
-/* The path the horse leaves behind */
 .tile[data-state="purple"] {
-  background-color: #a020f0; /* Purple */
+  background-color: #a020f0; 
   border-color: #a020f0;
-  color: #a020f0; /* Hides text if any */
+  color: #a020f0; /* hides text if any */
 }
 
 .tile[data-state="red"] {
   background-color: #f02020; 
   border-color: #f02020;
-  color: #f02020; /* Hides text if any */
+  color: #f02020; /* hides text if any */
 }
 
 .tile[data-state="green"] {
   background-color: #62f020; 
   border-color: #62f020;
-  color: #62f020; /* Hides text if any */
+  color: #62f020; /* hides text if any */
 }
 
 .tile[data-state="yellow"] {
   background-color: #f0e220; 
   border-color: #f0e220;
-  color: #f0e220; /* Hides text if any */
+  color: #f0e220; /* hides text if any */
 }
 
 .tile[data-state="blue"] {
   background-color: #20b5f0; 
   border-color: #20b5f0;
-  color: #20b5f0; /* Hides text if any */
+  color: #20b5f0; /* hides text if any */
 }
 
-/* For the emojis, we want no background color so they look like items */
+/* no background color for emojis */
+/* doubles as transparent/empty tile*/
 .tile[data-state="emoji"] {
   background-color: transparent;
   border-color: #3a3a3c;
-  font-size: 2rem; /* Make the emojis nice and big */
+  font-size: 2rem; /* make emojis lorge */
 }
 
 
@@ -451,15 +451,15 @@ body {
     display: none !important;
   }
 
-  /* Moves the whole Logo/Grid group to the center */
+  /* moves Logo/Grid group to center */
 .game-board-container {
     display: flex;
     flex-direction: row;
     justify-content: center; 
     align-items: center;     
     gap: 6.5vw;                
-    width: 100%;             /* FIX: Changed from 100vw to 100% to prevent hidden scrollbars */
-    margin-top: 0.5vh;        /* FIX: Increased from 10vh to 15vh to push it further down */
+    width: 100%;            
+    margin-top: 0.5vh;        
     box-sizing: border-box;
   }
 
@@ -467,16 +467,16 @@ body {
     display: grid;
     grid-template-rows: repeat(9, 11vw); 
     gap: 1.5vw;
-    padding-top: 1.5vw;        /* Lever 1: Physically pushes the logo down */
+    padding-top: 1.5vw;        /* physically pushes the logo down */
     line-height: 11vw;
-    width: 8vw;              /* Forces both logos to be the exact same width */
+    width: 8vw;              /* forces both logos to be the exact same width */
     text-align: center;
     font-size: 1.1rem;
     font-weight: bold;
     color: #ffffff;
   }
 
-  /* FIX: Moves the dot safely between the letters */
+  /* puts dot between letters */
   .dot-after {
     position: relative;
     display: inline-block;
@@ -485,9 +485,9 @@ body {
   .dot-after::after {
     content: "·";
     position: absolute;
-    top: 100%; /* Pushes it exactly below the 'E' */
+    top: 100%; /* pushes push exactly below 'E' */
     left: 50%;
-    transform: translate(-50%, -10%); /* Centers it horizontally */
+    transform: translate(-50%, -10%); /* centers dot horizontally */
     color: #e25219; 
     font-size: 3rem;
     line-height: 0;
@@ -500,10 +500,9 @@ body {
     gap: 1.5vw;
     margin: 0; 
     
-    /* 🚨 THE MAGIC FIXES 🚨 */
-    flex-grow: 0 !important;  /* Stops the grid from stretching */
-    width: auto !important;   /* Tells the grid to only be as wide as the 5 columns */
-    padding: 0;               /* Clears any hidden desktop padding */
+    flex-grow: 0 !important;  /* stops grid from stretching */
+    width: auto !important;   /* tells grid to only be as wide as the 5 columns */
+    padding: 0;               /* clears any hidden desktop padding */
   }
 
   .keyboard {
@@ -525,7 +524,7 @@ body {
     width: 100%;
     height: 100%;
     margin: 0; 
-    box-sizing: border-box; /* Stops borders from making the boxes wider */
+    box-sizing: border-box; /* stops borders from making boxes wider */
   }
 
   .key {
@@ -552,7 +551,8 @@ body {
     font-size: 0.7rem;
   }
 
-  /* FIX: Ensures the Backspace SVG is visible and sized right */
+  /* ensures the backspace SVG is visible and sized right */
+  /*no i don't know what SVG is thanks 4 asking ^~^*/
   .key svg {
     pointer-events: none;
     width: 24px;
