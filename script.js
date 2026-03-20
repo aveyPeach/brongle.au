@@ -1,3 +1,6 @@
+/* global dictionary, targetWords */
+// @ts-check
+
 const modal = document.getElementById("question-modal")
 const yesBtn = document.getElementById("yes-btn")
 const noBtn = document.getElementById("no-btn")
@@ -33,6 +36,15 @@ const GAME_MODES = {
 
 let currentSceneId = "start";
 let storySequence = {};
+
+/**
+ * @typedef {Object} Choice
+ * @property {string} text
+ * @property {string} [next]
+ * @property {string} [msg]
+ * @property {string} [msgBtnText]  // Add this line with brackets for "optional"
+ * @property {function} [action]
+ */
 
 const activeSounds = {};
 let tracksToResume = [];
@@ -971,47 +983,262 @@ const cutoutTigerSeq =
   },
 }
 
-// generic helper to animate custom tile setups
-function revealCustomTiles(tiles, contents, states) {
-  tiles.forEach((tile, index) => {
-    setTimeout(() => {
-      tile.classList.add("flip");
-      tile.addEventListener("transitionend", () => {
-        tile.classList.remove("flip");
-        tile.textContent = contents[index];
-        tile.dataset.state = states[index]; 
-      }, { once: true });
-    }, index * 100); // 250ms stagger?
-  });
+const guessGameSeq = 
+{
+  "start":
+  {
+    question: "hello! :)",
+
+    next: "wannaGuess",
+
+    action: (tiles) => revealCustomTiles(tiles, ["✋", "", "🙂", "", "✋"], ["emoji","emoji","emoji","emoji","emoji",]),
+
+    choices:
+    [
+    ]
+  },
+
+  "wannaGuess":
+  {
+    question: "would you like to play a guessing game?",
+
+    choices:
+    [
+      {
+        text: "yes",
+        next: "yesGuess",
+        action: (tiles) => revealCustomTiles(tiles, ["✊", "", "🙂", "", "✊"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "no",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✊", "", "☹️", "", "✊"], ["emoji","emoji","emoji","emoji","emoji",]),
+
+          endGame("share your distrust of gamers?");
+        }
+      }
+    ]
+  },
+
+  "yesGuess":
+  {
+    question: "one of my hands holds a precious gift, guess which one!",
+
+    choices:
+    [
+      {
+        text: "left",
+        next: "leftHand",
+        action: (tiles) => revealCustomTiles(tiles, ["✋", "🧬", "🙂", "", "✊"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "right",
+        msg: "You receive a respectable sum of 7 dollars and 53 cents. The bills are crumpled.",
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✊", "🪙", "🙂", "💵", "✋"], ["emoji","emoji","emoji","emoji","emoji",]),
+
+          win(tiles, "laugh all the way to the bank?", "i mean i'll take it");
+        }  
+      },
+    ]
+  },
+
+  "leftHand":
+  {
+    question: "It's the gift of life. Will you accept?",
+    
+    choices:
+    [
+      {
+        text: "yes",
+        next: "yesLife",
+
+        action: (tiles) => revealCustomTiles(tiles, ["🧬", "🧬", "🧬", "🧬", "🧬"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "no",
+        msg: "not a fan of life huh?",
+        msgBtnText: "i guess?",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✋", "🧬", "🫤", "", "✊"], ["emoji","emoji","emoji","emoji","emoji",]),
+          endGame("propagate your biophobia?")
+        }
+      },
+      {
+        text: "hey what's in your right hand?",
+        next: "hideLeft1",
+        
+        msg: "i don't know what you're talking about",
+        msgBtnText: "whag",
+
+        action: (tiles) => revealCustomTiles(tiles, ["✋", "🧬", "🙂", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+    ]
+  },
+
+  "yesLife":
+  {
+    question: "what form of life will you bring into this world?",
+
+    choices:
+    [
+      {
+        text: "a bug",
+
+        msg: "BEHOLD",
+
+        action: (tiles) =>
+        {
+          revealCustomTiles(tiles, ["", "", "🐛", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+          
+          win(tiles, "Bug someone else?", "seems kind of smug.")
+        },
+      },
+      {
+        text: "a plant",
+
+        msg: "behold. a beautiful baby boy. \n both of his parents will go on to have blue names on wikipedia",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["", "", "👶", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+
+          win(tiles, "drop mid and fall off?", "gugugaga on my jeans~");
+        }
+        
+      },
+      {
+        text: "a friend",
+
+        msg: "they promise to always be with you :)",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["", "", "🦠", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+
+          win(tiles, "Infect your friends and loved ones?", "i'm here 4 u <3")
+        }
+      },
+    ]
+  },
+
+  "hideLeft1":
+  {
+    question: "It's the gift of life. Will you accept?",
+
+    choices:
+    [
+      {
+        text: "yes",
+        next: "yesLife",
+
+        action: (tiles) => revealCustomTiles(tiles, ["🧬", "🧬", "🧬", "🧬", "🧬"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "no",
+        msg: "not a fan of life huh?",
+        msgBtnText: "i guess?",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✊", "🧬", "🫤", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+          endGame("propagate your biophobia?")
+        }
+      },
+      {
+        text: "your right hand, what's in it?",
+        next: "hideLeft2",
+
+        msg: "i'm sorry, you must be misremembering, i've never had a right hand",
+        
+        msgBtnText: "???",
+        
+        action: (tiles) => 
+        {
+          //unflip rightmost tiles
+          unflipTiles([4,9,14]);
+          revealCustomTiles(tiles, ["✋", "🧬", "🙂", "", ""], ["emoji","emoji","emoji","emoji","emoji",]);
+        }
+      },
+    ]
+  },
+
+  "hideLeft2":
+  {
+    question: "It's the gift of life. Will you accept?",
+
+    choices:
+    [
+      {
+        text: "yes",
+        next: "yesLife",
+
+        action: (tiles) => revealCustomTiles(tiles, ["🧬", "🧬", "🧬", "🧬", "🧬"], ["emoji","emoji","emoji","emoji","emoji",]),
+      },
+      {
+        text: "no",
+
+        msg: "not a fan of life huh?",
+        msgBtnText: "i guess?",
+
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✊", "🧬", "🫤", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
+          endGame("propagate your biophobia?")
+        }
+      },
+      {
+        text: "i don't want to play this game anymore",
+        
+        msg: "o-oh okay",
+        
+        msgBtnText: "...",
+        
+        action: (tiles) => 
+        {
+          revealCustomTiles(tiles, ["✋", "🧬", "🥺", "", ""], ["emoji","emoji","emoji","emoji","emoji",]);
+
+          endGame("share your bafflement?");
+        }
+      },
+    ]
+  },
 }
 
 // GAME LOGIC STARTS HERE
 initGame()
 
 function initGame() {
-  showAlert("BRONGLE TIME :]")
+  showAlert("BRONGLE TIME :]");
+  currentMode = GAME_MODES.YES_NO;
   // determine mode based on day number (dayOffset)
-  if (dayOffset === 274) { 
-    // horse Story 
-    currentMode = GAME_MODES.YES_NO;
+  if (dayOffset === 274) 
+  { 
     storySequence = twosevenfourSequence; 
-  } else if (dayOffset === 275) { 
-    // ogre Story 
-    currentMode = GAME_MODES.YES_NO;
+  } 
+  else if (dayOffset === 275) 
+  { 
     storySequence = ogreStorySequence;
-  } else if (dayOffset === 276) { 
-    // elephant dance party
-    currentMode = GAME_MODES.YES_NO;
+  } 
+  else if (dayOffset === 276) 
+  { 
     storySequence = eleDanceSequence;
-    
   }
-  else if (dayOffset === 277) { 
-    // elephant dance party
-    currentMode = GAME_MODES.YES_NO;
+  else if (dayOffset === 277) 
+  { 
     storySequence = cutoutTigerSeq;
-    
   }
-  else {
+  else if (dayOffset === 278)
+  {
+    storySequence = guessGameSeq;
+  }
+  else 
+  {
     // standard wordle, failsafe although we never want this to trigger ofc
     currentMode = GAME_MODES.NORMAL; 
   }
@@ -1020,23 +1247,95 @@ function initGame() {
 }
 
 
-// probably not needed anymore ?
-function revealEmptyBoxes() {
-  const activeTiles = getActiveTiles();
-  activeTiles.forEach((tile, index) => {
-    setTimeout(() => {
+/**
+ * @param {HTMLElement[]} tiles
+ * @param {String} alertMsg
+ * @param {String} shareMsg
+ */
+function win(tiles, shareMsg, alertMsg = "")
+{
+  setTimeout(() => 
+  {
+    danceTiles(tiles);
+
+    if (alertMsg != "")
+      showAlert(alertMsg);
+
+    setTimeout(() => 
+    {
+      showShareModal(shareMsg);
+    }, 2000);
+  }, 1500)
+}
+
+/**
+ * @param {String} shareMsg
+ */
+function endGame(shareMsg)
+{
+  setTimeout(() => 
+  {
+    showShareModal(shareMsg);
+  }, 2000);
+}
+
+// generic helper to animate custom tile setups
+function revealCustomTiles(tiles, contents, states) 
+{
+  tiles.forEach((tile, index) => 
+  {
+    setTimeout(() => 
+    {
       tile.classList.add("flip");
-      
-      // listen for the flip to finish, then turn it white
-      tile.addEventListener("transitionend", () => {
+      tile.addEventListener("transitionend", () => 
+      {
         tile.classList.remove("flip");
-        tile.dataset.state = "white"; 
-        tile.textContent = ""; // empty just to make sure
+        tile.textContent = contents[index];
+        tile.dataset.state = states[index]; 
       }, { once: true });
-      
-    }, index * 100); // staggered reveal like the real Wordle
+    }, index * 100); // 250ms stagger?
   });
 }
+
+/**
+ * Unflips and clears specific tiles based on their index in the grid.
+ * @param {number[]} targetIndices - Array of numbers (e.g., [4, 9, 14])
+ */
+function unflipTiles(targetIndices) 
+{
+  // 1. Grab the whole board and cast it so the editor is happy
+  const gridTiles = /** @type {HTMLElement[]} */ (Array.from(document.querySelectorAll(".guess-grid .tile")));
+
+  // 2. Loop through ONLY the indices you passed in
+  targetIndices.forEach((targetIndex, loopIndex) => 
+  {
+    const tile = gridTiles[targetIndex];
+
+    // Safety check against the "Null Ogre" (just in case you pass an index that is too high)
+    if (!tile) return;
+
+    // 3. Stagger the animation so it flows down the board
+    setTimeout(() => 
+    {
+      tile.classList.add("flip");
+
+      // 4. Wait for the tile to reach the "edge" (halfway rotated)
+      tile.addEventListener("transitionend", () => 
+      {  
+        // Remove the flip to rotate it back
+        tile.classList.remove("flip");
+        
+        // THE WIPEOUT: Clear all data and visual text
+        tile.dataset.state = "emoji";  // Removes the color state
+        tile.dataset.letter = ""; // Removes the secret letter data
+        tile.textContent = "";      // Empties the visual box
+        
+      }, { once: true });
+
+    }, loopIndex * 150); // 150ms delay between each tile flipping
+  });
+}
+
 
 function startInteraction() {
   document.addEventListener("click", handleMouseClick)
@@ -1094,7 +1393,7 @@ function pressKey(key) {
   }
 
   // find next empty tile in specific container
-  const nextTile = container.querySelector(":not([data-letter])")
+  const nextTile = /** @type {HTMLElement} */ (container.querySelector(":not([data-letter])"));
 
   // if empty tile exists, fill it
   if (nextTile) {
@@ -1105,7 +1404,7 @@ function pressKey(key) {
 }
 
 function deleteKey() {
-  const activeTiles = getActiveTiles()
+  const activeTiles = /** @type {HTMLElement[]} */ (Array.from(getActiveTiles()));
   const lastTile = activeTiles[activeTiles.length - 1]
   if (lastTile == null) return
   lastTile.textContent = ""
@@ -1113,6 +1412,11 @@ function deleteKey() {
   delete lastTile.dataset.letter
 }
 
+
+/**
+ * @param {HTMLElement[]} activeTiles
+ * @returns {string | null} 
+ */
 function getValidGuess(activeTiles) 
 {
   // check if enough letters
@@ -1134,81 +1438,129 @@ function getValidGuess(activeTiles)
   return guess; 
 }
 
-function submitGuess() {
-  const activeTiles = [...getActiveTiles()];
+
+function finishTurn(currentStory, choice, activeTiles)
+{
+  modal.classList.add("hidden");
+      
+  if (currentStory.action) currentStory.action(activeTiles);
+
+  // questionmarks implement optional chaining ensure that we only do this if 'choice' exists :3
+  if (choice?.action) choice?.action(activeTiles);
+      
+  guessCount++;
+
+  // optional chaining '?' for safety
+  const nextId = choice?.next || currentStory.next; 
+
+  if (nextId && storySequence[nextId])
+  {
+    currentSceneId = nextId;
+    setTimeout(startInteraction, 1500);
+  }
+  else 
+  {
+    console.log("Brongle Story Finalized.");
+    // Usually, you'd trigger the share modal here!
+  }
+};
+
+/**
+ * @param {String} btnText
+ */
+function createContinueBtn(btnText = "ok")
+{
+  const continueBtn = document.createElement("button");
+  continueBtn.textContent = btnText;
+  continueBtn.classList.add("key");
+
+  return continueBtn;
+}
+
+function ResetBtnContainer(buttonContainer)
+{
+  buttonContainer.innerHTML = ""; 
+  buttonContainer.style.display = "flex"; // Ensure it's visible
+}
+
+
+/**
+ * @param {any} currentStory
+ * @param {HTMLElement[]} activeTiles
+ * @param {HTMLElement} buttonContainer
+ */
+function setupChoices(currentStory, activeTiles, buttonContainer)
+{
+  currentStory.choices.forEach(choice => 
+  {
+    const btn = document.createElement("button");
+    btn.textContent = choice.text;
+    btn.classList.add("key"); 
+
+    btn.onclick = () => 
+    {
+      const message = choice.msg || "";
+
+      // this wraps the function call so you don't have to keep track of args in multiple places
+      const finishWrap = () => finishTurn(currentStory, choice, activeTiles);
+
+      if (!message || message.trim() === "") 
+      {
+        finishWrap();
+      } 
+      else 
+      {
+        modalText.textContent = message;
+        
+        ResetBtnContainer(buttonContainer);
+
+        const continueBtn = createContinueBtn(choice.msgBtnText);
+        continueBtn.onclick = finishWrap; 
+        buttonContainer.appendChild(continueBtn);
+      }
+    };
+
+    buttonContainer.appendChild(btn);
+  });
+}
+
+function handleSeqTurn(guess, activeTiles)
+{
+  const currentStory = storySequence[currentSceneId];
+  const buttonContainer = document.getElementById("choice-button-container");
+  
+  ResetBtnContainer(buttonContainer);
+
+  modalText.textContent = currentStory.question;
+
+  if (currentStory.choices && currentStory.choices.length > 0) 
+  {
+    setupChoices(currentStory, activeTiles, buttonContainer);
+  } 
+
+  // CUTSCENE CASE (No Buttons)
+  else 
+  {
+    setTimeout(() =>
+    {
+      finishTurn(currentStory, null, activeTiles);
+    }, 2000);
+  }
+
+  modal.classList.remove("hidden");
+}
+
+function submitGuess() 
+{
+  const activeTiles = /** @type {HTMLElement[]} */ (Array.from(getActiveTiles()));
   const guess = getValidGuess(activeTiles);
   if (!guess) return;
 
   stopInteraction();
 
-  if (currentMode === GAME_MODES.YES_NO) {
-      const currentStory = storySequence[currentSceneId];
-      const buttonContainer = document.getElementById("choice-button-container");
-      
-      buttonContainer.innerHTML = ""; 
-      buttonContainer.style.display = "flex"; // Ensure it's visible
-      modalText.textContent = currentStory.question;
-
-      if (currentStory.choices && currentStory.choices.length > 0) {
-        currentStory.choices.forEach(choice => {
-          const btn = document.createElement("button");
-          btn.textContent = choice.text;
-          
-          // VITAL: Add the 'key' class so your CSS works!
-          btn.classList.add("key"); 
-
-          btn.onclick = () => {
-            const message = choice.msg || "";
-
-            const finishTurn = () => {
-              modal.classList.add("hidden");
-              
-              // 1. Run Global Action (node-wide)
-              if (currentStory.action) currentStory.action(activeTiles);
-              // 2. Run Choice Action (button-specific)
-              if (choice.action) choice.action(activeTiles);
-              
-              guessCount++;
-
-              const nextId = choice.next || currentStory.next; 
-
-              if (nextId && storySequence[nextId]) {
-                currentSceneId = nextId;
-                setTimeout(startInteraction, 1500);
-              }
-              else {
-                console.log("Brongle Story Finalized.");
-                // Usually, you'd trigger the share modal here!
-              }
-            };
-
-            if (!message || message.trim() === "") {
-              finishTurn();
-            } else {
-              modalText.textContent = message;
-              buttonContainer.style.display = "none"; 
-              setTimeout(finishTurn, 1500);
-            }
-          };
-
-          buttonContainer.appendChild(btn);
-        });
-      } else {
-        // CUTSCENE CASE (No Buttons)
-        setTimeout(() => {
-          modal.classList.add("hidden");
-          if (currentStory.action) currentStory.action(activeTiles);
-          guessCount++;
-          
-          // Auto-advance if there's a next ID
-          if (currentStory.next && storySequence[currentStory.next]) {
-              currentSceneId = currentStory.next;
-              setTimeout(startInteraction, 1000);
-          }
-        }, 2000);
-      }
-
-      modal.classList.remove("hidden");
+  if (currentMode === GAME_MODES.YES_NO) 
+  {
+    handleSeqTurn(guess, activeTiles);
   }
   else 
   {
@@ -1368,7 +1720,7 @@ function showShareModal(resultType) {
   shareBtn.onclick = () => {
     generateShareString();
     // Optional: add a little juice so the user knows it worked
-    shareBtn.textContent = "COPIED! ✅";
+    shareBtn.textContent = "COPIED ^~^";
     setTimeout(() => { shareBtn.textContent = "Copy Result"; }, 2000);
   };
 
@@ -1376,8 +1728,9 @@ function showShareModal(resultType) {
   buttonContainer.appendChild(shareBtn);
 }
 
- function generateShareString() {
-
+function generateShareString() 
+{
+  
   const secretRow = document.getElementById("secret-row");
 
   const isSecretActive = secretRow && !secretRow.classList.contains("hidden");
@@ -1392,7 +1745,7 @@ function showShareModal(resultType) {
 
   // main grid 
 
-  const gridTiles = [...document.querySelectorAll(".guess-grid .tile")];
+  const gridTiles = /** @type {HTMLElement[]} */ (Array.from(document.querySelectorAll(".guess-grid .tile")));
 
 
   for (let row = 0; row < gridTiles.length; row += 5) {
@@ -1458,7 +1811,7 @@ function showShareModal(resultType) {
 
   if (isSecretActive) {
 
-    const secretTiles = secretRow.querySelectorAll(".tile");
+    const secretTiles = /** @type {HTMLElement[]} */ (Array.from(secretRow.querySelectorAll(".tile")));
 
     secretTiles.forEach(t => {
 
