@@ -11,7 +11,7 @@ let horseDeservesWin = false;
 let horseWantsWin = false;
 let youWantWin = false;
 
-let youWon = false;
+let gameOver = false;
 
 const WORD_LENGTH = 5;
 const FLIP_ANIMATION_DURATION = 500;
@@ -23,6 +23,7 @@ const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 
+// set at hour 12 to account for daylight savings apparently that works
 const offsetFromDate = new Date(2025, 5, 16).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
@@ -42,7 +43,7 @@ let storySequence = {};
  * @property {string} text
  * @property {string} [next]
  * @property {string} [msg]
- * @property {string} [msgBtnText]  // Add this line with brackets for "optional"
+ * @property {string} [msgBtn]  // Add this line with brackets for "optional"
  * @property {function} [action]
  */
 
@@ -318,7 +319,6 @@ const twosevenfourSequence = [
         }
         else 
         {
-        youWon = true;
         revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]);
           setTimeout(() => 
           {
@@ -1061,7 +1061,7 @@ const guessGameSeq =
       {
         text: "no",
         msg: "not a fan of life huh?",
-        msgBtnText: "i guess?",
+        msgBtn: "i guess?",
 
         action: (tiles) => 
         {
@@ -1074,7 +1074,7 @@ const guessGameSeq =
         next: "hideLeft1",
         
         msg: "i don't know what you're talking about",
-        msgBtnText: "whag",
+        msgBtn: "whag",
 
         action: (tiles) => revealCustomTiles(tiles, ["✋", "🧬", "🙂", "", ""], ["emoji","emoji","emoji","emoji","emoji",]),
       },
@@ -1142,7 +1142,7 @@ const guessGameSeq =
       {
         text: "no",
         msg: "not a fan of life huh?",
-        msgBtnText: "i guess?",
+        msgBtn: "i guess?",
 
         action: (tiles) => 
         {
@@ -1156,7 +1156,7 @@ const guessGameSeq =
 
         msg: "i'm sorry, you must be misremembering, i've never had a right hand",
         
-        msgBtnText: "???",
+        msgBtn: "???",
         
         action: (tiles) => 
         {
@@ -1184,7 +1184,7 @@ const guessGameSeq =
         text: "no",
 
         msg: "not a fan of life huh?",
-        msgBtnText: "i guess?",
+        msgBtn: "i guess?",
 
         action: (tiles) => 
         {
@@ -1197,7 +1197,7 @@ const guessGameSeq =
         
         msg: "o-oh okay",
         
-        msgBtnText: "...",
+        msgBtn: "...",
         
         action: (tiles) => 
         {
@@ -1210,10 +1210,379 @@ const guessGameSeq =
   },
 }
 
+const pirateSeq = 
+{
+  // TODO: give option to trigger first tiles automatically
+  "start":
+  {
+    question: "Arr ye awake, captain?",
+    next: "boardOrTail",
+    
+    action: standaRevealEmojis("🚢", "🏴‍☠️", "🌊", "🏴‍☠️", "🚢")
+  },
+
+  "boardOrTail":
+  {
+    question: "Your barrelman spots an unfamiliar flagship. Who dare lay claim to these waters?",
+    choices:
+    [
+      {
+        text: "board it!",
+        next: "board",
+        msg: "aye aye captain!",
+        msgBtn: "aye!",
+
+        action: standaRevealEmojis("🌊", "🚢", "🌉", "🚢", "🌊")
+      },
+      {
+        text: "turn tail",
+        msg: "arf arf captain!",
+        next: "tailTurned",
+
+        action: standaRevealEmojis("🐕", "🏴‍☠️", "🌊", "🏴‍☠️", "🚢")
+      },
+    ]
+  },
+
+  "board":
+  {
+    question: "The deck squeaks under the feet of hundreds of men engaged in combat",
+    choices:
+    [
+      {
+        text: "Find their captain",
+        next: "findCaptain",
+
+        action: standaRevealEmojis("","","🧔🏻‍♀️","🦜","")
+      },
+      {
+        text: "Loot the treasury",
+        next: "treasuryNoKey",
+
+        action: standaRevealEmojis("🟫", "🟫", "🚪", "🟫", "🟫")
+      },
+    ]
+  },
+
+  "tailTurned":
+  {
+    question: "Aye captain, we're out scot free, what now?",
+    choices:
+    [
+      {
+        text: "Turn whale",
+        msg: "The ship buckles under your weight. You let out a commemorative spout in honor of your fallen mates, then swim out into the great beyond",
+        msgBtn: "next",
+
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "", "", "🐳", "", "");
+          win(tiles, "Search for your pod?", "*WUUUUOAAA~*");
+        }
+
+      },
+      {
+        text: "Turn male",
+        next: "male",
+        msg: "Aye we did find a box of steroids on our last voyage, why do ye ask?", 
+        // CHECK B4 SHIP
+        msgBtn: "Been thinking of getting into doping",
+
+        action: standaRevealEmojis("", "", "🐕", "♂️", ""),
+      },
+    ]
+  },
+
+  "male":
+  {
+    // CHECK B4 SHIP
+    question: "You admire your masculinisation. What's next?",
+    choices:
+    [
+      {
+        text: "pay bail",
+        msg: "You hear cries of joy over the horizon, as though an imprisoned captain was just set free",
+        msgBtn: "my karma must be soaring",
+
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "", "🏴‍☠️", "🧝", "❣️", "");
+          win(tiles, "Casually let the world know you're a REALLY GOOD PERSON?", "*THANKS FOR THE BAIL KIND STRANGER*");
+        }
+      },
+      {
+        text: "attempt to make butter",
+        msg: "You repeatedly agitate a bowl of cream to no avail, as it dawns on you that the ranch you raided last week only raised half-and-half cows.",
+        msgBtn: "churn failed </3",
+
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "", "🧈", "❌", "💔", "");
+          endGame("Share your tales of butter fails?", "i can't do anything right...",);
+        }
+      },
+    ]
+  },
+
+  "findCaptain":
+  {
+    question: "You spot a man donning a bedazzled robe with a parrot on his shoulder",
+    choices:
+    [
+      {
+        text:"attack him",
+        next: "attackCaptain1",
+        action: standaRevealEmojis("", "", "⚔️", "", ""),
+      },
+      {
+        text:"murk the fuckinf bird",
+        next:"murkBird",
+        action: standaRevealEmojis("", "🦴", "💀", "🦴", "",)
+      },
+    ]
+  },
+
+  "treasuryNoKey":
+  {
+    question: "You try to push the door open but it's locked. You hear the thud of footsteps behind you.",
+    choices:
+    [
+      {
+        text: "next",
+        next: "ruffianCombat",
+        msg: "You are suddenly engaged in combat with a dozen ruffians, the odds don't seem stacked in your favor",
+        msgBtn: "oh bother",
+
+        action: standaRevealEmojis("🟫", "🟫", "⚔️", "🟫", "🟫")
+      },
+    ]
+  },
+
+  "ruffianCombat":
+  {
+    question: "What will you do?",
+    choices:
+    [
+      {
+        text: "Hail mary",
+        next: "hailMary",
+        msg: "You throw your entire body against the door and collapse along with it. You reach for your pistol and begin firing at the choke point, hoping to take down as many as possible.",
+        msgBtn: "Next",
+
+        action: standaRevealEmojis("💥", "💥", "🔫", "💥", "💥"),
+      },
+      {
+        text: "Surrender",
+        msg: "You live locked under enemy deck. The darkness slowly dulls your senses. Hunger and thirst tear at you. Death can't come soon enough.",
+        msgBtn: "ohno",
+
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "", "", "", "", "",);
+          endGame("Scream for help?", "AAAAAA");
+        }
+      },
+    ]
+  },
+
+  "hailMary":
+  {
+    question: "The goons begin to thin out. Soon enough you spot the familiar faces of your crew. The mission was a success.",
+    
+    choices: 
+    [
+      {
+        text: "rawr,, i mean yarr!",
+        next: "hiCrew",
+        action: standaRevealEmojis("🧔🏻‍♀️", "🧔🏽", "👨🏼", "🧔🏿", "👩🏾", )
+      }
+    ]
+
+  },
+
+  "hiCrew":
+  {
+    question: "Treasure time!",
+    next: "treasureTime",
+
+    action: standaRevealEmojis("💰", "🏅", "💛", "🏆", "🪙",)
+  },
+
+  "treasureTime":
+  {
+    question: "Enough to feed the crew for a whole year!",
+    choices:
+    [
+      {
+        text: "Haul it to the ship",
+        msg: "You sail away, your crew mates take to song and drink in celebration. This will be a good year for the Yelling At Retail Workers Pirates",
+        msgBtn: "aye",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles, "🌊", "🎶", "⛴️", "🥂", "🌊");
+          win(tiles, "Show a retail worker who's boss?", "yohohoho~ yohohohoooo~");
+        }
+      },
+      {
+        text: "Leave it, stealing is bad",
+        msg: "You sail away not having achieved anything, it was a slaughter for the sake of slaughter. Your crew will have their way with you.",
+        msgBtn: "😟",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles, "🌊", "🌊", "🚢", "🌊", "🌊", );
+          endGame("Find a better captain?", "coward's way out");
+        }
+      },
+    ]
+  },
+
+  "attackCaptain1":
+  {
+    question: "Your cutlasses cross. You try to make eye contact but his gaze lays elsewhere. He looks gangly and sick.",
+    choices:
+    [
+      {
+        text: "cut low",
+        next: "attackCaptain2",
+        action: standaRevealEmojis("", "", "🩻", "", "", ),
+      },
+      {
+        text: "cut high",
+        next: "attackCaptain2",
+        action: standaRevealEmojis("", "", "🩻", "", "", ),
+      },
+      {
+        text: "KILL THAT PARROT",
+        // note the backtick (just to the left of '1' key, which lets you make multiline strings ^~^)
+        msg: `You swing at the parrot. Just as your blade is about to make contact a searing pain pierces through your ribcage. 
+        You got careless. Everything goes dark.`,
+        msgBtn: "i should've known...",
+
+        action: (tiles) => 
+        {
+          revealEmojis(tiles, "", "", "", "", "",),
+          endGame("Pray that someone else murks that fuckinf bird?", "*squawk*")
+        }
+      },
+    ]
+  },
+
+  "attackCaptain2":
+  {
+    question: "You cut his robe. It falls to the ground with a loud thud, revealing deep gashes in his torso. No one could've survived that.",
+    choices:
+    [
+      {
+        msg: "You should've killed me when you had the chance",
+        msgBtn: "you..",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "", "", "🦜", "", "", ),
+          endGame("Pray that someone else murks that fuckinf bird?", "*squawk*")
+        }
+      },
+    ]
+  },
+
+  "murkBird":
+  {
+    question: "The captain collapses. Before you lay a man with sunken eyes and a skeletal frame. Long dead, even before you boarded his ship.",
+    choices:
+    [
+      {
+        text: "next",
+        next: "stareAtCadaver",
+
+        action: standaRevealEmojis("", "🦴", "🗝️", "🦴", "", )
+      },
+    ]
+  },
+
+  "stareAtCadaver":
+  {
+    question: "You stare at the cadaver. A key dangles from one his ribs. You reach for it",
+    choices:
+    [
+      {
+        text: "Head to the treasury",
+        next: "treasuryYesKey",
+
+        action: standaRevealEmojis("🟫", "🟫", "🚪", "🟫", "🟫")
+      },
+      {
+        text: "Kick the corpse",
+        msg: "What the hell is your problem???? Alright. lightning strikes a clear sky and you die in excruciating pain. screw you.",
+        msgBtn: "funny :)",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "⚡", "⚡", "⚡", "⚡", "⚡"),
+          endGame("You're hopeless.", "*MAY YOU NEVER STEP PAW IN THIS LAND AGAIN*");
+        }
+      },
+    ]
+  },
+  
+ "treasuryYesKey":
+  {
+    question: "You unlock the door and enter",
+    choices:
+    [
+      {
+        text: "treasure time!",
+        next: "treasureTime",
+
+        action: standaRevealEmojis("💰", "🏅", "💛", "🏆", "🪙",)
+      },
+    ]
+  },
+  "1":
+  {
+    question: "",
+    choices:
+    [
+      {
+
+      },
+      {
+        
+      },
+    ]
+  },
+}
+
+/**
+ * 
+ * @param {HTMLElement[]} tiles 
+ * @param {String} emoji1 
+ * @param {String} emoji2 
+ * @param {String} emoji3 
+ * @param {String} emoji4 
+ * @param {String} emoji5 
+ */
+function revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5)
+{
+  revealCustomTiles(tiles, [emoji1, emoji2, emoji3, emoji4, emoji5], ["emoji","emoji","emoji","emoji","emoji"]);
+}
+
+/**
+ * Factory function to create emoji reveal actions for cleaner sequence definitions
+ * @param {String} emoji1 
+ * @param {String} emoji2 
+ * @param {String} emoji3 
+ * @param {String} emoji4 
+ * @param {String} emoji5 
+ * @returns {Function} Action function ready to use in sequence definitions
+ */
+// short for standaloneRevealEmojis
+function standaRevealEmojis(emoji1, emoji2, emoji3, emoji4, emoji5) {
+  return (tiles) => revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5);
+}
+
 // GAME LOGIC STARTS HERE
 initGame()
 
-function initGame() {
+function initGame() 
+{
   showAlert("BRONGLE TIME :]");
   currentMode = GAME_MODES.YES_NO;
   // determine mode based on day number (dayOffset)
@@ -1237,6 +1606,11 @@ function initGame() {
   {
     storySequence = guessGameSeq;
   }
+  else if (dayOffset === 279)
+  {
+    storySequence = pirateSeq;
+  }
+
   else 
   {
     // standard wordle, failsafe although we never want this to trigger ofc
@@ -1254,6 +1628,8 @@ function initGame() {
  */
 function win(tiles, shareMsg, alertMsg = "")
 {
+  gameOver = true;
+
   setTimeout(() => 
   {
     danceTiles(tiles);
@@ -1271,12 +1647,20 @@ function win(tiles, shareMsg, alertMsg = "")
 /**
  * @param {String} shareMsg
  */
-function endGame(shareMsg)
+function endGame(shareMsg, alertMsg = "")
 {
+  gameOver = true;
+
   setTimeout(() => 
   {
-    showShareModal(shareMsg);
-  }, 2000);
+    if (alertMsg != "")
+      showAlert(alertMsg);
+
+    setTimeout(() => 
+    {
+      showShareModal(shareMsg);
+    }, 2000);
+  }, 1500)
 }
 
 // generic helper to animate custom tile setups
@@ -1458,17 +1842,16 @@ function finishTurn(currentStory, choice, activeTiles)
     currentSceneId = nextId;
     setTimeout(startInteraction, 1500);
   }
-  else 
+  else if(!gameOver)
   {
-    console.log("Brongle Story Finalized.");
-    // Usually, you'd trigger the share modal here!
+    endGame("the dev was sleepy and forgot to specify where the game goes next, sorry! feel free to send a bug report to them^~^");
   }
-};
+}
 
 /**
  * @param {String} btnText
  */
-function createContinueBtn(btnText = "ok")
+function createContinueBtn(btnText = "next")
 {
   const continueBtn = document.createElement("button");
   continueBtn.textContent = btnText;
@@ -1514,7 +1897,7 @@ function setupChoices(currentStory, activeTiles, buttonContainer)
         
         ResetBtnContainer(buttonContainer);
 
-        const continueBtn = createContinueBtn(choice.msgBtnText);
+        const continueBtn = createContinueBtn(choice.msgBtn);
         continueBtn.onclick = finishWrap; 
         buttonContainer.appendChild(continueBtn);
       }
@@ -1524,24 +1907,45 @@ function setupChoices(currentStory, activeTiles, buttonContainer)
   });
 }
 
-function handleSeqTurn(guess, activeTiles)
-{
+function handleSeqTurn(guess, activeTiles) {
   const currentStory = storySequence[currentSceneId];
   const buttonContainer = document.getElementById("choice-button-container");
-  
+
+  // safety check
+  if (!currentStory) return;
+
   ResetBtnContainer(buttonContainer);
 
-  modalText.textContent = currentStory.question;
+  // handle question text
+  if (currentStory.question && currentStory.question.trim() !== "") 
+  {
+    modalText.textContent = currentStory.question;
+  } else 
+  {
+    modalText.textContent = ""; // Keep it empty if no question
+  }
 
-  if (currentStory.choices && currentStory.choices.length > 0) 
+  // analyse contents of current scene
+  const hasChoices = currentStory.choices && currentStory.choices.length > 0;
+  const hasQuestion = currentStory.question && currentStory.question.trim() !== "";
+
+  // no question, no choices -> run action and skip
+  if (!hasQuestion && !hasChoices) 
+  {
+    if (currentStory.action) currentStory.action(activeTiles);
+    
+    // Move to next turn immediately (finishTurn handles the 1.5s interaction delay)
+    finishTurn(currentStory, null, activeTiles);
+    return; 
+  }
+
+  // standard node -> show  modal
+  if (hasChoices) 
   {
     setupChoices(currentStory, activeTiles, buttonContainer);
-  } 
-
-  // CUTSCENE CASE (No Buttons)
-  else 
-  {
-    setTimeout(() =>
+  } else {
+    // cutscene case: question exists, no buttons
+    setTimeout(() => 
     {
       finishTurn(currentStory, null, activeTiles);
     }, 2000);
@@ -1813,8 +2217,8 @@ function generateShareString()
 
     const secretTiles = /** @type {HTMLElement[]} */ (Array.from(secretRow.querySelectorAll(".tile")));
 
-    secretTiles.forEach(t => {
-
+    secretTiles.forEach(t => 
+    {
       const state = t.dataset.state;
 
       if (state === "emoji") {
