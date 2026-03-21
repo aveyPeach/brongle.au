@@ -1473,6 +1473,8 @@ const pirateSeq =
     choices:
     [
       {
+        text: "next",
+
         msg: "You should've killed me when you had the chance",
         msgBtn: "you..",
         action: (tiles) =>
