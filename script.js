@@ -1511,7 +1511,7 @@ const pirateSeq =
       },
       {
         text: "Kick the corpse",
-        msg: "What the hell is your problem???? Alright. lightning strikes a clear sky and you die in excruciating pain. screw you.",
+        msg: "What the hell is your problem???? Alright. lightning strikes from a clear sky and you die in excruciating pain. screw you.",
         msgBtn: "funny :)",
         action: (tiles) =>
         {
