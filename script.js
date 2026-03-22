@@ -1757,6 +1757,7 @@ function handleKeyPress(e) {
   }
 
   if (e.key === "Backspace" || e.key === "Delete") {
+    e.preventDefault();
     deleteKey()
     return
   }
@@ -1846,7 +1847,7 @@ function finishTurn(currentStory, choice, activeTiles)
   }
   else if(!gameOver)
   {
-    endGame("the dev was sleepy and forgot to specify where the game goes next, sorry! feel free to send a bug report to them^~^");
+    endGame("the dev was sleepy and forgot to specify where the game goes next, sorry! feel free to send them a bug report ^~^");
   }
 }
 
