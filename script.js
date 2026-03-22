@@ -24,7 +24,7 @@ const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 
 // set at hour 12 to account for daylight savings apparently that works
-const offsetFromDate = new Date(2025, 5, 16).getTime();
+const offsetFromDate = new Date(2025, 5, 15, 22).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
@@ -584,7 +584,7 @@ const eleDanceSequence =
          msg: "Dance music fills the room. It's an elephant party.", 
          action: (tiles) => 
         {
-          playTrack('polka.mp3', { volume: 0.4, isBGM: true });
+          playTrack('assets/music/polka.mp3', { volume: 0.4, isBGM: true });
           // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
           revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
 
@@ -599,7 +599,7 @@ const eleDanceSequence =
          msg: "Dance music fills the room. It's an elephant party.", 
          action: (tiles) => 
         {
-          playTrack('polka.mp3', { volume: 0.4, isBGM: true });
+          playTrack('assets/music/polka.mp3', { volume: 0.4, isBGM: true });
           // IMPORTANT do this b4 elephant starts to dance, otherwise mobile breaks -w-
           revealCustomTiles(tiles, ["🟥", "🟩", "🐘", "🟦", "🟨"], ["emoji","emoji","emoji","emoji","emoji"]);
 
@@ -644,8 +644,8 @@ const eleDanceSequence =
         msg: "say no more.",
         action: (tiles) => 
         {
-          playTrack("runningOnMetal.mp3", {isBGM: true});
-          playTrack("chainSounds.mp3");
+          playTrack("assets/music/runningOnMetal.mp3", {isBGM: true});
+          playTrack("assets/music/chainSounds.mp3");
           revealCustomTiles(tiles, ["🛢️", "⛓️", "🐘", "⛓️", "🛢️"], ["emoji","emoji","emoji","emoji","emoji",]);
 
           stopInteraction();
@@ -1552,33 +1552,132 @@ const pirateSeq =
   },
 }
 
-/**
- * 
- * @param {HTMLElement[]} tiles 
- * @param {String} emoji1 
- * @param {String} emoji2 
- * @param {String} emoji3 
- * @param {String} emoji4 
- * @param {String} emoji5 
- */
-function revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5)
+const swampMonsterSeq =
 {
-  revealCustomTiles(tiles, [emoji1, emoji2, emoji3, emoji4, emoji5], ["emoji","emoji","emoji","emoji","emoji"]);
+  "start":
+  {
+    question: "have you ever wanted to be a swamp monster chasing after innocent bystanders?",
+
+    choices:
+    [
+      {
+        text: "of course!",
+        msg: "you get me",
+        next: "lunge",
+        action: standaRevealEmojis("🦑", "🌲", "🌳", "🌲", "🏃‍➡️",)
+      },
+      {
+        text: "no?",
+        msg: "can't knock it til' you've tried it :)",
+        next: "lunge",
+        action: standaRevealEmojis("🦑", "🌲", "🌳", "🌲", "🏃‍➡️",)
+      },
+    ]
+  },
+
+  "lunge":
+  {
+    question: "what does a swamp monster do best?",
+
+    choices:
+    [
+      {
+        text: "lunge!",
+        next: "lunge/lunch",
+        action: standaRevealEmojis("🌲", "🦑", "🌳", "🌲", "🏃‍➡️",)
+      },
+    ]
+  },
+
+  "lunge/lunch":
+  {
+    question: "what does a swamp monster do best?",
+
+    choices:
+    [
+      {
+        text: "lunge!",
+        next: "lunge/bunch",
+        action: standaRevealEmojis("🌲", "🌳", "🦑", "🌲", "🏃‍➡️",)
+      },
+      {
+        text: "lunch",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "🦑", "🥪", "🧺", "🥪", "🧘",);
+          win(tiles, "Share your food?", "*mwmwmwmmwmwmwm*")
+        }  
+      },
+    ]
+  },
+
+  "lunge/bunch":
+  {
+    question: "what does a swamp monster do best?",
+
+    choices:
+    [
+      {
+        text: "lunge",
+        next: "lunge/hunch",
+        action: standaRevealEmojis("🌲", "🌳", "🌲", "🦑", "🏃‍➡️",)
+      },
+      {
+        text: "bunch",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "🦑", "🦑", "🦑", "🦑", "🦑",);
+          win(tiles, "Bring more swampies into your ranks?", "hi! hi! hi! hi! hi!")
+        }  
+      },
+    ]
+  },
+
+  "lunge/hunch":
+  {
+    question: "what does a swamp monster do best?",
+
+    choices:
+    [
+      {
+        text: "LUNGE!",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "🌳", "🦑", "💀", "🦴", "🌲",);
+          win(tiles, "look for more victims?", "yum!")
+        }  
+      },
+      {
+        text: "hunch",
+        msg: "You remember that yuri exists, then promptly spend the rest of your evening hunched over your screen watching love blossom between the peppy pink haired protagonist and her reserved yet passionate pottery class senpai.",
+        msgBtn: "waow",
+
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "🌳", "🌳", "💻", "🦐", "🌲",);
+          win(tiles, "Sow the seeds of girl love?", "YURI!!!")
+        }  
+      },
+    ]
+  },
+
+  "hunch":
+  {
+    question: "what does a swamp monster do best?",
+
+    choices:
+    [
+      {
+
+      },
+      {
+
+      },
+    ]
+  },
+
 }
 
-/**
- * Factory function to create emoji reveal actions for cleaner sequence definitions
- * @param {String} emoji1 
- * @param {String} emoji2 
- * @param {String} emoji3 
- * @param {String} emoji4 
- * @param {String} emoji5 
- * @returns {Function} Action function ready to use in sequence definitions
- */
-// short for standaloneRevealEmojis
-function standaRevealEmojis(emoji1, emoji2, emoji3, emoji4, emoji5) {
-  return (tiles) => revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5);
-}
 
 // GAME LOGIC STARTS HERE
 initGame()
@@ -1611,6 +1710,10 @@ function initGame()
   else if (dayOffset === 279)
   {
     storySequence = pirateSeq;
+  }
+    else if (dayOffset === 280)
+  {
+    storySequence = swampMonsterSeq;
   }
 
   else 
@@ -1663,6 +1766,34 @@ function endGame(shareMsg, alertMsg = "")
       showShareModal(shareMsg);
     }, 2000);
   }, 1500)
+}
+
+/**
+ * 
+ * @param {HTMLElement[]} tiles 
+ * @param {String} emoji1 
+ * @param {String} emoji2 
+ * @param {String} emoji3 
+ * @param {String} emoji4 
+ * @param {String} emoji5 
+ */
+function revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5)
+{
+  revealCustomTiles(tiles, [emoji1, emoji2, emoji3, emoji4, emoji5], ["emoji","emoji","emoji","emoji","emoji"]);
+}
+
+/**
+ * Factory function to create emoji reveal actions for cleaner sequence definitions
+ * @param {String} emoji1 
+ * @param {String} emoji2 
+ * @param {String} emoji3 
+ * @param {String} emoji4 
+ * @param {String} emoji5 
+ * @returns {Function} Action function ready to use in sequence definitions
+ */
+// short for standaloneRevealEmojis
+function standaRevealEmojis(emoji1, emoji2, emoji3, emoji4, emoji5) {
+  return (tiles) => revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5);
 }
 
 // generic helper to animate custom tile setups
@@ -1756,7 +1887,9 @@ function handleKeyPress(e) {
     return
   }
 
-  if (e.key === "Backspace" || e.key === "Delete") {
+  if (e.key === "Backspace" || e.key === "Delete") 
+  {
+    // so chromium fork users don't get pushed out of the website
     e.preventDefault();
     deleteKey()
     return
@@ -1910,7 +2043,7 @@ function setupChoices(currentStory, activeTiles, buttonContainer)
   });
 }
 
-function handleSeqTurn(guess, activeTiles) {
+function handleSeqTurn(activeTiles) {
   const currentStory = storySequence[currentSceneId];
   const buttonContainer = document.getElementById("choice-button-container");
 
@@ -1967,12 +2100,28 @@ function submitGuess()
 
   if (currentMode === GAME_MODES.YES_NO) 
   {
-    handleSeqTurn(guess, activeTiles);
+    handleSeqTurn(activeTiles);
   }
   else 
   {
     // standard wordle logic
     activeTiles.forEach((...params) => flipTile(...params, guess));
+  }
+
+  handleSpecialGuess(guess);
+}
+
+function handleSpecialGuess(guess) 
+{
+  // should be converted already 
+  // but brongle is not intensive enough that we can't afford this safety measure
+  const mode = guess.toLowerCase();
+  
+  // all currently defined body visual modes
+  const validModes = ["trans", "nonbn", "puppy"]; 
+  
+  if (validModes.includes(mode)) {
+    document.body.dataset.activeBg = mode;
   }
 }
 
