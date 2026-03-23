@@ -1678,6 +1678,206 @@ const swampMonsterSeq =
 
 }
 
+const dreamSeq =
+{
+  "start":
+  {
+    question: "After a long day of work you finally get to kill the lights and go to sleep.",
+
+    choices:
+    [
+      {
+        text: "dream",
+        next: "grandmaDream",
+
+        action: standaRevealEmojis("💓", "💓", "👵", "💓", "💓", ),
+      },
+      {
+        text: "stay awake",
+        next: "stayAwake",
+
+        action: standaRevealEmojis("", "", "😑", "📱", "", ),
+      },
+    ]
+  },
+
+  "grandmaDream":
+  {
+    question: "GRANDMA SEX DREAM",
+
+    choices:
+    [
+      {
+        text: "DIFFERENT DREAM DIFFERENT DREAM",
+        next: "diffDream",
+
+        action: standaRevealEmojis("", "🪽", "🌇", "🪽", "", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "diffDream":
+  {
+    question: ("You're flying over an unfamiliar skyline." +  
+      "You're somewhat of a bizarre hybrid between a pigeon and an animal you're not sure exists"),
+
+    choices:
+    [
+      {
+        text: "booooring",
+        next: "dentist",
+        action: standaRevealEmojis("⬜", "🦶", "🦷", "👩‍⚕️", "⬜", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "dentist":
+  {
+    question: "You're at the dentist having your toes removed." +
+              "It's your aunt that you haven't seen in years. Her office smells damp.",
+
+    choices:
+    [
+      {
+        text: "just 5 more minutes",
+        next: "5more",
+        // middle one is a troll
+        action: standaRevealEmojis("🌲", "🌳", "🧌", "🕳️", "🌲", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "5more":
+  {
+    question: "You're observing a troll emerging from a hole in the ground. The hole is left unguarded.",
+
+    choices:
+    [
+      {
+        text: "jump in",
+        next: "jumpIn",
+        action: standaRevealEmojis("", "", "🗄️", "", "", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+    "jumpIn":
+  {
+    question: "The hole leads to a room. It's empty aside from a file cabinet",
+
+    choices:
+    [
+      {
+        text: "open the cabinet",
+        next: "openCabinet",
+        action: standaRevealEmojis("💓", "💓", "👵", "💓", "💓", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "openCabinet":
+  {
+    question: "ITS YOUR GRANDMA GETTING DEMOLISHED AGAIN",
+
+    choices:
+    [
+      {
+        text: "WAKE UP",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles, "⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+    "stayAwake":
+  {
+    question: "just a little scroll..",
+
+    choices:
+    [
+      {
+        text: "next",
+        next: "noSleep",
+        action: standaRevealEmojis("⏰", "😴", "🛏️", "🌇", "☕", ),
+      },
+    ]
+  },
+
+    "noSleep":
+  {
+    question: "You didn't sleep, better get to work on time.",
+
+    choices:
+    [
+      {
+        text: "drive to work",
+        msg: "You fell asleep at the wheel on your way to work. I don't want to describe the rest. You sicken me.",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "😴", "🚗", "🤰", "💀", "🪦", ),
+          endGame("tell a cautionary tale?", ".....")
+        }
+      },
+    ]
+  },
+
+}
+
 
 // GAME LOGIC STARTS HERE
 initGame()
@@ -1711,15 +1911,19 @@ function initGame()
   {
     storySequence = pirateSeq;
   }
-    else if (dayOffset === 280)
+  else if (dayOffset === 280)
   {
     storySequence = swampMonsterSeq;
   }
-
+  else if (dayOffset === 281)
+  {
+    storySequence = dreamSeq;
+  }
   else 
   {
     // standard wordle, failsafe although we never want this to trigger ofc
-    currentMode = GAME_MODES.NORMAL; 
+    showAlert("DEFAULT DAY"),
+    storySequence = twosevenfourSequence;
   }
 
   startInteraction();
