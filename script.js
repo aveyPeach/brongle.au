@@ -2084,12 +2084,12 @@ const propHuntSeq =
 {
   "start": 
   {
-    question: "welcome to [SCENIC OBJECT] hunt!, you'll be guessing guess which object doesn't belong to the scene!. here's scene 1!",
+    question: "welcome! today we hunt props! get ready for the first scene!",
 
     choices: 
     [
       {
-        text: "go to: bedroom", next: "bedroom",
+        text: "next", next: "bedroom",
       }
     ]
   },
@@ -2113,7 +2113,8 @@ const propHuntSeq =
       },
       {
         text: "tractor",
-        msg: "that's right! a tractor belongs on a *farm* :)",
+        msg: "It's a shape shifter!!! It quickly escapes and runs over to a farm.",
+        msgBtn: "go to farm",
         next: "farm",
       },
       {
@@ -2128,8 +2129,6 @@ const propHuntSeq =
 
     question: "which object doesn't belong on a *farm*?",
 
-    next: "",
-
     choices:
     [
       {
@@ -2137,6 +2136,9 @@ const propHuntSeq =
       },
       {
         text: "dodo",
+        msg: "That's right! Dodos don't exist anymore! (</3). Now the shape shifter flies up to space!",
+        msgBtn: "go to space",
+        next: "space",
       },
       {
         text: "stump",
@@ -2150,147 +2152,170 @@ const propHuntSeq =
     ]
   },
 
-  "5":
+  "space":
   {
-    reveal: standaRevealEmojis("", "", "", "", "",),
+    reveal: standaRevealEmojis("🌎", "🚀", "👩‍🚀", "🏐", "🌠",),
 
-    question: "which object doesn't belong?",
-
-    next: "",
+    question: "what shouldn't you see in *space*?",
 
     choices:
     [
       {
-        text: "",
+        text: "tellus",
       },
       {
-        text: "",
+        text: "rocket",
       },
       {
-        text: "",
+        text: "astronaut",
       },
       {
-        text: "",
+        text: "beachball",
+        msg: "That's right! It's a beachball, not a spaceball. The shapeshifter gets a craving for sweets and promptly hurries to the nearest candy shop!",
+        msgBtn: "go to candy shop",
+        next: "candyShop",
       },
       {
-        text: "",
+        text: "shooting star",
       },
     ]
   },
 
-  "4":
+  "candyShop":
   {
-    reveal: standaRevealEmojis("", "", "", "", "",),
+    reveal: standaRevealEmojis("🍫", "🍭", "🍬", "🍷", "🧁",),
 
-    question: "which object doesn't belong?",
-
-    next: "",
+    question: "which object doesn't belong in a *candy shop*?",
 
     choices:
     [
       {
-        text: "",
+        text: "chocolate",
       },
       {
-        text: "",
+        text: "lollipop",
       },
       {
-        text: "",
+        text: "candy",
       },
       {
-        text: "",
+        text: "wine",
+        msg: "That's right! Wine belong in my mouth while the kids aren't home. The shapeshifter moves from the realm of sweet foods to starchy ones!",
+        msgBtn: "go to potato farm",
+        next: "potatoFarm",
       },
       {
-        text: "",
+        text: "cupcake",
       },
     ]
   },
 
-  "3":
+  "potatoFarm":
   {
-    reveal: standaRevealEmojis("", "", "", "", "",),
+    reveal: standaRevealEmojis("🥔", "🥔", "🥔", "🍟", "🥔",),
 
-    question: "which object doesn't belong?",
-
-    next: "",
+    question: "which object doesn't belong on a *potato farm*?",
 
     choices:
     [
       {
-        text: "",
+        text: "nice potato",
       },
       {
-        text: "",
+        text: "mean potato",
       },
       {
-        text: "",
+        text: "furious potato",
       },
       {
-        text: "",
+        text: "french fries",
+        msg: "That's right! French fries can't be on a farm because France has no farms! Also the shapeshifter went to a theme park :)",
+        msgBtn: "go to theme park",
+        next: "themePark",
       },
       {
-        text: "",
+        text: "non-suspicious potato",
+        msg: "i guess you don't trust my judgement ;~;",
+        msgBtn: "my bad"
       },
     ]
   },
 
-  "2":
+  "themePark":
   {
-    reveal: standaRevealEmojis("", "", "", "", "",),
+    reveal: standaRevealEmojis("🎠", "👯", "🐎", "🎆", "🤹‍♀️",),
 
-    question: "which object doesn't belong?",
-
-    next: "",
+    question: "which object doesn't belong at a *theme park*?",
 
     choices:
     [
       {
-        text: "",
+        text: "merry-go-horse",
       },
       {
-        text: "",
+        text: "dancing daisy and her sister",
       },
       {
-        text: "",
+        text: "hoarsey",
+        msg: "That's right! horses are dangerous and should not be let into theme parks !!",
+        next: "band"
       },
       {
-        text: "",
+        text: "ferris wheel",
       },
       {
-        text: "",
+        text: "juggling janice",
       },
     ]
   },
 
-  "1":
+  "band":
   {
-    reveal: standaRevealEmojis("", "", "", "", "",),
+    reveal: standaRevealEmojis("🎸", "🥁", "👩‍🎤", "💵", "🎷",),
 
-    question: "which object doesn't belong?",
-
-    next: "",
+    question: "The shapeshifter finally seems exhausted, now's your chance! Which object doesn't belong in a *band*?",
 
     choices:
     [
       {
-        text: "",
+        text: "guitar",
       },
       {
-        text: "",
+        text: "drums",
       },
       {
-        text: "",
+        text: "singer",
       },
       {
-        text: "",
+        text: "money",
+        msg: "That's right! You won't make a dime in a band. The shapeshifter is finally in your grasp. You can't really see what it is, but it feels feline :3",
+        msgBtn: "yayy :)",
+        next: "gg"
       },
       {
-        text: "",
+        text: "saxophone",
       },
     ]
   },
-  
-  
+
+  "gg":
+  {
+    reveal: standaRevealEmojis("", "", "❓", "", "",),
+
+    gg: (tiles) => win(tiles, getPropHuntSharePrompt(), "mreo!")
+  }
+}
+
+function getPropHuntSharePrompt()
+{
+  if (wrongGuesses === 0)
+    return "you played a perfect game! revel in it?";
+  else if (wrongGuesses === 1)
+    return "you won in just a single guess, so close to perfection! dare your friends (and enemies) to do better?";
+  else if (wrongGuesses < 5)
+    return "you won in " + wrongGuesses + " guesses, not bad! dare your friends (and enemies) to do better?";
+  else
+    return "you.. you won! and you probably tried your best and might have had fun too, yay :) do you want your friends to have fun too?";
 }
 
 // GAME LOGIC STARTS HERE
@@ -2593,7 +2618,7 @@ function setupNextScene(nextId, activeTiles)
   if (nextScene.reveal)
   {
     nextScene.reveal(activeTiles);
-    showAlert("reveal param(?) worked !!")
+    //showAlert("reveal param(?) worked !!")
   }
   else
     showAlert("no emoji reveal specified");
@@ -2919,18 +2944,17 @@ function danceTiles(tiles) {
 function showShareModal(resultType) {
   const buttonContainer = document.getElementById("choice-button-container");
   
-  // 1. Safety Check: If this container doesn't exist, we can't show buttons!
   if (!buttonContainer) {
-    console.error("Ogre Error: Could not find 'choice-button-container' in your HTML!");
+    console.error("Ogre Error: Could not find 'choice-button-container' in HTML!");
     return;
   }
 
-  // 2. Clear out old story buttons and show the modal
+  // clear out old story buttons and show modal
   buttonContainer.innerHTML = ""; 
-  buttonContainer.style.display = "flex"; // Ensure it's using your row layout
+  buttonContainer.style.display = "flex"; // ensure it's using row layout
   modal.classList.remove("hidden");
 
-  // 3. Set the text based on the result
+  // set text based on the result
   if (resultType === "win") {
     modalText.textContent = "The Horse Won! Share your glory?";
   } else if (resultType === "glue time") {
@@ -2942,28 +2966,27 @@ function showShareModal(resultType) {
   } else if (resultType === "eaven") {
     modalText.textContent = "Blessed be your mared friend.\nShare if you cried?";
   } else {
-    // Falls back to whatever string you passed (like "invite others to the party?")
+    // fallback to whatever you typed
     modalText.textContent = resultType;
   }
 
-  // 4. Create the "Copy Result" button from scratch
+  // create copy result button
   const shareBtn = document.createElement("button");
   shareBtn.textContent = "Copy Result";
   
-  // VITAL: This gives it the Wordle key look from your CSS
+  // gives it the standard button look
   shareBtn.classList.add("key"); 
   
-  // Make it wide enough for the text
+  // make it wide enough for the text
   shareBtn.style.minWidth = "200px"; 
 
   shareBtn.onclick = () => {
     generateShareString();
-    // Optional: add a little juice so the user knows it worked
+    // confirmation for user
     shareBtn.textContent = "COPIED ^~^";
     setTimeout(() => { shareBtn.textContent = "Copy Result"; }, 2000);
   };
 
-  // 5. Actually put the button on the screen
   buttonContainer.appendChild(shareBtn);
 }
 
@@ -2981,6 +3004,11 @@ function generateShareString()
 
   let shareText = `Daily Brongle #${dayOffset} ${displayCount}/9\n\n`;
 
+  
+  if (currentMode === GAME_MODES.PROP_HUNT) 
+  {
+    shareText += (wrongGuesses < 1 ? "perfect game⭐" : "errors: " + wrongGuesses) + "\n";
+  }
 
   // main grid 
 
@@ -3079,7 +3107,6 @@ function generateShareString()
     shareText += "\n";
 
   }
-
 
   shareText += "\nhttps://aveypeach.github.io/brongle.au/";
 
