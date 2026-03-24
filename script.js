@@ -1719,7 +1719,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          RevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
