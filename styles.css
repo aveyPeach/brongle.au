@@ -398,8 +398,9 @@ body[data-active-bg="puppy"] {
   display: flex;
   flex-direction: row;  /* Forces them to stay side-by-side */
   justify-content: center;
-  gap: 20px;            /* Increased space between buttons */
+  gap: 10px;            /* Increased space between buttons */
   width: 100%;          /* Ensures they use the full width of the modal */
+  flex-wrap: wrap;      /* allows buttons to drop to a new row */
   margin-top: 15px;     /* Space between the question text and buttons */
 }
 
@@ -407,6 +408,8 @@ body[data-active-bg="puppy"] {
   border: none;
   border-radius: 4px;
   min-width: 80px;
+  flex: 1 1 80px;       
+  max-width: 100px;     /* keeps buttons from getting too wide*/
   height: 50px;
   font-size: 1rem;
   transition: opacity 0.2s;
@@ -417,6 +420,15 @@ body[data-active-bg="puppy"] {
 /* make keys feel responsive (for mobile specifically?)*/
 .modal-buttons button:active {
   opacity: 0.7; 
+}
+
+/*targets keys that are BOTH wrong and disabled*/
+button.key.wrong-guess:disabled {
+  background-color: #ef4444; 
+  color: #ffffff;
+  opacity: 0.5; 
+  cursor: not-allowed; /* gives player the 🚫 mouse cursor */
+  transform: none; /* stops it from pressing down if there are active states */
 }
 
 #copy-button {
