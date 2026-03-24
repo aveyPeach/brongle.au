@@ -419,6 +419,15 @@ body[data-active-bg="puppy"] {
   opacity: 0.7; 
 }
 
+/*targets keys that are BOTH wrong and disabled*/
+button.key.wrong-guess:disabled {
+  background-color: #ef4444; 
+  color: #ffffff;
+  opacity: 0.5; 
+  cursor: not-allowed; /* gives player the 🚫 mouse cursor */
+  transform: none; /* stops it from pressing down if there are active states */
+}
+
 #copy-button {
   background-color: #538d4e; /* wordle Green */
   color: white;

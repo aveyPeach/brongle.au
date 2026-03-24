@@ -19,12 +19,14 @@ const DANCE_ANIMATION_DURATION = 500;
 
 let guessCount = 0; 
 
+let wrongGuesses = 0;
+
 const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 
 // set at hour 12 to account for daylight savings apparently that works
-const offsetFromDate = new Date(2025, 5, 16, 1).getTime();
+const offsetFromDate = new Date(2025, 5, 15, 1).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
@@ -32,7 +34,8 @@ const targetWord = targetWords[dayOffset]
 let currentMode; 
 const GAME_MODES = {
   STANDARD: "standard",
-  YES_NO: "yes_no"
+  YES_NO: "yes_no",
+  PROP_HUNT: "propHunt",
 }
 
 let currentSceneId = "start";
@@ -1678,6 +1681,205 @@ const swampMonsterSeq =
 
 }
 
+const altDreamSeq =
+{
+  "start":
+  {
+    question: "After a long day of work you finally get to kill the lights and go to sleep.",
+
+    choices:
+    [
+      {
+        text: "dream",
+        next: "grandmaDream",
+
+      },
+      {
+        text: "stay awake",
+        next: "stayAwake",
+      },
+    ]
+  },
+
+  "grandmaDream":
+  {
+    reveal: standaRevealEmojis("💓", "💓", "👵", "💓", "💓", ),
+
+    question: "GRANDMA SEX DREAM",
+
+    choices:
+    [
+      {
+        text: "DIFFERENT DREAM DIFFERENT DREAM",
+        next: "diffDream",
+      },
+      {
+        text: "wake up",
+        next: "wakeUp",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",      
+      },
+    ]
+  },
+
+  "diffDream":
+  {
+    reveal: standaRevealEmojis("", "🪽", "🌇", "🪽", "", ),
+
+    question: ("You're flying over an unfamiliar skyline." +  
+      "You're somewhat of a bizarre hybrid between a pigeon and an animal you're not sure exists"),
+
+    choices:
+    [
+      {
+        text: "booooring",
+        next: "dentist",
+        action: standaRevealEmojis("⬜", "🦶", "🦷", "👩‍⚕️", "⬜", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "dentist":
+  {
+    question: "You're at the dentist having your toes removed." +
+              "It's your aunt that you haven't seen in years. Her office smells damp.",
+
+    choices:
+    [
+      {
+        text: "just 5 more minutes",
+        next: "5more",
+        // middle one is a troll
+        action: standaRevealEmojis("🌲", "🌳", "🧌", "🕳️", "🌲", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "5more":
+  {
+    question: "You're observing a troll emerging from a hole in the ground. The hole is left unguarded.",
+
+    choices:
+    [
+      {
+        text: "jump in",
+        next: "jumpIn",
+        action: standaRevealEmojis("", "", "🗄️", "", "", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+  "jumpIn":
+  {
+    question: "The hole leads to a room. It's empty aside from a file cabinet",
+
+    choices:
+    [
+      {
+        text: "open the cabinet",
+        next: "openCabinet",
+        action: standaRevealEmojis("💓", "💓", "👵", "💓", "💓", ),
+      },
+      {
+        text: "wake up",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        next: "wakeUp",
+      },
+    ]
+  },
+
+  "openCabinet":
+  {
+    question: "ITS YOUR GRANDMA GETTING DEMOLISHED AGAIN",
+
+    choices:
+    [
+      {
+        text: "WAKE UP",
+        msg: "wake up sleepyhead..",
+        msgBtn: "uwghghghhh",
+        action: (tiles) => 
+        {
+          revealEmojis(tiles, "⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+        }
+      },
+    ]
+  },
+
+    "stayAwake":
+  {
+    reveal: standaRevealEmojis("", "", "😑", "📱", "", ),
+
+    question: "just a little scroll..",
+
+    choices:
+    [
+      {
+        text: "next",
+        next: "noSleep",
+        action: standaRevealEmojis("⏰", "😴", "🛏️", "🌇", "☕", ),
+      },
+    ]
+  },
+
+    "noSleep":
+  {
+    question: "You didn't sleep, better get to work on time.",
+
+    choices:
+    [
+      {
+        text: "drive to work",
+        msg: "You fell asleep at the wheel on your way to work. I don't want to describe the rest. You sicken me.",
+        action: (tiles) =>
+        {
+          revealEmojis(tiles, "😴", "🚗", "🤰", "💀", "🪦", ),
+          endGame("tell a cautionary tale?", ".....")
+        }
+      },
+    ]
+  },
+
+  "wakeUp":
+  {
+    reveal: standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+
+    gg: (tiles) => win(tiles, "Have a hearty breakfast?", "it was all a dream...")
+  },
+}
+
 const dreamSeq =
 {
   "start":
@@ -1878,6 +2080,218 @@ const dreamSeq =
 
 }
 
+const propHuntSeq =
+{
+  "start": 
+  {
+    question: "welcome to [SCENIC OBJECT] hunt!, you'll be guessing guess which object doesn't belong to the scene!. here's scene 1!",
+
+    choices: 
+    [
+      {
+        text: "go to: bedroom", next: "bedroom",
+      }
+    ]
+  },
+
+  "bedroom":
+  {
+    reveal: standaRevealEmojis("🛏️", "🪑", "🖼️", "🚜", "🖥️",),
+
+    question: "which object doesn't belong in a *bedroom*?",
+
+    choices:
+    [
+      {
+        text: "bed",
+      },
+      {
+        text: "chair",
+      },
+      {
+        text: "painting",
+      },
+      {
+        text: "tractor",
+        msg: "that's right! a tractor belongs on a *farm* :)",
+        next: "farm",
+      },
+      {
+        text: "computer",
+      },
+    ]
+  },
+
+  "farm":
+  {
+    reveal: standaRevealEmojis("🌳", "🦤", "🪵", "🚜", "🐍",),
+
+    question: "which object doesn't belong on a *farm*?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "tree",
+      },
+      {
+        text: "dodo",
+      },
+      {
+        text: "stump",
+      },
+      {
+        text: "tractor",
+      },
+      {
+        text: "snake",
+      },
+    ]
+  },
+
+  "5":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "which object doesn't belong?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+    ]
+  },
+
+  "4":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "which object doesn't belong?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+    ]
+  },
+
+  "3":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "which object doesn't belong?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+    ]
+  },
+
+  "2":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "which object doesn't belong?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+    ]
+  },
+
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "which object doesn't belong?",
+
+    next: "",
+
+    choices:
+    [
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+      {
+        text: "",
+      },
+    ]
+  },
+  
+  
+}
 
 // GAME LOGIC STARTS HERE
 initGame()
@@ -1918,6 +2332,11 @@ function initGame()
   else if (dayOffset === 281)
   {
     storySequence = dreamSeq;
+  }
+  else if(dayOffset === 282)
+  {
+    currentMode = GAME_MODES.PROP_HUNT;
+    storySequence = propHuntSeq;
   }
   else 
   {
@@ -2163,11 +2582,36 @@ function getValidGuess(activeTiles)
 }
 
 
-function finishTurn(currentStory, choice, activeTiles)
+/**
+ * @param {String} nextId
+ * @param {HTMLElement[]} activeTiles
+ */
+function setupNextScene(nextId, activeTiles)
+{
+  const nextScene = storySequence[nextId];
+
+  if (nextScene.reveal)
+  {
+    nextScene.reveal(activeTiles);
+    showAlert("reveal param(?) worked !!")
+  }
+  else
+    showAlert("no emoji reveal specified");
+
+  if(nextScene.gg)
+    {
+      nextScene.gg(activeTiles)
+      showAlert("win condition triggered!")
+    } 
+  // error handling?
+  // else 
+}
+
+function finishTurn(currentScene, choice, activeTiles)
 {
   modal.classList.add("hidden");
       
-  if (currentStory.action) currentStory.action(activeTiles);
+  if (currentScene.action) currentScene.action(activeTiles);
 
   // questionmarks implement optional chaining ensure that we only do this if 'choice' exists :3
   if (choice?.action) choice?.action(activeTiles);
@@ -2175,12 +2619,14 @@ function finishTurn(currentStory, choice, activeTiles)
   guessCount++;
 
   // optional chaining '?' for safety
-  const nextId = choice?.next || currentStory.next; 
+  const nextId = choice?.next || currentScene.next; 
 
   if (nextId && storySequence[nextId])
   {
     currentSceneId = nextId;
     setTimeout(startInteraction, 1500);
+
+    setupNextScene(nextId, activeTiles);
   }
   else if(!gameOver)
   {
@@ -2206,28 +2652,56 @@ function ResetBtnContainer(buttonContainer)
   buttonContainer.style.display = "flex"; // Ensure it's visible
 }
 
+function handleWrongProp(clickedBtn)
+{
+  // add a CSS class to turn it red
+  clickedBtn.classList.add("wrong-guess");
+
+  playTrack("assets/sfx/wrongBuzzer.mp3", {loop: false, isBGM: true,});
+
+  wrongGuesses++;
+
+  // you shouldn't be able to click the wrong choice multiple times
+  clickedBtn.disabled = true;
+}
 
 /**
- * @param {any} currentStory
+ * @param {any} currentScene
  * @param {HTMLElement[]} activeTiles
  * @param {HTMLElement} buttonContainer
  */
-function setupChoices(currentStory, activeTiles, buttonContainer)
+function setupChoices(currentScene, activeTiles, buttonContainer)
 {
-  currentStory.choices.forEach(choice => 
+  currentScene.choices.forEach(choice => 
   {
     const btn = document.createElement("button");
     btn.textContent = choice.text;
     btn.classList.add("key"); 
-
+    
     btn.onclick = () => 
     {
+      let correctProp = true
+      // for prop hunt, only the one with a next scene defined should make us go next
+      
+      if (currentMode === GAME_MODES.PROP_HUNT && !choice.next)
+      {
+        correctProp = false;
+      }
+
       const message = choice.msg || "";
 
       // this wraps the function call so you don't have to keep track of args in multiple places
-      const finishWrap = () => finishTurn(currentStory, choice, activeTiles);
+      const finishWrap = () => finishTurn(currentScene, choice, activeTiles);
 
-      if (!message || message.trim() === "") 
+      if (correctProp)
+        playTrack("assets/sfx/meow.mp3", {loop: false})
+
+      // NEW IF CASE (main one)
+      if (!correctProp)
+      {
+        handleWrongProp(btn);
+      }
+      else if (!message || message.trim() === "") 
       {
         finishWrap();
       } 
@@ -2247,52 +2721,55 @@ function setupChoices(currentStory, activeTiles, buttonContainer)
   });
 }
 
-function handleSeqTurn(activeTiles) {
-  const currentStory = storySequence[currentSceneId];
+
+function handleSeqTurn(activeTiles) 
+{
+  const currentScene = storySequence[currentSceneId];
   const buttonContainer = document.getElementById("choice-button-container");
 
   // safety check
-  if (!currentStory) return;
+  if (!currentScene) return;
 
   ResetBtnContainer(buttonContainer);
 
   // handle question text
-  if (currentStory.question && currentStory.question.trim() !== "") 
+  if (currentScene.question && currentScene.question.trim() !== "") 
   {
-    modalText.textContent = currentStory.question;
+    modalText.textContent = currentScene.question;
   } else 
   {
     modalText.textContent = ""; // Keep it empty if no question
   }
 
   // analyse contents of current scene
-  const hasChoices = currentStory.choices && currentStory.choices.length > 0;
-  const hasQuestion = currentStory.question && currentStory.question.trim() !== "";
+  const hasChoices = currentScene.choices && currentScene.choices.length > 0;
+  const hasQuestion = currentScene.question && currentScene.question.trim() !== "";
 
   // no question, no choices -> run action and skip
   if (!hasQuestion && !hasChoices) 
   {
-    if (currentStory.action) currentStory.action(activeTiles);
+    if (currentScene.action) currentScene.action(activeTiles);
     
     // Move to next turn immediately (finishTurn handles the 1.5s interaction delay)
-    finishTurn(currentStory, null, activeTiles);
+    finishTurn(currentScene, null, activeTiles);
     return; 
   }
 
   // standard node -> show  modal
   if (hasChoices) 
   {
-    setupChoices(currentStory, activeTiles, buttonContainer);
+    setupChoices(currentScene, activeTiles, buttonContainer);
   } else {
     // cutscene case: question exists, no buttons
     setTimeout(() => 
     {
-      finishTurn(currentStory, null, activeTiles);
+      finishTurn(currentScene, null, activeTiles);
     }, 2000);
   }
 
   modal.classList.remove("hidden");
 }
+
 
 function submitGuess() 
 {
@@ -2302,18 +2779,19 @@ function submitGuess()
 
   stopInteraction();
 
-  if (currentMode === GAME_MODES.YES_NO) 
-  {
-    handleSeqTurn(activeTiles);
-  }
-  else 
-  {
+  //if (currentMode === GAME_MODES.YES_NO) 
+ // {
+  handleSeqTurn(activeTiles);
+ // }
+  //else 
+ // {
     // standard wordle logic
-    activeTiles.forEach((...params) => flipTile(...params, guess));
-  }
+ //   activeTiles.forEach((...params) => flipTile(...params, guess));
+ // }
 
   handleSpecialGuess(guess);
 }
+
 
 function handleSpecialGuess(guess) 
 {
@@ -2328,6 +2806,7 @@ function handleSpecialGuess(guess)
     document.body.dataset.activeBg = mode;
   }
 }
+
 
 // yet to really study this one
 function flipTile(tile, index, array, guess) {
@@ -2631,15 +3110,33 @@ const textArea = document.createElement("textarea");
   document.body.removeChild(textArea);
 } 
 
+function killSound(fileName)
+{
+  if (!activeSounds[fileName]) return;
+
+  activeSounds[fileName].pause();
+  activeSounds[fileName].src = "";
+  delete activeSounds[fileName];
+}
+
 // this function is here to save us against performance hogs and/or dogs
-// will need to update in case you use different files than mp3
-function playTrack(fileName, { loop = true, volume = 1.0, isBGM = false,} = {}) {
+/**
+ * @param {String} fileName
+ * @param {Object} [options={}]
+ * @param {boolean} [options.loop=true]
+ * @param {number} [options.volume=1.0]
+ * @param {boolean} [options.isBGM=false]
+ */
+function playTrack(fileName, { loop = true, volume = 1.0, isBGM = false,} = {}) 
+{
   // if BGM, stop any active bgm
-  if (isBGM && activeSounds["bgm"]) {
-    activeSounds["bgm"].pause();
-    activeSounds["bgm"].src = "";
-    delete activeSounds["bgm"];
-  }
+  if (isBGM && activeSounds["bgm"]) 
+    killSound("bgm");
+
+
+  // TODO: stop all tracks with same fileName before playing
+  if (activeSounds[fileName])
+    killSound(fileName);
 
   const audio = new Audio(fileName);
   audio.loop = loop;
