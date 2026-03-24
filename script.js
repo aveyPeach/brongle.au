@@ -1719,7 +1719,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          RevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
@@ -1744,7 +1744,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
@@ -1770,7 +1770,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
@@ -1794,7 +1794,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          revealEmojis(tiles,"⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
@@ -1818,7 +1818,7 @@ const dreamSeq =
         msgBtn: "uwghghghhh",
         action: (tiles) => 
         {
-          standaRevealEmojis("⏰", "🥱", "🛏️", "🌅", "🥣", ),
+          revealEmojis(tiles, "⏰", "🥱", "🛏️", "🌅", "🥣", ),
           win(tiles, "Have a hearty breakfast?", "it was all a dream...")
         }
       },
