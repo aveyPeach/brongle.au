@@ -25,7 +25,10 @@ const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 
-// set at hour 12 to account for daylight savings apparently that works
+// hour = 1 to account for daylight savings apparently that works
+// original date ref: const offsetFromDate = new Date(2025, 5, 16, 1).getTime();
+// defined like this because that's when nova first started posting her results
+// and the game became playable in nonaustralian contexts
 const offsetFromDate = new Date(2025, 5, 16, 1).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
@@ -2318,6 +2321,171 @@ function getPropHuntSharePrompt()
     return "you.. you won! and you probably tried your best and might have had fun too, yay :) do you want your friends to have fun too?";
 }
 
+const surviveNightSeq =
+{
+  "start":
+  {
+    next: "harshNights"
+  },
+
+  "harshNights":
+  {
+    reveal: standaRevealEmojis("🌲", "❄️", "🌲", "❄️", "🌲",),
+
+    question: "The nights get especially harsh this time of year. You better figure something out.",
+
+    choices:
+    [
+      {
+        text: "stoke a fire",
+        next: "stokeFire",
+      },
+      {
+        text: "get naked and run around",
+        next: "getNaked",
+      },
+    ]
+  },
+
+"stokeFire":
+  {
+    reveal: standaRevealEmojis("❄️", "❄️", "🪾", "❄️", "❄️",),
+
+    question: "All of the branches are soaked, this isn't going anywhere. You see a hut on a nearby hill.",
+
+    choices:
+    [
+      {
+        text: "Go to the hut",
+        next: "goHut",
+      },
+      {
+        text: "Stay outside",
+        next: "stayOutside",
+      },
+    ]
+  },
+  
+  "goHut":
+  {
+    reveal: standaRevealEmojis("", "", "👹", "", "",),
+
+    question: "Scary monster in the hut. You run out screaming. The sun's going down but you're feeling a lot warmer.",
+
+    choices:
+    [
+      {
+        text: "Dress down",
+        next: "dressDown",
+      },
+      {
+        text: "Keep your clothes on",
+        next: "keepClothesOn",
+      },
+    ]
+  },
+  
+  "keepClothesOn":
+  {
+    reveal: standaRevealEmojis("🥵", "🌡️", "🌶️", "♨️", "🔥",),
+
+    question: "Heat stroke.",
+
+    choices:
+    [
+      {
+        text: "I deserved it",
+        next: "deservedIt",
+      },
+      {
+        text: "I'm nothing in the face of fate",
+        next: "imNothing",
+      },
+    ]
+  },
+  
+  "deservedIt":
+  {
+    reveal: standaRevealEmojis("", "", "🙂‍↕️", "", "",),
+
+    gg: (tiles) => win(tiles, "Teach someone else a valuable lesson?", "you sure did")
+  },
+  
+  "imNothing":
+  {
+    reveal: standaRevealEmojis("", "", "🎭", "", "",),
+    gg: (tiles) => win(tiles, "Hope to end up at the top next time?", "the wheel of fate keeps turning!")
+  },
+  
+  "getNaked":
+  {
+    reveal: standaRevealEmojis("🧦", "👚", "🏃‍➡️", "👟", "👟",),
+
+    question: "You throw every article of clothing off your body and run around. Ahhhh... you needed this. There's a hut on the horizon.",
+
+    choices:
+    [
+      {
+        text: "Go to the hut",
+        next: "goHut",
+      },
+      {
+        text: "Stay outside",
+        next: "stayOutside",
+      },
+    ]
+  },
+  
+  "stayOutside":
+  {
+    reveal: standaRevealEmojis("🌲", "❄️", "🫁", "❄️", "🌲",),
+
+    question: "The air outside is so refreshing, you immediately feel energized. Suddenly you start feeling warmer.",
+
+    choices:
+    [
+      {
+        text: "Dress down",
+        msg: "The air feels pleasantly warm and the sun gently kisses your skin. The weather sure loves to shift around here.",
+        next: "dressDown",
+
+      },
+      {
+        text: "Keep your clothes on",
+        next: "keepClothesOn",
+      },
+    ]
+  },
+  
+  "dressDown":
+  {
+    reveal: standaRevealEmojis("🌊", "🌊", "🏝️", "🌊", "🌊",),
+
+    gg: (tiles) => win(tiles, "Invite someone to your island?", "here comes the sun!")
+  },
+
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", "",),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+
+}
+
 // GAME LOGIC STARTS HERE
 initGame()
 
@@ -2326,48 +2494,55 @@ function initGame()
   showAlert("BRONGLE TIME :]");
   currentMode = GAME_MODES.YES_NO;
   // determine mode based on day number (dayOffset)
-  if (dayOffset === 274) 
-  { 
-    storySequence = twosevenfourSequence; 
-  } 
-  else if (dayOffset === 275) 
-  { 
-    storySequence = ogreStorySequence;
-  } 
-  else if (dayOffset === 276) 
-  { 
-    storySequence = eleDanceSequence;
-  }
-  else if (dayOffset === 277) 
-  { 
-    storySequence = cutoutTigerSeq;
-  }
-  else if (dayOffset === 278)
+
+
+  switch (dayOffset) 
   {
-    storySequence = guessGameSeq;
-  }
-  else if (dayOffset === 279)
-  {
-    storySequence = pirateSeq;
-  }
-  else if (dayOffset === 280)
-  {
-    storySequence = swampMonsterSeq;
-  }
-  else if (dayOffset === 281)
-  {
-    storySequence = dreamSeq;
-  }
-  else if(dayOffset === 282)
-  {
-    currentMode = GAME_MODES.PROP_HUNT;
-    storySequence = propHuntSeq;
-  }
-  else 
-  {
-    // standard wordle, failsafe although we never want this to trigger ofc
-    showAlert("DEFAULT DAY"),
-    storySequence = twosevenfourSequence;
+    case 274:
+      storySequence = twosevenfourSequence;
+      break;
+
+    case 275:
+      storySequence = ogreStorySequence;
+      break;
+
+    case 276:
+      storySequence = eleDanceSequence;
+      break;
+
+    case 277:
+      storySequence = cutoutTigerSeq;
+      break;
+
+    case 278:
+      storySequence = guessGameSeq;
+      break;
+
+    case 279:
+      storySequence = pirateSeq;
+      break;
+
+    case 280:
+      storySequence = swampMonsterSeq;
+      break;
+
+    case 281:
+      storySequence = dreamSeq;
+      break;
+
+    case 282:
+      currentMode = GAME_MODES.PROP_HUNT;
+      storySequence = propHuntSeq;
+      break;
+
+    case 283:
+      storySequence = surviveNightSeq;
+      break;
+
+    default:
+      showAlert("DEFAULT DAY");
+      storySequence = twosevenfourSequence;
+      break;
   }
 
   startInteraction();
@@ -2626,7 +2801,6 @@ function setupNextScene(nextId, activeTiles)
   if(nextScene.gg)
     {
       nextScene.gg(activeTiles)
-      showAlert("win condition triggered!")
     } 
   // error handling?
   // else 
@@ -2718,7 +2892,7 @@ function setupChoices(currentScene, activeTiles, buttonContainer)
       // this wraps the function call so you don't have to keep track of args in multiple places
       const finishWrap = () => finishTurn(currentScene, choice, activeTiles);
 
-      if (correctProp)
+      if (currentMode === GAME_MODES.PROP_HUNT && correctProp)
         playTrack("assets/sfx/meow.mp3", {loop: false})
 
       // NEW IF CASE (main one)
@@ -2804,17 +2978,10 @@ function submitGuess()
 
   stopInteraction();
 
-  //if (currentMode === GAME_MODES.YES_NO) 
- // {
-  handleSeqTurn(activeTiles);
- // }
-  //else 
- // {
-    // standard wordle logic
- //   activeTiles.forEach((...params) => flipTile(...params, guess));
- // }
-
   handleSpecialGuess(guess);
+
+  handleSeqTurn(activeTiles);
+
 }
 
 
@@ -2827,6 +2994,13 @@ function handleSpecialGuess(guess)
   // all currently defined body visual modes
   const validModes = ["trans", "nonbn", "puppy"]; 
   
+  if (mode === "datum")
+  {
+    hideUI();
+  }
+  // datumButton.onClick
+  // startNewGame(newSequence)
+
   if (validModes.includes(mode)) {
     document.body.dataset.activeBg = mode;
   }
@@ -2938,6 +3112,21 @@ function danceTiles(tiles) {
       )
     }, (index * DANCE_ANIMATION_DURATION) / 5)
   })
+}
+
+function hideUI()
+{
+  modal.classList.add("hidden");
+
+    // 1. Grab the keyboard and grid
+  const keyboard = document.querySelector(".keyboard");
+  const grid = document.querySelector(".guess-grid");
+  //const title = document.querySelector(".title");
+
+    // 2. Add the hidden class to all of them
+  keyboard?.classList.add("hidden");
+  grid?.classList.add("hidden");
+  // title?.classList.add("hidden");
 }
 
 

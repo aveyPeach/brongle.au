@@ -8,6 +8,10 @@
   --bg-angle: 0deg; 
 }
 
+.hidden {
+  display: none !important;
+}
+
 body {
   background-color: #121213; 
 
