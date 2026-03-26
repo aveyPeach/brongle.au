@@ -421,10 +421,16 @@ body[data-active-bg="puppy"] {
   text-transform: none;
 }
 
+#datum-modal
+{
+  border: 2px solid #f54cbd;
+}
+
 /* make keys feel responsive (for mobile specifically?)*/
 .modal-buttons button:active {
   opacity: 0.7; 
 }
+
 
 /*targets keys that are BOTH wrong and disabled*/
 button.key.wrong-guess:disabled {

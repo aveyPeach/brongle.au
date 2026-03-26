@@ -10,6 +10,8 @@
   <link rel="icon" type="image/png" href="assets/pics/favicon.png">
 
   <link rel="stylesheet" href="styles.css">
+  
+  <script src="stories.js"></script>
   <script src="words.js" defer></script>
   <script src="script.js" defer></script>
 </head>
@@ -85,13 +87,15 @@
     </div>
   </div>
 
-  <div id="datum-archive-modal" class="modal-content hidden" >
-    <h2>Brongle Archive</h2>
-    <div class="archive-grid">
-      </div>
-    <button id="close-archive-btn">Return to Game</button>
-  </div>
+<div id="datum-modal" class="modal-overlay hidden">
+    <div id="datum-modal" class="modal-content">
+        <h2>Brongle Archive</h2>
+        <div class="archive-grid">
+            </div>
+        <button id="close-archive-btn">Return to Game</button>
+    </div>
 
+</div>
   <div id="secret-row" class="hidden">
     <div class="tile"></div>
     <div class="tile"></div>
