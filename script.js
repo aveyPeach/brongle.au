@@ -31,7 +31,7 @@ const guessGrid = document.querySelector("[data-guess-grid]");
 // original date ref: const offsetFromDate = new Date(2025, 5, 16, 1).getTime();
 // defined like this because that's when nova first started posting her results
 // and the game became playable in nonaustralian contexts
-const offsetFromDate = new Date(2025, 5, 15, 1).getTime();
+const offsetFromDate = new Date(2025, 5, 16, 1).getTime();
 const msOffset = Date.now() - offsetFromDate;
 const dayOffset = Math.floor(msOffset / 1000 / 60 / 60 / 24);
 const targetWord = targetWords[dayOffset]
@@ -82,8 +82,8 @@ initGame()
 function initGame() 
 {
   currentMode = GAME_MODES.BASIC_BRONGLE;
-  // if no game defined for that day default to 274 = horse story (original nonaustralian game) 
-  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[274]; 
+  // if no game defined for that day default to 283 = survivnight (once fixed it'll be 274, original nonaustralian game) 
+  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[283]; 
 
   // 282 = prop hunt day :3
   if (dayOffset === 282) 
