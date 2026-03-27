@@ -82,6 +82,9 @@ body[data-active-bg="puppy"] {
   display: flex;
   justify-content: center;
   width: 100%;
+  
+  /* 🪄 THE ANCHOR: This traps the absolute secret row inside this box! */
+  position: relative; 
 }
 
 .key {
@@ -461,38 +464,38 @@ button.key.wrong-guess:disabled {
 
 
 .tile[data-state="white"] {
-  background-color: white;
-  border-color: white;
+  background-color: white !important;
+  border-color: #3a3a3c !important;
   color: white;
 }
 
 .tile[data-state="purple"] {
-  background-color: #a020f0; 
-  border-color: #a020f0;
+  background-color: #a020f0 !important; 
+  border-color: #3a3a3c !important;
   color: #a020f0; /* hides text if any */
 }
 
 .tile[data-state="red"] {
-  background-color: #f02020; 
-  border-color: #f02020;
+  background-color: #f02020 !important;
+  border-color: #3a3a3c !important;
   color: #f02020; /* hides text if any */
 }
 
 .tile[data-state="green"] {
-  background-color: #62f020; 
-  border-color: #62f020;
+  background-color: #62f020 !important; 
+  border-color: #3a3a3c !important;
   color: #62f020; /* hides text if any */
 }
 
 .tile[data-state="yellow"] {
-  background-color: #f0e220; 
-  border-color: #f0e220;
+  background-color: #f0e220 !important; 
+  border-color: #3a3a3c !important;
   color: #f0e220; /* hides text if any */
 }
 
 .tile[data-state="blue"] {
-  background-color: #20b5f0; 
-  border-color: #20b5f0;
+  background-color: #20b5f0 !important; 
+  border-color: #3a3a3c !important;
   color: #20b5f0; /* hides text if any */
 }
 
@@ -534,6 +537,27 @@ button.key.wrong-guess:disabled {
 .nuke-shake {
   /* 0.1s duration looping infinitely makes it extremely aggressive */
   animation: violent-shake 0.1s infinite; 
+}
+
+.flash-image {
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  max-width: 80vw; 
+  max-height: 80vh; 
+  
+  z-index: 2000;    
+  pointer-events: none; 
+  
+  animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in 
+{
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 @media (max-width: 600px) {
@@ -586,6 +610,35 @@ button.key.wrong-guess:disabled {
   .dot-after {
     position: relative;
     display: inline-block;
+  }
+
+  /* TODO: fix secret row on mobile*/
+#secret-row {
+    display: flex;
+    gap: 1.5vw; /* Match the gap of your mobile guess-grid! */
+    position: absolute;
+    
+    /* Center it perfectly inside the container */
+    top: 39%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    
+    z-index: 100;
+  }
+
+  #secret-row .tile {
+    /* 🪄 Match the exact width/height of your mobile grid tiles! */
+    width: 14vw; 
+    height: 14vw; 
+    
+    border: 2px solid #3a3a3c;
+    background-color: black;
+    color: white; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0; 
   }
 
   .dot-after::after {

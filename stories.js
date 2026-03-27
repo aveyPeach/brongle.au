@@ -23,7 +23,8 @@ function revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5)
  * @returns {Function} Action function ready to use in sequence definitions
  */
 // short for standaloneRevealEmojis
-function standaRevealEmojis(emoji1, emoji2, emoji3, emoji4, emoji5) {
+function standaRevealEmojis(emoji1, emoji2, emoji3, emoji4, emoji5) 
+{
   return (tiles) => revealEmojis(tiles, emoji1, emoji2, emoji3, emoji4, emoji5);
 }
 
@@ -46,375 +47,370 @@ function revealCustomTiles(tiles, contents, states)
 }
 
 
-// TODO: fix bug which breaks game if u type too fast after answering a question sometimes
 
-// TODO: clean up 274 sequence and ogrestorysequence
-const twoSevenFourAKAhorse = 
-[
-  {
-    // Guess 1
-    question: "Is your favourite colour white?",
-    btnYes: "YES", btnNo: "NO",
-    msgYes: "yay !", msgNo: "too bad",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["white", "white", "white", "white", "white"]),
-    actionNo: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["white", "white", "white", "white", "white"])
-  },
-  {
-    // Guess 2
-    question: "Do you like my horse?",
-    btnYes: "yes", btnNo: "what horse?",
-    msgYes: "me too...", msgNo: "oh you know",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "white", "white", "white", "emoji"]),
-    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "white", "white", "white", "emoji"])
-  },
-  {
-    // Guess 3
-    question: "Is the horse fast?",
-    btnYes: "Yes", btnNo: "No",
-    msgYes: "ZOOM !", msgNo: "she's fast enough!!",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "white", "white", "emoji", "purple"]),
-    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "white", "white", "emoji", "purple"])
-  },
-  {
-    // Guess 4 (BRANCH)
-    question: "Does the horse want to win?",
-    btnYes: "Yes", btnNo: "No",
-    msgYes: "RAHH !", msgNo: "that's fair",
-    actionYes: (tiles) => {
-      horseWantsWin = true;
-      revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "white", "emoji", "purple", "purple"]);
-    },
-    actionNo:  (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "white", "white", "emoji", "purple"])
-  },
-  {
-    // Guess 5 (BRANCH)
-    get question() 
-    { 
-      return horseWantsWin 
-        ? "Is the horse hungry?" 
-        : "Do you want the horse to win?"; 
-    },
-
-    get msgYes() 
-    {
-        return horseWantsWin 
-          ? "oh bet i've gotchu" 
-          : "she appreciates your support and is ready to lock in!!";
-    },
-    get msgNo() 
-    {
-        return horseWantsWin 
-          ? "a true winner keeps her priorities straight" 
-          : "see you tomorrow :3 (?)";
-    },
-
-    get btnYes() { return horseWantsWin ? "YES" : "YES"; },
-    get btnNo() { return horseWantsWin ? "NO" : "NO"; },
-
-    actionYes: (tiles) => 
-    {
-      if (horseWantsWin) 
-      {
-        horseWasHungry = true; 
-        revealCustomTiles(tiles, ["🏁", "🐎", "", "", "🍎"], ["emoji", "emoji", "purple", "purple", "emoji"]);
-      }
-      else
-      {
-        youWantWin = true;
-        revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "white", "emoji", "purple", "purple"]);
-      }
-    },
-
-    actionNo: (tiles) => 
-    {
-      if (horseWantsWin) 
-      {
-        horseWasHungry = false; 
-        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
-      }
-      else
-      {
-        revealCustomTiles(tiles, ["❌", "❌", "❌", "❌", "❌"], ["emoji", "emoji","emoji","emoji","emoji"]);
-        setTimeout(() => 
-        {
-          danceTiles(tiles);
-          
-            showAlert("the horse and you alike are simply chilling", 5000);
-
-          // wait 2 seconds 4 dance to play out 
-          // before the share modal covers the screen
-          setTimeout(() => {
-              stopInteraction(); // Kill inputs
-              showShareModal("THE HORSE AND YOU ALIKE ARE SIMPLY CHILLING");
-          }, 2000); 
-        }, 1500);
-      }
-    }
-  },
-  {
-
-    // Guess 6 (BRANCH)
-    get question() { 
-      return horseWasHungry 
-        ? "awagwagawa?" 
-        : "Does the horse deserve to win?"; 
-    },
-    get btnYes() { return horseWasHungry ? "go my noble steed" : "Absolutely"; },
-    get btnNo() { return horseWasHungry ? "go my noble steed" : "not yet"; },
-    
-    get msgYes() 
-    {
-        if (youWantWin)
-          return "no !!!! she hasn't put in the work yet! !!"
-        else if (horseWasHungry)
-          return "she trots gallantly"
-        else
-        return horseWantsWin 
-          ? "oh bet i've gotchu" 
-          : "she appreciates your support and is ready to lock in!!";
-    },
-    get msgNo() 
-    {
-        if (youWantWin)
-          return "that's right, she still needs to reach the finish line"
-
-        if (horseWasHungry)
-          return "she trots gallantly"
-        else
-         return "she admires the goalpost";
-    },
-
-    actionYes: (tiles) => {
-      if (horseWasHungry) {
-        revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]);
-      } else {
-        // HORSE DIDN'T WANT WIN BUT YOU DO, NOW YOU SAY "ABSOLUTELY" TO "DOES THE HORSE DESERVE TO WIN"
-        if (youWantWin)
-        {
-          revealCustomTiles(tiles, ["🏁", "", "🥫", "", ""], ["emoji", "white","emoji","purple","purple"]);
-          setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-           showAlert("behold the tragedy", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("glue time");
-            }, 2000); 
-          }, 1500);
-        }
-        else 
-        {
-        revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]);
-          setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-           showAlert("CHAMPION!!", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("win");
-            }, 2000); 
-          }, 1500);
-        }
-      }
-    },
-    actionNo: (tiles) => {
-      if (youWantWin)
-        revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
-
-      if (horseWasHungry)
-             revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]);
-      else
-        {
-         horseDeservesWin = false;
-         revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple","purple","purple",]);
-        }
-    }
-  },
-  {
-    // Guess 7 
-    get question() {
-      if (horseWasHungry) return "awigugi??";
-      else return "The crowd is cheering! One last trot?";
-    },
-    get btnYes() 
-    {
-       return horseWasHungry ? "go my noble steed" : "lets go"; 
-    },
-    get btnNo() 
-    {
-       return horseWasHungry ? "go my noble steed" : "sleepy horsie."; 
-    },
-
-    get msgYes() 
-    {
-        if (horseWasHungry)
-          return "she trots gallantly"
-
-        return "lets go!"
-    },
-    get msgNo() 
-    {
-        if (horseWasHungry)
-          return "she trots gallantly"
-        
-        return "mimimimi";
-    },
-
-    actionYes: (tiles) => {
-        if (horseWasHungry)
-          revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]);
-        else
-        {
-          revealCustomTiles(tiles, ["🏆", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]);
-          
-           setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-           showAlert("CHAMPION!!", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("win");
-            }, 2000); 
-          }, 1500);
-        }
-    },
-    actionNo: (tiles) => {
-      if (horseWasHungry)
-        revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]);
-      else
-      {
-        revealCustomTiles(tiles, ["💤", "🐎", "💤", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]);
-
-        
-          setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-           showAlert("eepy sneep", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("sleepy horsie");
-            }, 2000); 
-          }, 1500);
-      }
-    },
-  },
-  {
-    // Guess 8 
-    get question() {
-      return "could the apple be poisoned??";
-    },
-    get btnYes() 
-    {
-       return "probably ya"
-    },
-    get btnNo() 
-    {
-       return "don't care, horsie hungry"
-    },
-
-        get msgYes() 
-    {
-      return "*sound of apple being crushed in a mare's maw*"
-    },
-    get msgNo() 
-    {
-      return "*sound of apple being crushed in a mare's maw*"
-    },
-
-    actionYes: (tiles) => {
-      revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "red", "red", "red", "emoji"]);
-    },
-    actionNo: (tiles) => {
-      revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "red", "red", "red", "emoji"]);
-    }
-  },
+// REMAKE (old version is in graveyard)
+const twoSevenFourAKAhorse =
 {
-    // Guess 9 unlocks secret row
-    get question() { return "are you stupid?"; },
-    btnYes: "i don't kno", btnNo: "i don't knowe",
-    
-    get msgYes() 
-    {
-      return "please take one last good look at horsie"
-    },
-    get msgNo() 
-    {
-      return "please take one last good look at horsie"
-    },
+  hasSecretScene: true,
 
-    // these actions ONLY flip the 9th row tiles. 
-    // secret row is revealed by submitGuess.
-    actionYes: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); },
-    actionNo: (tiles) => { revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]); }
-  },
+  secretNode: "heavenOrHell",
+
+  "start":
   {
-    // Guess 10 (secret!)
-    get question() { return "Where shall Mrs. Horsie go?"; },
-    btnYes: "SEE YOU IN HELL.", btnNo: "I WANT TO SEE YOU IN HEAVEN.",
+    question: "Is your favourite colour white?",
 
-    get msgYes() 
-    {
-      return "what the fuck dude"
-    },
-    get msgNo() 
-    {
-      return "eaven..."
-    },
+    choices:
+    [
+      {
+        text: "YES",
+        msg: "yay !",
+        next: "areYouStupid",
+      },
+      {
+        text: "NO",
+        msg: "too bad",
+        next: "white",
+      },
+    ]
+  },
 
-    actionYes: (tiles) => { 
-      revealCustomTiles(tiles, ["🏁", "", "", "", "💥"], ["emoji", "red", "red", "red", "emoji"]);
+  "white":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["white", "white", "white", "white", "white"]),
+
+    question: "Do you like my horse?",
+
+    choices:
+    [
+      {
+        text: "yes",
+        msg: "me too...",
+        next: "horseFast",
+      },
+      {
+        text: "what horse?",
+        msg: "oh you know",
+        next: "horseFast",
+      },
+    ]
+  },
+
+  "horseFast":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "white", "white", "white", "emoji"]),
+
+    question: "Is the horse fast?",
+
+    choices:
+    [
+      {
+        text: "Yes",
+        msg: "ZOOM",
+        next: "horseWantWin",
+      },
+      {
+        text: "No",
+        msg: "she's fast enough!!",
+        next: "horseWantWin",
+      },
+    ]
+  },
+
+  "horseWantWin":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "white", "white", "emoji", "purple"]),
+
+    question: "Does the horse want to win?",
+
+    choices:
+    [
+      {
+        text: "Yes",
+        msg: "RAHH",
+        next: "isHorseHungry",
+      },
+      {
+        text: "No",
+        msg: "that's fair",
+        next: "doYouWantHorseWin",
+      },
+    ]
+  },
+
+  "isHorseHungry":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "white", "emoji", "purple", "purple"]),
+
+    question: "Is the horse hungry?",
+
+    choices:
+    [
+      {
+        text: "YES",
+        msg: "oh bet i've gotchu",
+        next: "horseGoApple1",
+      },
+      {
+        text: "NO",
+        msg: "a true winner keeps her priorities straight",
+        next: "fastestFinishLine",
+      },
+    ]
+  },
+
+  "doYouWantHorseWin":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", ""], ["emoji", "white", "white", "emoji", "purple"]),
+
+    question: "Do you want the horse to win?",
+
+    choices:
+    [
+      {
+        text: "YES",
+        msg: "she appreciates your support and is ready to lock in!!",
+        next: "backOnTrack",
+      },
+      {
+        text: "NO",
+        msg: "see you tomorrow :3 (?)",
+        next: "noOneWantsWin",
+      },
+    ]
+  },
+
+  "backOnTrack":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "🐎", "", ""], ["emoji", "white", "emoji", "purple", "purple"]),
+
+    question: "Does the horse deserve to win?",
+
+    choices:
+    [
+      {
+        text: "Absolutely",
+        msg: "no !!!! she hasn't put in the work yet! !!",
+        next: "smthHappensToHorse",
+      },
+      {
+        text: "not yet",
+        msg: "that's right, she still needs to reach the finish line",
+        next: "atFinishLine",
+      },
+    ]
+  },
+
+  "noOneWantsWin":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["❌", "❌", "❌", "❌", "❌"], ["emoji", "emoji","emoji","emoji","emoji"]),
+
+    gg: (tiles) => win(tiles, "THE HORSE AND YOU ALIKE ARE SIMPLY CHILLING", "the horse and you alike are simply chilling", )
+  },
+
+  "fastestFinishLine":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]),
+
+    question: "Does the horse deserve to win?",
+
+    choices:
+    [
+      {
+        text: "Absolutely",
+        msg: "oh bet i've gotchu",
+        next: "fastestWin",
+      },
+      {
+        text: "not yet",
+        msg: "she admires the goalpost",
+        next: "atFinishLine",
+      },
+    ]
+  },
+
+  "fastestWin":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["", "", "", "", ""], ["purple","purple","purple", "purple", "purple"]),
+
+    gg: (tiles) => win(tiles, "The Horse Won! Share your glory?", "CHAMPION!!"),
+  },
+
+  "atFinishLine":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]),
+
+    question: "The crowd is cheering! One last trot?",
+
+    choices:
+    [
+      {
+        text: "let's go",
+        msg: "lets go!",
+        next: "oneLastTrotWin",
+      },
+      {
+        text: "sleepy horsie.",
+        msg: "mimimimi",
+        next: "sleepyHorsie",
+      },
+    ]
+  },
+
+
+  "oneLastTrotWin":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏆", "🐎", "", "", ""], ["emoji", "emoji", "purple", "purple", "purple"]),
+
+    gg: (tiles) => win(tiles, "The Horse Won! Share your glory?", "CHAMPION!!"),
+  },
+
+
+  "sleepyHorsie":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["💤", "🐎", "💤", "", ""], ["emoji", "emoji", "emoji", "purple", "purple"]),
+
+    gg: (tiles) => win(tiles, "The horse sleeps soundly until tomorrow.\nLet the people know?", "eepy sneep"),
+  },
+
+  
+  "smthHappensToHorse":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "🥫", "", ""], ["emoji", "white","emoji","purple","purple"]),
+
+    gg: (tiles) => win(tiles, "Something happened to the horse...\nShare her legacy?", "behold the tragedy")
+  },
+
+  "horseGoApple1":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "🐎", "", "", "🍎"], ["emoji", "emoji", "purple", "purple", "emoji"]),
+
+    question: "awagwagawa?",
+
+    choices:
+    [
+      {
+        text: "go my noble steed",
+        msg: "she trots gallantly",
+        next: "horseGoApple2",
+      },
+      {
+        text: "go my noble steed",
+        msg: "she trots gallantly",
+        next: "horseGoApple2",
+      },
+    ]
+  },
+
+  "horseGoApple2":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "🐎", "", "🍎"], ["emoji", "red", "emoji", "purple", "emoji"]),
+
+    question: "awigugi??",
+
+    choices:
+    [
+      {
+        text: "go my noble steed",
+        msg: "she trots gallantly",
+        next: "applePoison",
+      },
+      {
+        text: "go my noble steed",
+        msg: "she trots gallantly",
+        next: "applePoison",
+      },
+    ]
+  },
+
+  "applePoison":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "🐎", "🍎"], ["emoji", "red", "red", "emoji", "emoji"]),
+
+    question: "could the apple be poisoned??",
+
+    choices:
+    [
+      {
+        text: "probably ya",
+        msg: "*sound of apple being crushed in a mare's maw*",
+        next: "areYouStupid",
+      },
+      {
+        text: "don't care, horsie hungry",
+        msg: "*sound of apple being crushed in a mare's maw*",
+        next: "areYouStupid",
+      },
+    ]
+  },
+
+
+
+  "areYouStupid":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐎"], ["emoji", "red", "red", "red", "emoji"]),
+
+    question: "are you stupid?",
+
+    choices:
+    [
+      {
+        text: "i don't kno",
+        msg: "please take one last good look at horsie",
+        next: "heavenOrHell",
+      },
+      {
+        text: "i don't knowe",
+        msg: "please take one last good look at horsie",
+        next: "heavenOrHell",
+      },
+    ]
+  },
+
+  "heavenOrHell":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "🐴"], ["emoji", "red", "red", "red", "emoji"]),
+
+    question: "Where shall Mrs. Horsie go?",
+
+    choices:
+    [
+      {
+        text: "SEE YOU IN HELL.",
+        msg: "what the fuck dude",
+        next: "hell",
+      },
+      {
+        text: "I DO WANT TO SEE YOU IN HEAVEN.",
+        msg: "eaven...",
+        next: "heaven",
+      },
+    ]
+  },
+
+  "heaven":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["☁️", "☁️", "🐎", "☁️", "☁️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
+
+    gg: (tiles) => win(tiles, "Blessed be your mared friend.\nShare if you cried?", "THE HORSE ASCENDS"),
+  },
+
+  "hell":
+  {
+    reveal: (tiles) => revealCustomTiles(tiles, ["🏁", "", "", "", "💥"], ["emoji", "red", "red", "red", "emoji"]),
+
+    gg: (tiles) =>
+    {
       document.body.classList.add("shake");
 
-          setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-          document.body.classList.remove("shake");
+      setTimeout(() => 
+      {       
+        document.body.classList.remove("shake");
 
-           showAlert("THE HORSE DESCENDS", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("hell");
-            }, 2000); 
-          }, 1500);
-    },
-    actionNo: (tiles) => { // 'tiles' is now the secret row!
-      revealCustomTiles(tiles, ["☁️", "☁️", "🐎", "☁️", "☁️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-          setTimeout(() => 
-          {
-            danceTiles(tiles);
-            
-           showAlert("THE HORSE ASCENDS", 5000);
-
-            // wait 2 seconds 4 dance to play out 
-            // before the share modal covers the screen
-            setTimeout(() => {
-                stopInteraction(); // Kill inputs
-                showShareModal("eaven");
-            }, 2000); 
-          }, 1500);
+        endGame("It's hot in here...\nBUT YOU KNOW WHAT'S EVEN HOTTER THAT'S RIGHT SHARING YOUR SCORE!", "damn")
+      }, 2500);
     }
-  }
-];
+  },
+}
 
 const ogreEncounter = 
 [
@@ -2623,7 +2619,6 @@ const exploreBeach =
     ]
   },
 
-  
   "jellyfish":
   {
     reveal: standaRevealEmojis("", "⛱️", "🪼", "💬", "",),
@@ -2695,4 +2690,242 @@ const exploreBeach =
     gg: () => endGame("Be insensitive somewhere else?", "I don't see taxonomic class")
   },
 
+}
+
+let helpedSeal = false;
+
+const oceanSunlightZone =
+{
+  "start":
+  {
+    question: "Welcome to the sunlight zone!",
+    next: "setTheScene",
+  },
+
+  "setTheScene":
+  {
+    reveal: standaRevealEmojis("🐋", "🦈", "🐟", "🦭", "💦"),
+
+    question: "You notice a troubled whale swimming past you, seemingly trying to escape a shark attack. From the corner of your eye you spot a seal in a precarious situation.",
+
+    choices:
+    [
+      {
+        text: "Stop the shark",
+        next: "stopShark",
+      },
+      {
+        text: "Help the seal",
+        next: "helpSeal",
+      },
+    ]
+  },
+
+  "stopShark":
+  {
+    reveal: standaRevealEmojis("🐋", "🦈", "🌊", "🐟", "💨"),
+
+    question: "You give chase after the shark.",
+
+    next: "whyFollowShark",
+
+    choices: 
+    [
+      {
+        text: "next",
+      },
+    ]
+  },
+
+  
+  "whyFollowShark":
+  {
+    reveal: standaRevealEmojis("🦈", "💬", "🌊", "🐟", "💬"),
+
+    question: "Why are you following me",
+
+    choices:
+    [
+      {
+        text: "Can you chill on that whale?",
+        msg: "-Pffft. Of course i can, who do you take me for?. (The shark chills atop the whale, so hard in fact that he promptly dozes off.)",
+        msgBtn: "Goodnight little shark.",
+        next: "chillOnWhale",
+      },
+      {
+        text: "Can you eat me instead?",
+        msg: "What? I wasn't planning on eating her.",
+        msgBtn: "Huh?",
+        next: "huh",
+      },
+    ]
+  },
+
+  
+  "huh":
+  {
+    reveal: standaRevealEmojis("🦈", "💬", "🌊", "🐟", "💬"),
+
+    question: "You see, I've always really wanted to see a whale shark with my own 2 eyes. But I can't seem to come across one. So I thought-",
+
+    choices:
+    [
+      {
+        text: "That's not how that works",
+        next: "notHowItWorks",
+      },
+      {
+        text: "I'm sure you did",
+        msg: `Through uttering these words you channel the polyp's energy, miraculously transforming you into them. 
+              The shark gives chase nonetheless, unperturbed by your gelationous form and shitty attitude.`,
+        msgBtn: "If only I were a jellyfish",
+        next: "polypEnding",
+      },
+    ]
+  },
+
+  
+  "polypEnding":
+  {
+    reveal: standaRevealEmojis("🦈", "💨", "🌊", "🪼", "💬"),
+
+    gg: (tiles) => endGame("Sass someone else?", "rude polyps finish last")
+  },
+
+  
+  "notHowItWorks":
+  {
+    reveal: standaRevealEmojis("🦈", "⁉️", "🌊", "🐟", "💬"),
+
+    question: "Huh? What do you mean that's not how it works??",
+
+    choices:
+    [
+      {
+        text: "Don't worry, I've got just the thing for you",
+        // getter needed so that it's evaluated at run time rather than compiletime
+        get msg()
+        {
+          if (helpedSeal)
+            return "You transform into a whale shark, which happens off screen because there's no whale shark emoji";
+          else
+            return `You turn into an anchor and sink to the bottom of the ocean. 
+                    No one would hear you scream if you could, but you can't because 
+                    you're an anchor and you're at the bottom of the ocean...`; 
+        },
+
+        get msgBtn()
+        {
+          return helpedSeal ? "It's ok Brongle, I understand" : "I say nothing because I'm an anchor at the bottom of the ocean"
+        },
+
+        get next() 
+        { 
+          return helpedSeal ? "whaleShark" : "anchor";
+        },
+      },
+    ]
+  },
+
+  
+  "whaleShark":
+  {
+    reveal: standaRevealEmojis("", "🐋", "➕", "🦈", ""),
+
+    gg: (tiles) =>
+    {
+      showAlert("you look smth like this rn", 4000)
+      displayImg("assets/pics/whaleShonk.jpg", 4000)
+
+      win(tiles, "Give someone else a biology lesson?")
+    }
+  },
+
+  
+  "anchor":
+  {
+    reveal: standaRevealEmojis("", "", "⚓", "", ""),
+
+    gg: (tiles) => endGame("Sink your friends and loved ones?", "I have no mouth and I must anchor")
+  },
+
+  
+  "chillOnWhale":
+  {
+    reveal: standaRevealEmojis("", "🐋", "🦈", "💤", ""),
+
+    gg: (tiles) => win(tiles, "Bring in more chill aquafauna?", "snork mimimimi"),
+  },
+
+  
+  "helpSeal":
+  {
+    reveal: standaRevealEmojis("", "", "🦭", "💬", ""),
+
+    question: "I've been having some trouble breathing lately, do you mind checking it out?",
+
+    choices:
+    [
+      {
+        text: "I'll do it",
+        msg: "Upon closer inspection you notice something wiggling in her nose",
+        msgBtn: "Pull it out!",
+        next: "pull",
+      },
+      {
+        text: "I'm good",
+        next: "imGood",
+      },
+    ]
+  },
+
+  
+  "imGood":
+  {
+    reveal: standaRevealEmojis("", "", "🦭", "😔", ""),
+
+    question: "Oh... okay.",
+
+    choices:
+    [
+      {
+        text: "Go help the troubled whale instead",
+        next: "stopShark",
+      },
+    ]
+  },
+
+  "pull":
+  {
+    reveal: standaRevealEmojis("", "🐍", "🦭", "", ""),
+
+    question: "It was an eel!!",
+
+    choices:
+    [
+      {
+        text: "next",
+        next: "sealThanks",
+      },
+    ]
+  },
+
+  "sealThanks":
+  {
+    reveal: standaRevealEmojis("🐍", "💨", "🦭", "💬", ""),
+
+    question: "Thank you so much for your help. Judging by your movements you seem new to this fish thing. What happened to you?",
+
+    choices:
+    [
+      {
+        text: "tell your story",
+        msg: "Ahhh... I see. Well you're in luck because I'm a monk seal!!! Lemme just... OOoOOoOOMMMMmmmm~ There! I've tweaked your curse, now you should be able to turn into any marine animal you'd like.",
+        msgBtn: "Help the whale",
+        next: "stopShark",
+
+        action: () => helpedSeal = true
+      },
+    ]
+  },
 }

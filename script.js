@@ -19,6 +19,7 @@ const WORD_LENGTH = 5;
 const FLIP_ANIMATION_DURATION = 500;
 const DANCE_ANIMATION_DURATION = 500;
 
+const MAX_GUESSES = 9;
 let guessCount = 0; 
 
 let wrongGuesses = 0;
@@ -61,6 +62,7 @@ const STORY_REGISTRY =
   282: propHunt,
   283: surviveNight,
   284: exploreBeach,
+  285: oceanSunlightZone,
 };
 
 /**
@@ -102,67 +104,6 @@ function resetGameTo(dayNumber)
     showAlert("couldn't load story, sorry </3");
 }
 
-/*
-function initGame() 
-{
-  showAlert("BRONGLE TIME :]");
-  currentMode = GAME_MODES.BASIC_BRONGLE;
-  // determine mode based on day number (dayOffset)
-
-
-  switch (dayOffset) 
-  {
-    case 274:
-      storySequence = twosevenfourSequence;
-      break;
-
-    case 275:
-      storySequence = ogreStorySequence;
-      break;
-
-    case 276:
-      storySequence = eleDanceSequence;
-      break;
-
-    case 277:
-      storySequence = cutoutTigerSeq;
-      break;
-
-    case 278:
-      storySequence = guessGameSeq;
-      break;
-
-    case 279:
-      storySequence = pirateSeq;
-      break;
-
-    case 280:
-      storySequence = swampMonsterSeq;
-      break;
-
-    case 281:
-      storySequence = dreamSeq;
-      break;
-
-    case 282:
-      currentMode = GAME_MODES.PROP_HUNT;
-      storySequence = propHuntSeq;
-      break;
-
-    case 283:
-      storySequence = surviveNightSeq;
-      break;
-
-    default:
-      showAlert("DEFAULT DAY");
-      storySequence = twosevenfourSequence;
-      break;
-  }
-
-  startInteraction();
-}
-*/
-
 function startPreviousSequence(sequence)
 {
   showAlert("aaaa");
@@ -201,6 +142,8 @@ function getPropHuntSharePrompt()
  */
 function win(tiles, shareMsg, alertMsg = "")
 {
+  stopInteraction();
+
   gameOver = true;
 
   setTimeout(() => 
@@ -222,6 +165,8 @@ function win(tiles, shareMsg, alertMsg = "")
  */
 function endGame(shareMsg, alertMsg = "")
 {
+  stopInteraction();
+
   gameOver = true;
 
   setTimeout(() => 
@@ -383,6 +328,30 @@ function getValidGuess(activeTiles)
 }
 
 
+function gotoSecretScene() 
+{
+  // check if today's story allows secret scene
+  if (storySequence.hasSecretScene) 
+  {
+    const secretRow = document.getElementById("secret-row");
+
+    
+
+    setTimeout(() => 
+    {     
+      showAlert("!!!", 3000);  
+      secretRow?.classList.remove("hidden");
+    }, 1500);
+  
+    currentSceneId = storySequence.secretNode || "secretStart";
+  } 
+  else 
+  {
+    // secretScene not allowed
+    endGame("the dev was sleepy and forgot that you'd reach max guesses by now, sorry! (feel free to send a bug report ^~^)");
+  }
+}
+
 /**
  * @param {String} nextId
  * @param {HTMLElement[]} activeTiles
@@ -390,6 +359,9 @@ function getValidGuess(activeTiles)
 function setupNextScene(nextId, activeTiles)
 {
   const nextScene = storySequence[nextId];
+
+  // make sure that player can't type especially if we reveal win condition
+  stopInteraction();
 
   if (nextScene.reveal)
   {
@@ -399,9 +371,12 @@ function setupNextScene(nextId, activeTiles)
   else
     showAlert("no emoji reveal specified");
 
+  if (guessCount === MAX_GUESSES)
+    gotoSecretScene();
+    
   if(nextScene.gg)
     {
-      nextScene.gg(activeTiles)
+      nextScene.gg(activeTiles);
     } 
   // error handling?
   // else 
@@ -582,7 +557,6 @@ function submitGuess()
   handleSpecialGuess(guess);
 
   handleSeqTurn(activeTiles);
-
 }
 
 
@@ -770,21 +744,9 @@ function showShareModal(resultType) {
   buttonContainer.style.display = "flex"; // ensure it's using row layout
   modal.classList.remove("hidden");
 
-  // set text based on the result
-  if (resultType === "win") {
-    modalText.textContent = "The Horse Won! Share your glory?";
-  } else if (resultType === "glue time") {
-    modalText.textContent = "Something happened to the horse...\nShare her legacy?";
-  } else if (resultType === "sleepy horsie") {
-    modalText.textContent = "The horse sleeps soundly until tomorrow.\nLet the people know?";
-  } else if (resultType === "hell") {
-    modalText.textContent = "It's hot in here...\nBUT SHARING YOUR SCORE IS HOTTER!";
-  } else if (resultType === "eaven") {
-    modalText.textContent = "Blessed be your mared friend.\nShare if you cried?";
-  } else {
-    // fallback to whatever you typed
-    modalText.textContent = resultType;
-  }
+
+  modalText.textContent = resultType;
+
 
   // create copy result button
   const shareBtn = document.createElement("button");
