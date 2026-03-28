@@ -63,6 +63,7 @@ const STORY_REGISTRY =
   283: surviveNight,
   284: exploreBeach,
   285: oceanSunlightZone,
+  286: twilightZone,
 };
 
 /**

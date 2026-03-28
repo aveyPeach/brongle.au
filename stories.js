@@ -2929,3 +2929,190 @@ const oceanSunlightZone =
     ]
   },
 }
+
+const twilightZone = 
+{
+  "start":
+  {
+    question: `You venture deeper (approximately 200-1000m) into the dark, murky waters of the twilight zone.`,
+
+    choices:
+    [
+      {
+        text: "next",
+        next: "observing",
+      }
+    ]
+  },
+
+  "observing":
+  {
+    reveal: standaRevealEmojis("🦑", "", "🐋", "💔", "🐟"),
+
+    question: `You see the life  around you slowly thinning out until you're left in a desolate void, only broken up by streaks of bioluminescence.`,
+
+    choices:
+    [
+      {
+        text: "bump into a squid",
+        next: "peckishSquid",
+      },
+      {
+        text: "bump into 3 fishes",
+        next: "3fishes",
+      }
+    ]
+  },
+
+  "peckishSquid":
+  {
+    reveal: standaRevealEmojis("", "", "🦑", "💬", ""),
+    question: `Uouh my gosh I am so peckish, you wouldn't happen to have any snacks on you?`,
+
+    choices:
+    [
+      {
+        text: `I might have just the thing`,
+        next: `justTheThing`,
+      },
+      {
+        text: `What's a snack`,
+        msg: "you.",
+        msgBtn: "s-squid-chan what do you mean?",
+        next: `whatsAsnack`,
+      },
+    ]
+  },
+
+  "justTheThing":
+  {
+    reveal: standaRevealEmojis("💎", "", "🍓", "", "🧌"),
+    question: `You hold 3 snack options in your fins. To which do you give your warmest recommendation?`,
+
+    choices:
+    [
+      {
+        text: `diamond`,
+        msg: `The moment her beak touches the diamond begins an approximately 30 second long flashy transformation sequence accompanied by sparkling orchestral swells.
+              By the end of it you stand face to face with Thysanoteuthis rhombus the DIAMOND SQUID.
+              You're awestruck by her geometricity. `,
+        msgBtn: `waow...`,
+        next: `diamond`,
+      },
+      {
+        text: `strawbry`,
+        msg: `The moment her beak touches the strawberry begins an approximately 30 second long flashy transformation sequence accompanied by sparkling orchestral swells.
+              By the end of it you stand face to face with Histioteuthis heteropsis the STRAWBERRY SQUID.
+              She performs her world famous diurnal vertical migration, in stunning fashion.`,
+        msgBtn: `so sweet...`,
+        next: `strawbry`,
+      },
+      {
+        text: `giant (one day we won't need to show a troll emoji here)`,
+        msg: `The moment her beak touches the giant begins an approximately 30 second long flashy transformation sequence accompanied by sparkling orchestral swells.
+              By the end of it you stand face to face with Architeuthis dux the GIANT SQUID.
+              You're awestruck by her ginormity.`,
+        msgBtn: `so big...`,
+        next: `giant`,
+      },
+    ]
+  },
+
+
+  "diamond":
+  {
+    reveal: standaRevealEmojis("", "💎", "🦑", "", ""),
+
+    gg: (tiles) => win(tiles, "Enlighten others to the wonders of cephalopods?", "EDUCATIONAL BRONGLES"),
+  },
+
+  
+  "strawbry":
+  {
+    reveal: standaRevealEmojis("", "🍓", "🦑", "", ""),
+    gg: (tiles) => win(tiles, "Enlighten others to the wonders of cephalopods?", "EDUCATIONAL BRONGLES"),
+  },
+
+
+  
+  "giant":
+  {
+    reveal: standaRevealEmojis("", "🧌", "🦑", "", ""),
+    gg: (tiles) => win(tiles, "Enlighten others to the wonders of cephalopods?", "EDUCATIONAL BRONGLES"),
+  },
+
+
+  
+  "whatsAsnack":
+  {
+    reveal: standaRevealEmojis("", "❤️‍🔥", "🦑", "❤️‍🔥", ""),
+    gg: (tiles) => win(tiles, "Set others on the path of cephalopod romance?", "SQUID LOVE")
+  },
+
+
+  
+  "3fishes":
+  {
+    reveal: standaRevealEmojis("🐟", "🧛", "🐟", "🐺", "🐟"),
+    question: `Before you swims a humanfish, a vampirefish and a werewolf-fish. They seem a little perturbed`,
+
+    choices:
+    [
+      {
+        text: `What's up with yall?`,
+        next: `whatsUp`,
+      },
+    ]
+  },
+
+
+  
+  "whatsUp":
+  {
+    reveal: standaRevealEmojis("", "", "💔", "", ""),
+    question: `The fish tell their a tale. 
+               To some, it is a plain tale of lust. 
+               To others it is a tale of two households both alike in dignity and the love which seeks to bridge their diametrically opposed worlds.
+               To others yet it is a story detailing the tightrope between our most fishman desires and our infishman potential for harm...`,
+
+    choices:
+    [
+      {
+        text: `damn that's crazy, have yall ever considered polypamory?`,
+        msg: "Suddenly it's fucking polyp city ova here in da twilight zone. Which invadvertedly solves the love triangle at fin.",
+        next: `polypamory`,
+      },
+    ]
+  },
+
+
+  
+  "polypamory":
+  {
+    reveal: standaRevealEmojis("🪼", "🪼", "🪼", "🪼", "🪼"),
+    gg: (tiles) => win(tiles, "Approach a 3rd at the bar?", "I don't wanna be polyyyp~")
+  },
+
+
+  
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+    question: ``,
+
+    choices:
+    [
+      {
+        text: ``,
+        next: ``,
+      },
+      {
+        text: ``,
+        next: ``,
+      },
+    ]
+  },
+
+
+
+}
