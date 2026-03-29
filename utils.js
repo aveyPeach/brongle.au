@@ -1,4 +1,4 @@
-function displayImg(path, timeOnScreen = 1000) 
+function displayImg(path, timeOnScreen = 4000) 
 {
   const img = document.createElement("img");
   
