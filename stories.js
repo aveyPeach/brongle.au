@@ -3214,7 +3214,7 @@ const midnightZoneOcean =
     reveal: standaRevealEmojis("✨", "", "", "🐟", ""),
 
     question: `You follow the elusive firefly, it does not seem frightful of you in the slightest. 
-               (honestly, it seems like it's yet to notice at all you at all.)`,
+               (honestly, it seems like it's yet to notice you at all.)`,
 
     choices: 
     [
