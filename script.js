@@ -1,7 +1,7 @@
 /* global dictionary, targetWords */
 // @ts-check
 
-const modal = document.getElementById("question-modal")
+const questionModal = document.getElementById("question-modal")
 const yesBtn = document.getElementById("yes-btn")
 const noBtn = document.getElementById("no-btn")
 const modalText = document.getElementById("modal-text")
@@ -46,7 +46,7 @@ const GAME_MODES =
 
 let currentMode = GAME_MODES.BASIC_BRONGLE; 
 
-let currentSceneId = "start";
+let sceneId = "start";
 let storySequence = {};
 
 const STORY_REGISTRY = 
@@ -64,6 +64,7 @@ const STORY_REGISTRY =
   284: exploreBeach,
   285: oceanSunlightZone,
   286: twilightZone,
+  287: midnightZoneOcean,
 };
 
 /**
@@ -344,7 +345,7 @@ function gotoSecretScene()
       secretRow?.classList.remove("hidden");
     }, 1500);
   
-    currentSceneId = storySequence.secretNode || "secretStart";
+    sceneId = storySequence.secretNode || "secretStart";
   } 
   else 
   {
@@ -367,7 +368,9 @@ function setupNextScene(nextId, activeTiles)
   if (nextScene.reveal)
   {
     nextScene.reveal(activeTiles);
-    //showAlert("reveal param(?) worked !!")
+    
+    if (nextScene.onReveal)
+      nextScene.onReveal(activeTiles);
   }
   else
     showAlert("no emoji reveal specified");
@@ -383,11 +386,11 @@ function setupNextScene(nextId, activeTiles)
   // else 
 }
 
-function finishTurn(currentScene, choice, activeTiles)
+function finishTurn(scene, choice, activeTiles)
 {
-  modal.classList.add("hidden");
+  questionModal.classList.add("hidden");
       
-  if (currentScene.action) currentScene.action(activeTiles);
+  if (scene.action) scene.action(activeTiles);
 
   // questionmarks implement optional chaining ensure that we only do this if 'choice' exists :3
   if (choice?.action) choice?.action(activeTiles);
@@ -395,11 +398,11 @@ function finishTurn(currentScene, choice, activeTiles)
   guessCount++;
 
   // optional chaining '?' for safety
-  const nextId = choice?.next || currentScene.next; 
+  const nextId = choice?.next || scene.next; 
 
   if (nextId && storySequence[nextId])
   {
-    currentSceneId = nextId;
+    sceneId = nextId;
     setTimeout(startInteraction, 1500);
 
     setupNextScene(nextId, activeTiles);
@@ -442,13 +445,13 @@ function handleWrongProp(clickedBtn)
 }
 
 /**
- * @param {any} currentScene
+ * @param {any} scene
  * @param {HTMLElement[]} activeTiles
  * @param {HTMLElement} buttonContainer
  */
-function setupChoices(currentScene, activeTiles, buttonContainer)
+function setupChoices(scene, activeTiles, buttonContainer)
 {
-  currentScene.choices.forEach(choice => 
+  scene.choices.forEach(choice => 
   {
     const btn = document.createElement("button");
     btn.textContent = choice.text;
@@ -467,7 +470,7 @@ function setupChoices(currentScene, activeTiles, buttonContainer)
       const message = choice.msg || "";
 
       // this wraps the function call so you don't have to keep track of args in multiple places
-      const finishWrap = () => finishTurn(currentScene, choice, activeTiles);
+      const finishWrap = () => finishTurn(scene, choice, activeTiles);
 
       if (currentMode === GAME_MODES.PROP_HUNT && correctProp)
         playTrack("assets/sfx/meow.mp3", {loop: false})
@@ -500,50 +503,64 @@ function setupChoices(currentScene, activeTiles, buttonContainer)
 
 function handleSeqTurn(activeTiles) 
 {
-  const currentScene = storySequence[currentSceneId];
+  const scene = storySequence[sceneId];
   const buttonContainer = document.getElementById("choice-button-container");
 
   // safety check
-  if (!currentScene) return;
+  if (!scene) return;
 
   ResetBtnContainer(buttonContainer);
 
-  // handle question text
-  if (currentScene.question && currentScene.question.trim() !== "") 
+  const modalBox = questionModal.querySelector(".modal-content");
+
+  // 1. Reset
+  modalBox.classList.remove("is-glitching");
+
+  // 2. Apply if glitchy
+  if (scene.glitched) 
   {
-    modalText.textContent = currentScene.question;
+    modalBox.classList.add("is-glitching");
+  }
+
+  if (scene.onQuestion)
+    scene.onQuestion(activeTiles)
+
+  // handle question text
+  if (scene.question && scene.question.trim() !== "") 
+  {
+    modalText.textContent = scene.question;
   } else 
   {
     modalText.textContent = ""; // Keep it empty if no question
   }
 
   // analyse contents of current scene
-  const hasChoices = currentScene.choices && currentScene.choices.length > 0;
-  const hasQuestion = currentScene.question && currentScene.question.trim() !== "";
+  const hasChoices = scene.choices && scene.choices.length > 0;
+  const hasQuestion = scene.question && scene.question.trim() !== "";
 
   // no question, no choices -> run action and skip
   if (!hasQuestion && !hasChoices) 
   {
-    if (currentScene.action) currentScene.action(activeTiles);
+    if (scene.action) scene.action(activeTiles);
     
     // Move to next turn immediately (finishTurn handles the 1.5s interaction delay)
-    finishTurn(currentScene, null, activeTiles);
+    finishTurn(scene, null, activeTiles);
     return; 
   }
 
-  // standard node -> show  modal
+  // standard node -> show  questionModal
   if (hasChoices) 
   {
-    setupChoices(currentScene, activeTiles, buttonContainer);
+    setupChoices(scene, activeTiles, buttonContainer);
   } else {
     // cutscene case: question exists, no buttons
     setTimeout(() => 
     {
-      finishTurn(currentScene, null, activeTiles);
+      finishTurn(scene, null, activeTiles);
     }, 2000);
   }
 
-  modal.classList.remove("hidden");
+  questionModal.classList.remove("hidden");
 }
 
 
@@ -718,7 +735,7 @@ function danceTiles(tiles) {
 
 function hideUI()
 {
-  modal.classList.add("hidden");
+  questionModal.classList.add("hidden");
 
     // 1. Grab the keyboard and grid
   const keyboard = document.querySelector(".keyboard");
@@ -740,10 +757,10 @@ function showShareModal(resultType) {
     return;
   }
 
-  // clear out old story buttons and show modal
+  // clear out old story buttons and show questionModal
   buttonContainer.innerHTML = ""; 
   buttonContainer.style.display = "flex"; // ensure it's using row layout
-  modal.classList.remove("hidden");
+  questionModal.classList.remove("hidden");
 
 
   modalText.textContent = resultType;

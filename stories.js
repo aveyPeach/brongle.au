@@ -3093,26 +3093,253 @@ const twilightZone =
     gg: (tiles) => win(tiles, "Approach a 3rd at the bar?", "I don't wanna be polyyyp~")
   },
 
+}
 
-  
-  "1":
+const midnightZoneOcean =
+{
+  "start":
   {
-    reveal: standaRevealEmojis("", "", "", "", ""),
-    question: ``,
+    next: "midnightZone",
+  },
 
-    choices:
+  "midnightZone":
+  {
+    reveal: standaRevealEmojis("🐟", "📷", "🐟", "", "🪲", ),
+
+    question: `After a brief stint in the mesopelagic you make your way down to the midnight zone. 
+               Not even a lick of sun could make it down here and the pressure would mangle any other fish - but not you.`,
+
+    choices: 
     [
       {
-        text: ``,
-        next: ``,
+        text: "Bump into tripod fish",
+        next: "tripodFish",
       },
       {
-        text: ``,
-        next: ``,
+        text: "Bump into giant isopod",
+        action: () => playTrack("assets/sfx/wait what (that's a bug).mp3", {loop: false, volume: 0.3, }),
+        next: "giantIsopod",
       },
     ]
   },
 
 
+  "tripodFish":
+  {
+    reveal: standaRevealEmojis("", "", "🐟", "📷", ""),
 
+    question: `HEY ASSHOLE YOU MESSED UP MY PHOTO`,
+
+    choices: 
+    [
+      {
+        text: "Oh my gosh I'm so sorry",
+        next: "soSorry",
+      },
+      {
+        text: "Well screw you buddy",
+        next: "screwYou",
+      },
+    ]
+  },
+
+  
+  
+  "soSorry":
+  {
+    reveal: standaRevealEmojis("", "📷", "🐟", "💬", ""),
+
+    question: `Sighhhh, it's fine...
+               By the way, looking closer at you, I've never seen a fish like you down here before (and seeing fish down here is rare enough).
+               Mind if I snap a picture of you?`,
+
+    choices: 
+    [
+      {
+        text: "Sure, go ahead!",
+        next: "photo",
+      },
+      {
+        text: "I'm ok, thank you. (check out giant isopod instead)",
+        action: () => playTrack("assets/sfx/wait what (that's a bug).mp3", {loop: false, volume: 0.3, }),
+        next: "giantIsopod",
+      },
+    ]
+  },
+
+  
+  
+  "photo":
+  {
+    reveal: standaRevealEmojis("📸", "📸", "📸", "📸", "📸"),
+
+    gg: (tiles) => 
+    {
+      showAlert("you look lovely :)")
+      displayImg("assets/pics/Flap_Jack_Devilfish.jpg");
+      win(tiles, "Capture more cryptids?");
+    }
+  },
+
+  
+  
+  "screwYou":
+  {
+    reveal: standaRevealEmojis("", "📷", "🐟", "💢", ""),
+
+    question: `The tripod fish scurries away with her camera setup. But it's not all bad, a short distance away you spot a firefly - maybe they'll be kinder.`,
+
+    choices: 
+    [
+      {
+        text: "Go bother the isopod",
+        action: () => 
+        {
+          playTrack("assets/sfx/wait what (that's a bug).mp3", {loop: false, volume: 0.3, });         
+        },
+          
+        next: "giantIsopod",
+      },
+      {
+        text: "Say hi to the firefly",
+        next: "firefly",
+      },
+    ]
+  },
+
+  
+  
+  "firefly":
+  {
+    reveal: standaRevealEmojis("✨", "", "", "🐟", ""),
+
+    question: `You follow the elusive firefly, it does not seem frightful of you in the slightest. 
+               (honestly, it seems like it's yet to notice at all you at all.)`,
+
+    choices: 
+    [
+      {
+        text: "shiny..",
+        next: "firefly2",
+      },
+    ]
+  },
+
+  
+  
+  "firefly2":
+  {
+    reveal: standaRevealEmojis("✨", "", "🐟", "", ""),
+
+    question: `Inching closer to the firefly you begin imagining the awesome times you'll have together.
+               They'll definitely be nicer than that stupid tripod.`,
+
+    choices: 
+    [
+      {
+        text: "shiny...",
+        next: "firefly3",
+      },
+    ]
+  },
+
+  
+  
+  "firefly3":
+  {
+    reveal: standaRevealEmojis("✨", "🐟", "", "", ""),
+
+    question: `You feel it. The taste of budding friendship.`,
+
+    choices: 
+    [
+      {
+        text: "next",
+        msg: "everything goes dark",
+        msgBtn: "I'm a gullible fool",
+        next: "ohNo",
+      },
+    ]
+  },
+  
+  
+  "ohNo":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: () => endGame("Get more groceries, get eaten?", "STUDY FINDING NEMO")
+  },
+
+  
+  "giantIsopod":
+  {
+    glitched: true,
+    reveal: standaRevealEmojis("", "", "🪲", "💬", ""),
+
+    onReveal: () => 
+    {
+      setTimeout(() => 
+      {
+        playTrack("assets/sfx/that's insane.mp3", {loop: false, volume: 0.3, })
+      }, 1000);
+    },
+
+    onQuestion: () => playTrack("assets/sfx/that's a bug that's a bug.mp3", {loop: true, volume: 0.3, }),
+
+    question: `error1738 "bugBoy" is null 
+               attempting to read data from this object w
+               wi ll result
+               in uNdefined bEHAviour 
+               prepAring to exit [the program] 
+               exit code: ...6...a...n...7`,
+
+    choices: 
+    [
+      {
+        text: "THAT'S A BUG",
+        next: "bugEnding",
+        action: () => killSound("assets/sfx/that's a bug that's a bug.mp3")
+      },
+      {
+        text: "THAT'S A BUG",
+        next: "bugEnding",
+        action: () => killSound("assets/sfx/that's a bug that's a bug.mp3")
+      },
+            {
+        text: "THAT IS A BUG",
+        next: "bugEnding",
+        action: () => killSound("assets/sfx/that's a bug that's a bug.mp3")
+      },
+    ]
+  },
+
+  
+  
+  "bugEnding":
+  {
+    reveal: standaRevealEmojis("🪲", "⬅️", "🇧", "🇺", "🇬"),
+
+    gg: (tiles) => win(tiles, "Bug someone else? [the sequel]", "hooooly"),
+  },
+
+  
+  
+  "3":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices: 
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
 }

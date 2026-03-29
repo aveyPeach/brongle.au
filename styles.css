@@ -4,7 +4,6 @@
 }
 
 :root {
-  /* 1. Define your "Tuning Knob" here */
   --bg-angle: 0deg; 
 }
 
@@ -327,6 +326,43 @@ body[data-active-bg="puppy"] {
 .tile.falling-cutout {
   animation: cutout-fall 1.7s ease-in forwards;
   transform-origin: bottom; 
+}
+
+
+.is-glitching {
+  /* Starts with the RGB split */
+  text-shadow: 2px 0px #ff0000, -2px 0px #00ff00, 0px 2px #0000ff;
+  
+  /* 🪄 A 3-second loop. It will be "normal" most of the time, then stutter. */
+  animation: mild-flicker 3s infinite normal; 
+}
+
+/* 2. The Spasm Animation */
+@keyframes mild-flicker {
+  /* Sit completely still for 90% of the time */
+  0%, 90%, 100% {
+    transform: translate(0) skew(0deg);
+    text-shadow: 2px 0px #ff0000, -2px 0px #00ff00, 0px 2px #0000ff;
+    opacity: 1;
+  }
+  
+  /* The 10% Freakout */
+  92% {
+    transform: translate(-2px, 1px) skew(-1deg);
+    /* Invert the colors sharply */
+    text-shadow: -3px 0px #ff0000, 3px 0px #00ff00, 0px -2px #0000ff;
+  }
+  94% {
+    transform: translate(2px, -1px) skew(1deg);
+    text-shadow: 2px 0px #ff0000, -2px 0px #00ff00, 0px 2px #0000ff;
+    opacity: 0.8; /* Slight dimming */
+  }
+  96% {
+    transform: translate(-1px, 2px) skew(0deg);
+    /* Make the shadows spread wider for a split second */
+    text-shadow: 4px 0px #ff0000, -4px 0px #00ff00, -2px 2px #0000ff;
+    opacity: 1;
+  }
 }
 
 .alert-container {

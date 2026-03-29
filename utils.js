@@ -20,3 +20,23 @@ function displayImg(path, timeOnScreen = 1000)
     }, timeOnScreen);
   }
 }
+
+/**
+ * makes specific html element look glitched out
+ * @param {string} elementId
+ * @param {number} duration note that 0 makes it run indefinitely
+ */
+function triggerGlitch(elementId, duration = 0) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  // 1. Turn the glitch ON
+  el.classList.add("is-glitching");
+
+  // 2. The Janitor Ogre: Turn it OFF after the timer (if a timer was set)
+  if (duration > 0) {
+    setTimeout(() => {
+      el.classList.remove("is-glitching");
+    }, duration);
+  }
+}
