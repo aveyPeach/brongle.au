@@ -64,6 +64,7 @@ const STORY_REGISTRY =
   285: oceanSunlightZone,
   286: twilightZone,
   287: midnightZoneOcean,
+  288: anglerfish,
 };
 
 /**

@@ -3343,3 +3343,364 @@ const midnightZoneOcean =
     ]
   },
 }
+
+
+let yourInt = getRandomInt(1, 9);
+let theirInt = getRandomInt(1,9);
+
+function getYourGambleDescriptor()
+{
+  if (yourInt === 9)
+    return "PERFECT 9"
+  else if (yourInt < 9 && yourInt > 4)
+    return "solid " + yourInt
+  else if (yourInt === 1)
+    return "pathetic " + yourInt
+  else 
+    return "measly " + yourInt
+}
+
+function getTripodGambleDescriptor()
+{
+  if (theirInt === 9)
+    return "PROBABLY HACKED 9"
+  else if (theirInt < 9 && theirInt > 4)
+    return "solid " + theirInt
+  else if (theirInt === 1)
+    return "laughable " + theirInt
+  else
+    return "pitiable " + theirInt
+}
+
+function getGambleResultMsg()
+{
+  if (yourInt === theirInt)
+    return "The tripod fish has finally met their equal."
+  else if (yourInt > theirInt)
+    return "It's as shrimple as that"
+  else
+    return "sucks to suck..."
+}
+
+function getNumberEmoji(x) {
+  switch(x) 
+  { 
+    case 1:
+      return "1️⃣";
+    case 2:
+      return "2️⃣";
+    case 3:
+      return "3️⃣";
+    case 4:
+      return "4️⃣";
+    case 5:
+      return "5️⃣"; 
+    case 6:
+      return "6️⃣";
+    case 7:
+      return "7️⃣";
+    case 8: 
+      return "8️⃣";
+    case 9:
+      return "9️⃣";
+
+    default:
+      return "❓";
+  } 
+}
+
+function getGambleEmojis()
+{
+  if (yourInt === theirInt)
+    return standaRevealEmojis("", getNumberEmoji(yourInt), "🤝", getNumberEmoji(theirInt), "")
+  else if (yourInt > theirInt)
+    return standaRevealEmojis("", getNumberEmoji(yourInt), "🏆", getNumberEmoji(theirInt), "")
+  else
+    return standaRevealEmojis("", getNumberEmoji(yourInt), "💔", getNumberEmoji(theirInt), "")
+}
+
+
+function getGambleGG(tiles)
+{
+  if (yourInt === theirInt)
+    return win(tiles, "Share your newfound comraderie?", "bet")
+  else if (yourInt > theirInt)
+    return win(tiles, "Let the people know you're stoated?", "EZ")
+  else
+    return win(tiles, "Try to live with your shame?", "i can't do anything right")
+}
+
+const anglerfish =
+{
+  "start":
+  {
+    question: "It's dark",
+
+    choices: 
+    [
+      {
+        text: "look for signs of life",
+        msg: "upon exploration, you swim into a couple slender, bony pylons",
+        msgBtn: "oop",
+        next: "signsOfLife",
+      },
+    ]
+  },
+
+
+  "signsOfLife":
+  {
+    reveal: standaRevealEmojis("", "", "🥢", "", ""),
+
+    question: `HEY ASSHOLE - the pylons yell with a familiar voice
+               what in deep sea carnation do you think you're doing?`,
+
+    choices:
+    [
+      {
+        text: "Oh my gosh I'm so sorry",
+        next: "ohMyGosh",
+      },
+      {
+        text: "Well screw you buddy",
+        next: "screwYou",
+      },
+    ]
+  },
+
+    
+  "ohMyGosh":
+  {
+    reveal: standaRevealEmojis("", "", "🐟", "📷", ""),
+
+    question: `Oh it's you. Fancy seeing you here. Seems like we're both 'bout to be swimming with the fishes, eh?`,
+
+    choices:
+    [
+      {
+        text: "Where are we?",
+        next: "bestShot",
+      },
+    ]
+  },
+
+    
+  "screwYou":
+  {
+    reveal: standaRevealEmojis("", "💢", "🐟", "📷", ""),
+
+    question: `Oh it's *you*. Figures. I heard an anglerfish's favourite food is dimwit.`,
+
+    choices:
+    [
+      {
+        text: "WHATT",
+        msg: "Yep. Sure ain't a pretty place to be, but maybe we won't need to be here for long, if we play our cards right.",
+        next: "bestShotAbridged",
+      },
+      {
+        text: "I know you are but what am I",
+        next: "iKnowYouAre",
+      },
+    ]
+  },
+
+    
+  "iKnowYouAre":
+  {
+    reveal: standaRevealEmojis("", "📷", "🐟", "🚬", ""),
+
+    question: `Alright pal, I'll be frank with you for a moment.
+               As much as I'd love to keep slinging salty words at you, I've got duties to attend to and don't really fancy meeting my maker today.
+               How bouts we sketch a plan to get our fins someplace freer?`,
+
+    choices:
+    [
+      {
+        text: "It's our best shot",
+        next: "bestShotAbridged",
+      },
+      {
+        text: "What duties?",
+        next: "whatDuties",
+      },
+    ]
+  },
+    
+  "whatDuties":
+  {
+    reveal: standaRevealEmojis("🪙", "🪙", "🐟", "🪙", "🪙"),
+
+    question: `The tripod fish chuckles: - Oh you know, winning it big. 
+               I'm talking great white, no scratch that; BLUE WHALE big.
+               I'm the kind of fish to enter with 100 seaweed chips to my name and refuse to leave until I've enough to buy me a king size seabed.`,
+
+    choices:
+    [
+      {
+        text: "Wow that's unbelievable (quit lying)",
+        msg: `(Your words leave the tripod fish battered. With your guide left morose and silent, you're both as good as fried.)`,
+        msgBtn: "aw man",
+        next: "unbelievable",
+      },
+      {
+        text: "Initiate a gambling duel",
+        next: "gamblingDuel",
+      },
+    ]
+  },
+    
+  "unbelievable":
+  {
+    reveal: standaRevealEmojis("😔", "😔", "🐟", "😔", "😔"),
+    
+    gg: () => endGame("Show your peeps the horror?", "can't win em all")
+  },
+    
+  "gamblingDuel":
+  {
+    reveal: standaRevealEmojis("1️⃣", "🪙", "🪙", "🪙", "9️⃣"),
+
+    question: `You asked for it >:3 The rules are simple: 
+               one 9-sided dice roll each, whoever rolls higher becomes the empress of gamblers.
+               Think you've got a shot?`,
+
+    choices:
+    [
+      {
+        text: "LET'S ROLL",
+        msg: ("Your roll: " + getYourGambleDescriptor() 
+            + "\nTripod fish roll: " + getTripodGambleDescriptor()
+            + "\n"+ getGambleResultMsg()),
+        
+        next: "gambleEnding",
+      },
+    ]
+  },
+    
+  "bestShot":
+  {
+    reveal: standaRevealEmojis("", "", "🔒", "", ""),
+
+    question: `Davy Jones' Locker my friend, the stomach of an anglerfish.`,
+
+    choices:
+    [
+      {
+        text: "Tickle the walls",
+        msg: "A stream of hot liquid splashes your face. Oh god. It burns. Didn't you know that interior tummy tickles aid digestion?",
+        msgBtn: "もうだめだ",
+        next: "tickleWalls",
+      },
+      {
+        text: "Try to bite thru the walls",
+        msg: "You transform into a cookie cutter shark and make quick work of the anglerfish, time to swim out into the dark depths of freedom!",
+        msgBtn: "yipiiii",
+        action: () => showAlert("but wait!"),
+        next: "biteThru1",
+      },
+    ]
+  },
+
+  "bestShotAbridged":
+  {
+    reveal: standaRevealEmojis("", "", "❓", "", ""),
+
+    question: `What'll it be then partner?`,
+
+    choices:
+    [
+      {
+        text: "Tickle the walls",
+        msg: "A stream of hot liquid splashes your face. Oh god. It burns. Didn't you know that interior tummy tickles aid digestion?",
+        msgBtn: "もうだめだ",
+        next: "tickleWalls",
+      },
+      {
+        text: "Try to bite thru the walls",
+        msg: "You transform into a cookie cutter shark and make quick work of the anglerfish, time to swim out into the dark depths of freedom!",
+        msgBtn: "yipiiii",
+        action: () => showAlert("but wait!"),
+        next: "biteThru1",
+      },
+    ]
+  },
+    
+  "biteThru1":
+  {
+    reveal: standaRevealEmojis("", "", "🍪", "🦈", ""),
+
+    question: `Just your luck. Another wall stands in your way. Oh well, your fangs were made for cuttin'`,
+
+    choices:
+    [
+      {
+        text: "CHOMP",
+        action: () => showAlert("but wait!"),
+        next: "biteThru2",
+      },
+    ]
+  },
+    
+  "biteThru2":
+  {
+    reveal: standaRevealEmojis("", "🍪", "🍪", "🦈", ""),
+
+    question: `Now this you didn't plan for. A third wall has appeared! After a moment's befuddlement, you get back to doing what you do best.`,
+
+    choices:
+    [
+      {
+        text: "CHOIMP",
+        msg: `At least you see(?) it: the pitch dark of the abyssopelagic. 
+              The tripod fish thanks you profusely and snaps a picture of you together, commemorating your newfound freedom.`,
+
+        next: "biteThru3",
+      },
+    ]
+  },
+    
+  "biteThru3":
+  {
+    reveal: standaRevealEmojis("🍪", "🍪", "🍪", "🦈", "📸"),
+    gg: (tiles) =>
+    {
+      displayImg("assets/pics/anglerfishEnding.png", 8000);
+      win(tiles, "You've lived, will you tell the tale?", "cookie cutter strategies");
+    }
+  },
+    
+  "tickleWalls":
+  {
+    reveal: standaRevealEmojis("🟢", "🟢", "🟢", "🟢", "🟢"),
+
+    gg: () => endGame("Show your friends your soupified form?", "hate when this happens")
+  },
+    
+  "gambleEnding":
+  {
+    reveal: getGambleEmojis(),
+
+    gg: (tiles) => getGambleGG(tiles),
+  },
+    
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+
+}

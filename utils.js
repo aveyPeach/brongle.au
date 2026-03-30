@@ -40,3 +40,8 @@ function triggerGlitch(elementId, duration = 0) {
     }, duration);
   }
 }
+
+function getRandomInt(min, max) 
+{
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
