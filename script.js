@@ -65,6 +65,7 @@ const STORY_REGISTRY =
   286: twilightZone,
   287: midnightZoneOcean,
   288: anglerfish,
+  289: abyssopelagic,
 };
 
 /**
@@ -449,56 +450,84 @@ function handleWrongProp(clickedBtn)
  * @param {HTMLElement[]} activeTiles
  * @param {HTMLElement} buttonContainer
  */
-function setupChoices(scene, activeTiles, buttonContainer)
-{
-  scene.choices.forEach(choice => 
-  {
+function setupChoices(scene, activeTiles, buttonContainer) {
+  scene.choices.forEach(choice => {
     const btn = document.createElement("button");
     btn.textContent = choice.text;
     btn.classList.add("key"); 
     
-    btn.onclick = () => 
-    {
-      let correctProp = true
-      // for prop hunt, only the one with a next scene defined should make us go next
-      
-      if (currentMode === GAME_MODES.PROP_HUNT && !choice.next)
-      {
+    btn.onclick = () => {
+      let correctProp = true;
+      if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) {
         correctProp = false;
       }
 
-      const message = choice.msg || "";
+      // 🪄 THE HARVESTER: Converts your flat keys into an organized list
+      const dialogSequence = [];
+      
+      // 1. Grab the base message
+      if (choice.msg) {
+        dialogSequence.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
+      }
+      
+      // 2. Grab msg2, msg3, msg4, etc. automatically
+      let i = 2;
+      while (choice[`msg${i}`]) {
+        dialogSequence.push({
+          text: choice[`msg${i}`],
+          btnLabel: choice[`msgBtn${i}`] || "Next..."
+        });
+        i++;
+      }
 
-      // this wraps the function call so you don't have to keep track of args in multiple places
       const finishWrap = () => finishTurn(scene, choice, activeTiles);
 
-      if (currentMode === GAME_MODES.PROP_HUNT && correctProp)
-        playTrack("assets/sfx/meow.mp3", {loop: false})
-
-      // NEW IF CASE (main one)
-      if (!correctProp)
-      {
-        handleWrongProp(btn);
+      if (currentMode === GAME_MODES.PROP_HUNT && correctProp) {
+        playTrack("assets/sfx/meow.mp3", {loop: false});
       }
-      else if (!message || message.trim() === "") 
-      {
-        finishWrap();
-      } 
-      else 
-      {
-        modalText.textContent = message;
-        
-        ResetBtnContainer(buttonContainer);
 
-        const continueBtn = createContinueBtn(choice.msgBtn);
-        continueBtn.onclick = finishWrap; 
-        buttonContainer.appendChild(continueBtn);
+      // --- Interaction Logic ---
+      if (!correctProp) {
+        handleWrongProp(btn);
+      } 
+      else if (dialogSequence.length === 0) {
+        finishWrap(); // No messages at all, just move on
+      } 
+      else {
+        let stepIndex = 0; // Our bookmark
+
+        const showNextMessage = () => {
+          if (stepIndex < dialogSequence.length) {
+            // Get the current step object
+            const currentStep = dialogSequence[stepIndex];
+            
+            // Show text
+            modalText.textContent = currentStep.text;
+            
+            ResetBtnContainer(buttonContainer);
+
+            // Create button with the specific label for this step
+            const continueBtn = createContinueBtn(currentStep.btnLabel);
+            continueBtn.onclick = showNextMessage; 
+            buttonContainer.appendChild(continueBtn);
+            
+            // Move bookmark forward
+            stepIndex++;
+          } else {
+            // Out of messages!
+            finishWrap();
+          }
+        };
+
+        // Start the sequence
+        showNextMessage();
       }
     };
 
     buttonContainer.appendChild(btn);
   });
 }
+
 
 
 function handleSeqTurn(activeTiles) 

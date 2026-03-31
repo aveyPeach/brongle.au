@@ -3704,3 +3704,367 @@ const anglerfish =
   },
 
 }
+
+const abyssopelagic =
+{
+  "start":
+  {
+    question: "You're alone in the all consuming darkness of the abyss. Marine snow grazes your skin. There's a faint light in the distance.",
+
+    choices:
+    [
+      {
+        text: "Follow the light",
+        next: "followLight",
+      },
+      {
+        text: "Stay where you are",
+        next: "stayPut",
+      },
+    ]
+  },
+
+  "followLight":
+  {
+    reveal: standaRevealEmojis("🐖", "🐖", "🐖", "🐖", "🐠"),
+
+    question: "You spot a strange looking fellow tending to a little sea pig pen.",
+
+    choices:
+    [
+      {
+        text: "Talk to him",
+        next: "talkToHim",
+      },
+      {
+        text: "Steal one of the sea pigs",
+        next: "stealPig",
+      },
+    ]
+  },
+  
+  "talkToHim":
+  {
+    reveal: standaRevealEmojis("", "", "🐠", "💬", ""),
+
+    question: "I don't have much to say to a greenhorn like you. Scram.",
+
+    choices:
+    [
+      {
+        text: "Ok rude, wasn't gonna steal one of your pigs but...",
+        next: "okRude",
+      },
+    ]
+  },
+
+  "okRude":
+  {
+    reveal: standaRevealEmojis("", "💢", "🐠", "💬", ""),
+
+    question: "huh?",
+
+    choices:
+    [
+      {
+        text: "My pig now :)",
+        next: "stealPig",
+      },
+    ]
+  },
+  
+  "stealPig":
+  {
+    reveal: standaRevealEmojis("🐖", "🐟", "💨", "", "🐠"),
+
+    question: "HEY NOW",
+
+    choices:
+    [
+      {
+        text: "SUCK IT OLD MAN",
+        next: "stealPig2",
+      },
+    ]
+  },
+  
+  "stealPig2":
+  {
+    reveal: standaRevealEmojis("🐖", "🐟", "💨", "🔫", "🐠"),
+
+    question: "They don't call me Barrel-Eye for nothing",
+
+    choices:
+    [
+      {
+        text: "ZIG ZAG",
+        next: "zigZag",
+      },
+      {
+        text: "RUN STRAIGHT AHEAD",
+        msg: "Everything would go dark if it weren't already dark. Everything goes darker?",
+        msgBtn: "aw man",
+        next: "runStraight",
+      },
+    ]
+  },
+  
+  "zigZag":
+  {
+    reveal: standaRevealEmojis("🐖", "🐟", "〰️", "🔫", "🐠"),
+
+    question: `You zig zag around the Barrel-Eye's bullets.
+               Eventually you lose him, and once again you're alone in the darkness. 
+               Except you're not - you have a sea pig by your side.`,
+
+    choices:
+    [
+      {
+        text: "hi piggie :)",
+        msg: "hi fishie :)",
+        msgBtn: "YOU WERE SENTIENT??",
+        next: "pigOut",
+      },
+    ]
+  },
+  
+  "pigOut":
+  {
+    reveal: standaRevealEmojis("", "🐷", "💬", "🐟", ""),
+
+    gg: (tiles) => win(tiles, "Pig out?", "an unexpected companion")
+  },
+  
+  "runStraight":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: () => endGame("Reveal your lack of plot armor?", "They don't call 'im Barrel-Eye for nuthin'...")
+  },
+  
+  "stayPut":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "You stay in place, savoring the putrid scraps of flesh and plant matter falling from brighter waters. The light seems to be further away than it was just a few minutes ago.",
+
+    choices:
+    [
+      {
+        text: "Stay where you are",
+        next: "stayWhereYouAre"
+        /*
+        msg: "you can't",
+        msgBtn: "why?",
+        msg2: "The current's too strong",
+        msgBtn2: "oh.",
+        msg3: `You close your eyes and float with the current. It might've been minutes, it might've been hours. Once you come to you're firmly attached to a decaying whale carcass.`,
+        msgBtn3: "that's nice", 
+        next: "floatWithCurrent",
+        */
+      },
+      /*
+      {
+        text: "actually i'm hungry",
+        next: "bigRedJelly",
+      },
+      */
+    ]
+  },
+  
+  "stayWhereYouAre":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "you can't",
+
+    choices:
+    [
+      {
+        text: "why?",
+        msg: "The current's too strong",
+        msgBtn: "oh.",
+        next: "closeEyes"
+      }
+    ]
+  },
+
+  "closeEyes":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "You close your eyes and float with the current. It might've been minutes, it might've been hours. Once you come to you're firmly attached to a decaying whale carcass.",
+
+    choices:
+    [
+      {
+        text: "that's nice",
+        next: "floatWithCurrent",
+      },
+    ]
+  },
+  
+  "floatWithCurrent":
+  {
+    reveal: standaRevealEmojis("", "", "🐋", "", ""),
+
+    gg: () => endGame("Go with the flow?", "bein a tube worm aint so bad."),
+
+  },
+
+
+  "bigRedJelly":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+
+
+  
+  "7":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "6":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "5":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "4":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "3":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "2":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+
+}
