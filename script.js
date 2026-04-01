@@ -66,6 +66,7 @@ const STORY_REGISTRY =
   287: midnightZoneOcean,
   288: anglerfish,
   289: abyssopelagic,
+  290: preTrench,
 };
 
 /**
@@ -426,10 +427,10 @@ function createContinueBtn(btnText = "next")
   return continueBtn;
 }
 
-function ResetBtnContainer(buttonContainer)
+function ResetBtnContainer(btnCont)
 {
-  buttonContainer.innerHTML = ""; 
-  buttonContainer.style.display = "flex"; // Ensure it's visible
+  btnCont.innerHTML = ""; 
+  btnCont.style.display = "flex"; // Ensure it's visible
 }
 
 function handleWrongProp(clickedBtn)
@@ -445,87 +446,117 @@ function handleWrongProp(clickedBtn)
   clickedBtn.disabled = true;
 }
 
+function showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap)
+{
+  if (stepIndex < dialoSeq.length) 
+    {
+      const currentStep = dialoSeq[stepIndex];
+      
+      const isLastStep = stepIndex === dialoSeq.length - 1;
+      
+      modalText.textContent = currentStep.text;
+      ResetBtnContainer(btnCont);
+
+      if (isLastStep && choice.subChoices && choice.subChoices.length > 0) 
+      {
+        choice.subChoices.forEach(subChoice => 
+        {
+          const subBtn = document.createElement("button");
+          subBtn.textContent = subChoice.text;
+          subBtn.classList.add("key"); 
+          
+          subBtn.onclick = () => finishTurn(scene, subChoice, activeTiles);
+          
+          btnCont.appendChild(subBtn);
+        });
+      } 
+      
+      else 
+      {
+        const continueBtn = createContinueBtn(currentStep.btnLabel);
+        continueBtn.onclick = () => 
+        {
+        showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap);
+        };
+      
+        btnCont.appendChild(continueBtn);
+      }
+      
+      stepIndex++;
+    } 
+  else 
+  {
+    finishWrap();
+  }
+}
+
+function btnOnClick(choice, scene, activeTiles, btn, btnCont)
+{
+  let correctProp = true;
+    if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) 
+    {
+      correctProp = false;
+    }
+
+    const dialoSeq = [];
+    
+    if (choice.msg) 
+    {
+      dialoSeq.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
+    }
+    
+    let i = 2;
+    while (choice[`msg${i}`]) 
+    {
+      dialoSeq.push(
+      {
+        text: choice[`msg${i}`],
+        btnLabel: choice[`msgBtn${i}`] || "Next..."
+      });
+      i++;
+    }
+
+    const finishWrap = () => finishTurn(scene, choice, activeTiles);
+  
+    if (currentMode === GAME_MODES.PROP_HUNT && correctProp) 
+      {
+        playTrack("assets/sfx/meow.mp3", {loop: false});
+      }
+      
+
+    if (!correctProp) 
+    {
+      handleWrongProp(btn);
+    } 
+    else if (dialoSeq.length === 0) 
+    {
+      finishWrap(); // No messages at all, just move on
+    } 
+    else 
+    {
+      let stepIndex = 0; 
+
+      showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap);
+    }
+}
+
 /**
  * @param {any} scene
  * @param {HTMLElement[]} activeTiles
- * @param {HTMLElement} buttonContainer
+ * @param {HTMLElement} btnCont
  */
-function setupChoices(scene, activeTiles, buttonContainer) {
-  scene.choices.forEach(choice => {
+function setupChoices(scene, activeTiles, btnCont) 
+{
+  scene.choices.forEach(choice => 
+  {
     const btn = document.createElement("button");
     btn.textContent = choice.text;
     btn.classList.add("key"); 
     
-    btn.onclick = () => {
-      let correctProp = true;
-      if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) {
-        correctProp = false;
-      }
-
-      // 🪄 THE HARVESTER: Converts your flat keys into an organized list
-      const dialogSequence = [];
-      
-      // 1. Grab the base message
-      if (choice.msg) {
-        dialogSequence.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
-      }
-      
-      // 2. Grab msg2, msg3, msg4, etc. automatically
-      let i = 2;
-      while (choice[`msg${i}`]) {
-        dialogSequence.push({
-          text: choice[`msg${i}`],
-          btnLabel: choice[`msgBtn${i}`] || "Next..."
-        });
-        i++;
-      }
-
-      const finishWrap = () => finishTurn(scene, choice, activeTiles);
-
-      if (currentMode === GAME_MODES.PROP_HUNT && correctProp) {
-        playTrack("assets/sfx/meow.mp3", {loop: false});
-      }
-
-      // --- Interaction Logic ---
-      if (!correctProp) {
-        handleWrongProp(btn);
-      } 
-      else if (dialogSequence.length === 0) {
-        finishWrap(); // No messages at all, just move on
-      } 
-      else {
-        let stepIndex = 0; // Our bookmark
-
-        const showNextMessage = () => {
-          if (stepIndex < dialogSequence.length) {
-            // Get the current step object
-            const currentStep = dialogSequence[stepIndex];
-            
-            // Show text
-            modalText.textContent = currentStep.text;
-            
-            ResetBtnContainer(buttonContainer);
-
-            // Create button with the specific label for this step
-            const continueBtn = createContinueBtn(currentStep.btnLabel);
-            continueBtn.onclick = showNextMessage; 
-            buttonContainer.appendChild(continueBtn);
-            
-            // Move bookmark forward
-            stepIndex++;
-          } else {
-            // Out of messages!
-            finishWrap();
-          }
-        };
-
-        // Start the sequence
-        showNextMessage();
-      }
-    };
-
-    buttonContainer.appendChild(btn);
-  });
+    btn.onclick = () => btnOnClick(choice, scene, activeTiles, btn, btnCont)
+  
+  btnCont.appendChild(btn);
+});
 }
 
 
@@ -533,12 +564,12 @@ function setupChoices(scene, activeTiles, buttonContainer) {
 function handleSeqTurn(activeTiles) 
 {
   const scene = storySequence[sceneId];
-  const buttonContainer = document.getElementById("choice-button-container");
+  const btnCont = document.getElementById("choice-button-container");
 
   // safety check
   if (!scene) return;
 
-  ResetBtnContainer(buttonContainer);
+  ResetBtnContainer(btnCont);
 
   const modalBox = questionModal.querySelector(".modal-content");
 
@@ -580,7 +611,7 @@ function handleSeqTurn(activeTiles)
   // standard node -> show  questionModal
   if (hasChoices) 
   {
-    setupChoices(scene, activeTiles, buttonContainer);
+    setupChoices(scene, activeTiles, btnCont);
   } else {
     // cutscene case: question exists, no buttons
     setTimeout(() => 
@@ -779,16 +810,16 @@ function hideUI()
 
 
 function showShareModal(resultType) {
-  const buttonContainer = document.getElementById("choice-button-container");
+  const btnCont = document.getElementById("choice-button-container");
   
-  if (!buttonContainer) {
+  if (!btnCont) {
     console.error("Ogre Error: Could not find 'choice-button-container' in HTML!");
     return;
   }
 
   // clear out old story buttons and show questionModal
-  buttonContainer.innerHTML = ""; 
-  buttonContainer.style.display = "flex"; // ensure it's using row layout
+  btnCont.innerHTML = ""; 
+  btnCont.style.display = "flex"; // ensure it's using row layout
   questionModal.classList.remove("hidden");
 
 
@@ -812,7 +843,7 @@ function showShareModal(resultType) {
     setTimeout(() => { shareBtn.textContent = "Copy Result"; }, 2000);
   };
 
-  buttonContainer.appendChild(shareBtn);
+  btnCont.appendChild(shareBtn);
 }
 
 function generateShareString() 

@@ -4068,3 +4068,289 @@ const abyssopelagic =
   },
 
 }
+
+const preTrench =
+{
+  "start":
+  {
+    next: "finallySafe"
+  },
+
+  "finallySafe":
+  {
+    reveal: standaRevealEmojis("🐷", "", "🔥", "", "🐟"),
+
+    question: `Finally safe from danger, you and your sea piggy pal reminisce around a hydrothermal vent.`,
+
+    choices:
+    [
+      {
+        text: "Real talk this sea business might not be for me",
+        msg: "Wait, are you from the surface?",
+        
+        subChoices: 
+        [
+          { text: "Yes", next: "surfaceYes" },
+          { text: "No.", next: "surfaceNo" }
+        ]
+      },
+    ]
+  },
+  
+  "surfaceYes":
+  {
+    reveal: standaRevealEmojis("🐷", "💬", "🔥", "", "🐟"),
+
+    question: `Holy shit, I never thought there was anyone else like us. I was heading for the Mariana Trench but I got captured by that glowy-eyed kook.`,
+
+    choices:
+    [
+      {
+        text: "Who's \"us\"",
+        next: "whyMariana",
+
+        msg: `I might as well tell you.
+              I've been in these waters for the better part of a decade, but I wasn't always alone.
+              Three years ago or so, I met a cusk eel in the same boat as us. 
+              He told me the answer I seeks is hidden in the ocean's ultimate depth, the mariana trench.`,
+
+        subChoices:
+        [
+          { text: "We must depart at once!", next: "mustDepart" },
+          { text: "We must prepare.", next: "mustPrepare" }
+        ]
+              
+              /*`I might as well tell you. 
+              Just like you, I used to walk the surface, until some crab decided against that. 
+              The light of the surface growing scarcer until eventually there was no way for me to tell whether my eyes were opened or closed. What followed was a loneliness the likes of which I wouldn't wish upon my worst friends.
+              After what could have been weeks or years .
+              "Finnigan" he called himself. For you see a real assfish he seemed, but with time I'd come to consider him the closest thing to a friend I've ever had down here`
+              // he was a real assfish but he was my buddy...
+              /*`The closets thing to a friend I've had down here told me that...
+              I've been in these waters for the better part of a decade, though I wasn't always alone.
+              You see, there's a cusk eel down here, whom i met by chance or possible fate 3 years ago.
+              He told me told me that the ocean's ultimate depth held the answer i sought.`*/
+      },
+    ]
+  },
+  
+  "surfaceNo":
+  {
+    reveal: standaRevealEmojis("🐷", "💢", "🔥", "", "🐟"),
+
+    question: `I thought we were in this together, why are you lying to me now?`,
+
+    choices:
+    [
+      {
+        text: "I fundamentally do not respect you as an equal and think you should die",
+        msg: "Hog absconds. You're all alone again.",
+        next: "standoffish",
+      },
+    ]
+  },
+
+  "standoffish":
+  {
+    reveal: standaRevealEmojis("🐖", "💨", "🔥", "", "🐟"),
+
+    gg: () => endGame("Be rude to someone else?", "Standoffish...") 
+  },
+  
+  "mustPrepare":
+  {
+    reveal: standaRevealEmojis("🐷", "🍖", "🔥", "🍗", "🐟"),
+
+    question: `You prepare a hearty Breakfast With Hog, contrary to how mama would make it, by cooking clumps of marine snow over the thermal vent. 
+               It improves the taste a little.`,
+
+    choices:
+    [
+      {
+        text: "Let's go",
+        next: "letsGoStress",
+      },
+      {
+        text: "More prep",
+        next: "morePrep",
+      },
+    ]
+  },
+
+  "letsGoStress":
+  {
+    reveal: standaRevealEmojis("❓", "🐖", "🐟", "💨", "❓"),
+
+    question: "You depart for the Mariana Trench without any knowledge of the surrounding terrain. As soon as you departed you and your new companion get caught in a wild current.",
+
+    choices:
+    [
+      {
+        text: "next",
+        msg: "You and Hog got separated somewhere along the way. It's dark and the water feels colder than usual. There's no way you can find your way back.",
+        msgBtn: "next",
+        next: "noPrepEnding",
+      },
+    ]
+  },
+
+  "noPrepEnding":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+    gg: () => endGame("Eat snow for the rest of your short life?","Underprepared..."),
+  },
+  
+  
+  
+  "morePrep":
+  {
+    reveal: standaRevealEmojis("🐷", "💬", "🧭", "🐟", "💬"),
+
+    question: `You prepare a smarty plan Of Action With Hog. You scope out the surroundings and check the currents.`,
+
+    choices:
+    [
+      {
+        text: "Let's go",
+        msg: "You depart for the Mariana trench with your newfound companion. Along the way you encounter many adventures, but that's a story for another day.",
+        msgBtn: "A cliffhanger???",
+        next: "letsGoTRUE",
+      },
+      {
+        text: "MORE PREP",
+        next: "lightsOut",
+      },
+    ]
+  },
+
+  "letsGoTRUE":
+  {
+    reveal: standaRevealEmojis("", "🐖", "🐟", "💨", "",),
+
+    gg: (tiles) => win(tiles, "Go deeper?", "to be continued...")
+  },
+  
+  "lightsOut":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: "There is a light that never goes out, but it's evidently not the one you were sitting around.",
+
+    choices:
+    [
+      {
+        text: "take me ouuut~ (light it)",
+        msg: `The light reveals rows of sharp teeth ready to clamp down on you. 
+              There's no time for more prep, you and Hog head straight for the Mariana trench to avoid the imminent danger`,
+        msgBtn: "Swim for your life!!",
+        next: "swimForLife",
+      },
+    ]
+  },
+  
+  "swimForLife":
+  {
+    reveal: standaRevealEmojis("🐖", "🐟", "💨", "🦈", "🔥"),
+
+    gg: (tiles) => win(tiles, "Go deeper?", "Overprepared...")
+  },
+  
+  "mustDepart":
+  {
+    reveal: standaRevealEmojis("❓", "🐖", "🐟", "💨", "💢"),
+
+    question: `You're confused and hungry. Surely this can't end well.`,
+
+    choices:
+    [
+      {
+        text: "next",
+        msg: "You and Hog got separated somewhere along the way. It's dark and the water feels colder than usual. There's no way you can find your way back.",
+        next: "outOfEnergy",
+      },
+    ]
+  },
+  
+  "outOfEnergy":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: () => endGame("Call for help?", "Reckless...")
+  },
+  
+  "4":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "3":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "2":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+  
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+}
