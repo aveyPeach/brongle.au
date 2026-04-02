@@ -1,5 +1,5 @@
 /* global dictionary, targetWords */
-// @ts-check
+// @ts-nocheck
 
 const questionModal = document.getElementById("question-modal")
 const yesBtn = document.getElementById("yes-btn")
@@ -67,6 +67,7 @@ const STORY_REGISTRY =
   288: anglerfish,
   289: abyssopelagic,
   290: preTrench,
+  291: recap,
 };
 
 /**
@@ -367,15 +368,30 @@ function setupNextScene(nextId, activeTiles)
   // make sure that player can't type especially if we reveal win condition
   stopInteraction();
 
-  if (nextScene.reveal)
+  if (!nextScene.isTextOnly) 
   {
-    nextScene.reveal(activeTiles);
-    
-    if (nextScene.onReveal)
-      nextScene.onReveal(activeTiles);
+    if (nextScene.reveal) 
+    {
+      nextScene.reveal(activeTiles);
+      if (nextScene.onReveal) nextScene.onReveal(activeTiles);
+    } 
+    else 
+    {
+      showAlert("no emoji reveal specified");
+    }
   }
-  else
-    showAlert("no emoji reveal specified");
+
+  if (nextScene.next && (!nextScene.choices || nextScene.choices.length === 0)) 
+  {
+    // 🪄 We use a Timeout so the player actually has time to READ the text
+    // before it vanishes and the next scene starts!
+    const readTime = nextScene.isTextOnly ? 1500 : 3000; 
+
+    setTimeout(() => 
+    {
+      setupNextScene(nextScene.next, activeTiles);
+    }, readTime);
+  }
 
   if (guessCount === MAX_GUESSES)
     gotoSecretScene();
@@ -384,8 +400,7 @@ function setupNextScene(nextId, activeTiles)
     {
       nextScene.gg(activeTiles);
     } 
-  // error handling?
-  // else 
+  
 }
 
 function finishTurn(scene, choice, activeTiles)
@@ -393,21 +408,28 @@ function finishTurn(scene, choice, activeTiles)
   questionModal.classList.add("hidden");
       
   if (scene.action) scene.action(activeTiles);
-
-  // questionmarks implement optional chaining ensure that we only do this if 'choice' exists :3
   if (choice?.action) choice?.action(activeTiles);
       
-  guessCount++;
-
-  // optional chaining '?' for safety
   const nextId = choice?.next || scene.next; 
 
   if (nextId && storySequence[nextId])
   {
     sceneId = nextId;
-    setTimeout(startInteraction, 1500);
+    const nextScene = storySequence[nextId];
 
-    setupNextScene(nextId, activeTiles);
+    // 🪄 THE TRAFFIC COP
+    if (nextScene.noReveal) 
+    {
+      handleSeqTurn(activeTiles);
+    } 
+    else 
+    {
+      // Phase 2: Standard Game Loop. 
+      // Increment guess, do tile animations, and give the keyboard back.
+      guessCount++; 
+      setupNextScene(nextId, activeTiles);
+      setTimeout(startInteraction, 1500);
+    }
   }
   else if(!gameOver)
   {

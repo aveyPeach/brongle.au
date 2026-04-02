@@ -1,4 +1,6 @@
 
+
+
 /**
  * 
  * @param {HTMLElement[]} tiles 
@@ -4277,80 +4279,314 @@ const preTrench =
 
     gg: () => endGame("Call for help?", "Reckless...")
   },
-  
-  "4":
-  {
-    reveal: standaRevealEmojis("", "", "", "", ""),
+}
 
-    question: ``,
+const recap =
+{
+  "start": 
+  {
+    question: `Welcome! Brongle's mangaka is on health leave today due to mental health concerns. 
+               It's unfortunate, though of course beyond the scope of our powers as editors (if only they could lock in).`,
 
     choices:
     [
       {
-        text: "",
-        next: "",
+        text: "next",
+        next: "recapOrNo",
+      },
+    ]
+  },
+
+  "recapOrNo":
+  {
+    noReveal: true,
+    question: `But don't worry! We've made sure that you'll still get your daily fill of brongling. 
+              Today's episode just might have different pacing than you're used to is all.
+              If you'd prefer to just catch the essential story progressing parts of today's brongle, the option is yours, otherwise: strap in!`,
+
+    choices: 
+    [
+      {
+        text: "yummy!! I love text I love content !!",
+        next: "recap",
       },
       {
-        text: "",
-        next: "",
+        text: "pfft, a filler episode? not on my watch.",
+        next: "guiltPlayer"
+      }
+    ]
+  },
+
+  "guiltPlayer":
+  {
+    noReveal: true,
+    question: `o-oh, are you sure?`,
+
+    choices: 
+    [
+      {
+        text: `I'm sorry brongle, I was playing hard to get`,
+        next: `recap`,
+      },
+      {
+        text: `yes.`,
+        next: `guilt2`,
       },
     ]
   },
   
-  "3":
+  "guilt2":
   {
-    reveal: standaRevealEmojis("", "", "", "", ""),
+    noReveal: true,
+    question: `hmm, do you hate me?`,
 
-    question: ``,
-
-    choices:
+    choices: 
     [
       {
-        text: "",
-        next: "",
+        text: `of course not!`,
+        next: `recap`,
       },
       {
-        text: "",
-        next: "",
+        text: `y'know what maybe i do`,
+        msg: "alright that's fair, also here's a visual representation of what i'm going to do to you",
+        next: `guilt3`,
       },
     ]
+  },
+  
+  "guilt3":
+  {
+    reveal: standaRevealEmojis("", "", "🤯", "", ""),
+
+    gg: () => endGame("Take your sour attitude somewhere else?", "*serves you right*"),
+  },
+  
+  "recap":
+  {
+    noReveal: true,
+    question: `Long ago there was nothing except for uhhhh.`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        next: `recap1`,
+      },
+    ]
+  },
+  
+  "recap1":
+  {
+    noReveal: true,
+    question: `Like dust I guess?`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        next: `recap2`,
+      },
+    ]
+  },
+  
+  "recap2":
+  {
+    noReveal: true,
+    question: `Regardless, it wasn't too long after that earth was covered water.`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        next: `recap3`,
+      },
+    ]
+  },
+  
+  "recap3":
+  {
+    noReveal: true,
+    question: `Salty sea water`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        msg: `A slightly shorter but still long time ago, that very water gave birth to life.`,
+        msgBtn: "mhm",
+        next: `recap4`,
+      },
+    ]
+  },
+  
+  "recap4":
+  {
+    noReveal: true,
+    question: `And "life" ended up uhhhh`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        msg: `Being a good thing, probably`,
+        msgBtn: "i think so yeah",
+        next: `recap5`,
+      },
+    ]
+  },
+  
+  "recap5":
+  {
+    noReveal: true,
+    question: `Which brings us to the first chapter...`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        msg: "Would I even call them chapters?",
+        msg2: "Episodes?",
+        msg3: "Games?",
+        msg4: "Yeah let's go with chapters",
+        msg5: `The very first chapter of the Brongle Ocean Arc`,
+        action: () => playTrack("assets/sfx/tada.mp3", {loop: false, volume: 0.1}),
+        next: `recap6`,
+      },
+    ]
+  },
+  
+  "recap6":
+  {
+    noReveal: true,
+    question: `Oh btw if you're not feeling this recap so far you could skip it BUT
+               That would bar you from experiencing the Beginning of The Mariana Trench Arc`,
+
+    choices: 
+    [
+      {
+        text: `NEVER!`,
+        action: () => playTrack("assets/music/sillyLittleDitty.mp3", {loop: true, volume: 0.7, isBGM: true}),
+        next: `recap7`,
+      },
+      {
+        text: `get m,e outttt`,
+        next: "byebye"
+      },
+    ]
+  },
+  
+  "recap7":
+  {
+    noReveal: true,
+    question: `:3c`,
+
+    choices: 
+    [
+      {
+        text: `Great choice!`,
+
+        msg: `Let's get into it!`,
+        msg2: `Hold on let me get some water actually`,
+        msg3: `...`,
+        msg4: `...`,
+        msg5: `...`,
+        msg6: `Ahhhh -w- good stuff.`,
+        msg7: `So where were we?`,
+        msg8: `Oh right the recap`,
+        msg9: `The first "chapter" was of course a dissection on the ethical implications of interfering with the natural order`,
+        msg10: `Notice how, all paths despite seeming optimal and kind, led to bad outcomes?`,
+        msg11: `That's meant to be a subtle commentary on how no matter what you do, you will be punished and also everything is terrible.`,
+        msg12: `It really gets you thinking about how the game of life hands you a loaded die, and there's nothing you can do about it.`,
+        msg13: `It's tragic really, when you think about it (which you should). The fact that it's tragic also means that it's deep and therefore a good story.`,
+        msg14: `All Ally`,
+        msg15: `Now that I think about it, unfair and punishing outcomes seem to be a theme across all of the Brongles I've written`,
+        msg16: `Me, The Brongler`,
+        msg17: `I'd like to think of myself as radical realist`,
+        msg18: `Or perhaps a radical observer`,
+        msg19: `That's why my works may come across as naturalistic, raw and unforgiving.`,
+        msg20: `That's the life I observed while working night shifts at a gas station.`,
+        msg21: `A nice gas station.`,
+        msg22: `An upscale one, with chargers for electric vehicles and a car wash`,
+        msg23: `Freshly grilled hot dogs every minute.`,
+        msg24: `Stockholders said we ought to toss any hot dog grilled for too long.`,
+        msg25: `Though it'd be a damned waste, so we fed them to the boss's samoyed.`,
+        msg26: `Sammy!.`,
+        msg27: `God her fur was gorgeous.`,
+        msg28: `Sometimes I'd dream about being transformed into a flea so I could rest in those soft luscious tufts of cloud.`,
+        msg29: `I'd be a nice flea though, I'd like to think.`,
+        msg30: `But I'm sure everyone thinks along those lines.`,
+        msg31: `That if only our circumstances differed from our current ones, we'd get our act together and life would suddenly make sense.`,
+        msg32: `It's just like nietszhe said: "the grass is always greener on the other side"`,
+        msg33: `But what if you're colourblind?`,
+        msg34: `He never seemed to have thought about that.`,
+        msg35: `I think that's why we call dogs man's best friend (or woman's or they's best friend, if you're into that sort of thing).)`,
+        msg36: `They don't see colour so they can't tell how green the grass is on the other side.`,
+        msg37: `They're just glad to have some soft grass under their paws`,
+        msg38: `And chase after sticks.`,
+        msg39: `Gnaw on bones.`,
+        msg40: `Or gas station hot dogs, heh.`,
+        msg41: `Anyway Chapter 2 was about, a lot of deep ideas, I'll leave it up to the community to decide what the point was though (you're welcome).`,
+        msg42: `Then chapter 3 of course, was special because it was the first one where you really got a sense of like, "*whoa* I'm in the ocean!!!", y'know?`,
+        msg43: `Then chapter 4, introduced the fan favourite tripod fish, who I heard was inspired by: `,
+        msg44: `Atlas shrugged, Ulysses, and other good books written by good authors.`,
+        msg45: `Chapter 5 was honestly not all that`,
+        msg46: `But chapter *6*, that's where you really, got the sense that like: "holy FUCK i feel like a fish"`,
+        msg47: `Which is something I've always cared a lot to try to translate into a story.`,
+        msg48: `Chapter 7 was of course, the first outsourced piece of brongle media.`,
+        msg49: `Thank you Warner Herzhog.`,
+        msg50: `Not that you wrote the chapter I just felt you deserved a shoutout at this point.`,
+
+
+        next: `recap8`,
+      },
+    ]
+  },
+  
+  "recap8":
+  {
+    noReveal: true,
+    question: `Which leads us to today's chapter! Chapter 8, the one we're currently on. I'm sure you've been wondering: "What happened after the events of yesterday??!?"`,
+
+    choices: 
+    [
+      {
+        text: `next`,
+        msg: "Well wonder no longer dear viewer, because right after you and sea piggy decided to set off for the mariana trench...",
+        msg2: "You both swam down towards the trench.",
+        msg3: "And you had each other's company, which was nice.",
+        msg4: "Also you found a mural on the side of the sea wall which foretold an ancient prophecy about 3 surface dwellers having a fateful encounter at the ocean's ultimate depth!!!.",
+        msg5: "That's all for this episode, thank you for listening and feel free to tune in tomorrow to see what happens next...",
+        next: `recapOver`,
+      },
+    ]
+  },
+  
+  "recapOver":
+  {
+    reveal: standaRevealEmojis("", "🐟", "🐟", "🐟", ""),
+    
+    gg: (tiles) => win(tiles, "Share what is sure to be considered a misunderstood masterpiece in the brongle saga years from now? (BG song is ory's creole trombone by kid ory's sunshine orchestra :3)", "HOLY FUCKING BRONGLE")
   },
   
   "2":
   {
-    reveal: standaRevealEmojis("", "", "", "", ""),
-
+    noReveal: true,
     question: ``,
 
-    choices:
+    choices: 
     [
       {
-        text: "",
-        next: "",
-      },
-      {
-        text: "",
-        next: "",
+        text: ``,
+        next: ``,
       },
     ]
   },
   
-  "1":
+  "byebye":
   {
-    reveal: standaRevealEmojis("", "", "", "", ""),
+    reveal: standaRevealEmojis("", "", "🍼", "👶", ""),
+    
+    gg: () => endGame("Disclose the fact that you're a rube?", "wääää i hate text (that's what you sound like rn)")
 
-    question: ``,
-
-    choices:
-    [
-      {
-        text: "",
-        next: "",
-      },
-      {
-        text: "",
-        next: "",
-      },
-    ]
   },
 }
