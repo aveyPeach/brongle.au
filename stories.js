@@ -4516,7 +4516,7 @@ const recap =
         msg29: `I'd be a nice flea though, I'd like to think.`,
         msg30: `But I'm sure everyone thinks along those lines.`,
         msg31: `That if only our circumstances differed from our current ones, we'd get our act together and life would suddenly make sense.`,
-        msg32: `It's just like nietszhe said: "the grass is always greener on the other side"`,
+        msg32: `It's just like Nitchie said: "the grass is always greener on the other side"`,
         msg33: `But what if you're colourblind?`,
         msg34: `He never seemed to have thought about that.`,
         msg35: `I think that's why we call dogs man's best friend (or woman's or they's best friend, if you're into that sort of thing).)`,
