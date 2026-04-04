@@ -430,3 +430,112 @@ const twoSevenFourAKAhorse =
   }
 ];
 */
+
+/*
+const ogreEncounter = 
+[
+  {
+    // Guess 1
+    question: "The nefarious ogre appears.",
+    btnYes: "oh?", btnNo: "oh!",
+    msgYes: "*grawr*", 
+    msgNo: "*grawr*",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",]),
+    actionNo:  (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",])
+  },
+  {
+    // Guess 2
+    question: "Talk to him?",
+    btnYes: "Yes", btnNo: "No",
+    //msgYes: , 
+    msgNo: "GRAWRRR R!!",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "💬", "🌳"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
+    actionNo: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    }
+  },
+    {
+    // Guess 3
+    question: "WILL YOU ANSWER MY RIDDLE?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "yayyy ^~^", 
+    msgNo: "GRAWRRR R!!",
+    actionYes: (tiles) => revealCustomTiles(tiles, ["🏚️", "", "", "", "🚗"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
+    actionNo: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    }
+  },
+  {
+    // Guess 4
+    question: "Can car go home?",
+    btnYes: "Yes", btnNo: "No",
+    msgYes: "WRONG. NO ROAD. OGRE SMASH.", 
+    msgNo: "CORRECT. NO ROAD! OGRE THINK HE LOVE YOU",
+    actionYes: (tiles) => {
+      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("The ogre killed you in cold blood. Tell the tale?");
+        }, 2000);
+      }, 1500);
+    },
+    actionNo: (tiles) => revealCustomTiles(tiles, ["💕", "💕", "🧌", "💕", "💕"], ["emoji","emoji","emoji","emoji","emoji"])
+  },
+  {
+    // Guess 5
+    question: "marriage?",
+    btnYes: "yeah sure", btnNo: "nuh uhhhh",
+    msgYes: "*church bells ring*!", 
+    msgNo: "OGRE CAN'T TAKE IT ANYMORE",
+    actionYes: (tiles) => {
+      revealCustomTiles(tiles, ["👨", "📸", "🧌", "👰‍♀️", "💐"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+      setTimeout(() => {
+        //danceTiles(tiles);
+        setTimeout(() => {
+          stopInteraction();
+          showShareModal("You two live happily ever after. Share your wedding photos?");
+        }, 2000); 
+      }, 1500);
+    },
+    actionNo: (tiles) => revealCustomTiles(tiles, ["💔", "💔", "🧌", "🔫", "💔"], ["emoji", "emoji","emoji", "emoji","emoji"])
+  },
+  {
+    // Guess 6
+    question: "OGRE CANT TAKE IT ANYMORE",
+    btnYes: "WAIT", btnNo: "PLEASE",
+    msgYes: "It's too late...", 
+    msgNo: "He doesn't listen...",
+    actionYes: (tiles) => playOgreEnd(tiles),
+    actionNo: (tiles) => playOgreEnd(tiles)
+  }
+];
+*/
+
+/*
+function playOgreEnd(tiles) {
+  revealCustomTiles(tiles, ["", "", "🕳️", "", ""], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
+  document.body.classList.add("shake");
+  
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+    stopInteraction();
+    showShareModal("What have you done? can you ever let people know?");
+  }, 1500);
+}
+*/

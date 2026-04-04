@@ -24,6 +24,8 @@ let guessCount = 0;
 
 let wrongGuesses = 0;
 
+let qteTimer = null;
+
 const keyboard = document.querySelector("[data-keyboard]");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
@@ -51,7 +53,7 @@ let storySequence = {};
 const STORY_REGISTRY = 
 {
   274: twoSevenFourAKAhorse,
-  275: ogreEncounter,
+  275: ogre,
   276: eleDance,
   277: cutoutTiger,
   278: guessGame,
@@ -68,6 +70,7 @@ const STORY_REGISTRY =
   289: abyssopelagic,
   290: preTrench,
   291: recap,
+  292: highFive,
 };
 
 /**
@@ -114,18 +117,6 @@ function startPreviousSequence(sequence)
   showAlert("aaaa");
 }
 
-// HELPER FUNCTIONS FOR STORIES 
-// awkward home but it works for now
-function playOgreEnd(tiles) {
-  revealCustomTiles(tiles, ["", "", "🕳️", "", ""], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-  document.body.classList.add("shake");
-  
-  setTimeout(() => {
-    document.body.classList.remove("shake");
-    stopInteraction();
-    showShareModal("What have you done? can you ever let people know?");
-  }, 1500);
-}
 function getPropHuntSharePrompt()
 {
   if (wrongGuesses === 0)
@@ -405,6 +396,12 @@ function setupNextScene(nextId, activeTiles)
 
 function finishTurn(scene, choice, activeTiles)
 {
+  if (qteTimer) 
+  {
+    clearTimeout(qteTimer);
+    qteTimer = null;
+  }
+
   questionModal.classList.add("hidden");
       
   if (scene.action) scene.action(activeTiles);
@@ -514,52 +511,59 @@ function showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTile
 
 function btnOnClick(choice, scene, activeTiles, btn, btnCont)
 {
+  if (qteTimer) 
+  {
+      clearTimeout(qteTimer);
+      qteTimer = null;
+  }
+
   let correctProp = true;
-    if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) 
-    {
-      correctProp = false;
-    }
 
-    const dialoSeq = [];
-    
-    if (choice.msg) 
-    {
-      dialoSeq.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
-    }
-    
-    let i = 2;
-    while (choice[`msg${i}`]) 
-    {
-      dialoSeq.push(
-      {
-        text: choice[`msg${i}`],
-        btnLabel: choice[`msgBtn${i}`] || "Next..."
-      });
-      i++;
-    }
+  if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) 
+  {
+    correctProp = false;
+  }
 
-    const finishWrap = () => finishTurn(scene, choice, activeTiles);
+  const dialoSeq = [];
   
-    if (currentMode === GAME_MODES.PROP_HUNT && correctProp) 
-      {
-        playTrack("assets/sfx/meow.mp3", {loop: false});
-      }
-      
+  if (choice.msg) 
+  {
+    dialoSeq.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
+  }
+  
+  let i = 2;
+  while (choice[`msg${i}`]) 
+  {
+    dialoSeq.push(
+    {
+      text: choice[`msg${i}`],
+      btnLabel: choice[`msgBtn${i}`] || "Next..."
+    });
+    i++;
+  }
 
-    if (!correctProp) 
-    {
-      handleWrongProp(btn);
-    } 
-    else if (dialoSeq.length === 0) 
-    {
-      finishWrap(); // No messages at all, just move on
-    } 
-    else 
-    {
-      let stepIndex = 0; 
+  const finishWrap = () => finishTurn(scene, choice, activeTiles);
 
-      showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap);
+  if (currentMode === GAME_MODES.PROP_HUNT && correctProp) 
+    {
+      playTrack("assets/sfx/meow.mp3", {loop: false});
     }
+    
+
+  if (!correctProp) 
+  {
+    handleWrongProp(btn);
+  } 
+  else if (dialoSeq.length === 0) 
+  {
+    finishWrap(); // No messages at all, just move on
+  } 
+  else 
+  {
+    let stepIndex = 0; 
+
+    showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap);
+  }
 }
 
 /**
@@ -592,6 +596,22 @@ function handleSeqTurn(activeTiles)
   if (!scene) return;
 
   ResetBtnContainer(btnCont);
+
+  if (qteTimer) 
+  {
+    clearTimeout(qteTimer);
+    qteTimer = null;
+  }
+
+  if (scene.timer) 
+  {
+    qteTimer = setTimeout(() => 
+    {
+      // TIME IS UP! Force them down the default/fail path.
+      // We pass a fake 'choice' object to finishTurn to simulate a click.
+      finishTurn(scene, { next: scene.timer.next }, activeTiles);
+    }, scene.timer.ms);
+  }
 
   const modalBox = questionModal.querySelector(".modal-content");
 
@@ -1059,6 +1079,11 @@ function playTrack(fileName, { loop = true, volume = 1.0, isBGM = false,} = {})
   }
 
   audio.play().catch(e => console.log("Audio blocked: click required"));
+}
+
+function playSfx(fileName, { loop = false, volume = 1.0, isBGM = false,} = {})
+{
+  playTrack(fileName, {loop, volume, isBGM})
 }
 
 

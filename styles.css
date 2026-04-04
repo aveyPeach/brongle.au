@@ -312,22 +312,35 @@ body[data-active-bg="puppy"] {
   animation: elephant-shuffle 0.6s infinite ease-in-out;
 }
 
-@keyframes cutout-fall {
+@keyframes tile-dynamic-flip {
   0% {
     transform: perspective(500px) rotateX(0deg);
     opacity: 1;
   }
   100% {
-    transform: perspective(500px) rotateX(80deg) translateY(-20px);
-    opacity: 0.4;
+    transform: perspective(500px) rotateX(var(--rot, 80deg)) translateY(var(--ty, -20px));
+    opacity: var(--op, 0.4);
   }
 }
 
-.tile.falling-cutout {
-  animation: cutout-fall 1.7s ease-in forwards;
-  transform-origin: bottom; 
+.tile.falling-cutout 
+{
+  --rot: 80deg;
+  --ty: -20px;
+  --op: 0.4;
+  animation: tile-dynamic-flip 1.7s ease-in forwards;
+  transform-origin: bottom;
 }
 
+.tile.vert-reverse
+{
+  --rot: 180deg;   
+  --ty: 0px;        
+  --op: 1;          
+  /* 🪄 2. Added 'forwards' so it stays flipped! */
+  animation: tile-dynamic-flip 0.6s forwards;
+  transform-origin: center;
+}
 
 .is-glitching {
   /* Starts with the RGB split */

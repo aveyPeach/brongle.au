@@ -66,7 +66,7 @@ const twoSevenFourAKAhorse =
       {
         text: "YES",
         msg: "yay !",
-        next: "areYouStupid",
+        next: "white",
       },
       {
         text: "NO",
@@ -414,99 +414,154 @@ const twoSevenFourAKAhorse =
   },
 }
 
-const ogreEncounter = 
-[
+
+const ogre =
+{
+  "start":
   {
-    // Guess 1
-    question: "The nefarious ogre appears.",
-    btnYes: "oh?", btnNo: "oh!",
-    msgYes: "*grawr*", 
-    msgNo: "*grawr*",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",]),
-    actionNo:  (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "🌲", "🌳"], ["emoji","emoji","emoji","emoji","emoji",])
+    question: `The nefarious ogre appears.`,
+
+    next: "talkOgre",
+
+    choices:
+    [
+      {
+        text: "oh?",
+        msg: "*grawr*",
+      },
+      {
+        text: "oh!",
+        msg: "*grawr*",
+      },
+    ]
   },
+
+  "talkOgre":
   {
-    // Guess 2
+    reveal: standaRevealEmojis("🌳", "🌲", "🧌", "🌲", "🌳"),
+
     question: "Talk to him?",
-    btnYes: "Yes", btnNo: "No",
-    msgYes: "it's important to trust strangers", 
-    msgNo: "GRAWRRR R!!",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["🌳", "🌲", "🧌", "💬", "🌳"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
-    actionNo: (tiles) => {
-      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-      setTimeout(() => {
-        //danceTiles(tiles);
-        setTimeout(() => {
-          stopInteraction();
-          showShareModal("The ogre killed you in cold blood. Tell the tale?");
-        }, 2000);
-      }, 1500);
-    }
+
+    choices:
+    [
+      {
+        text: "Yes",
+        msg: "it's important to trust strangers",
+        next: "willYouAnswerRiddle",
+      },
+      {
+        text: "No",
+        msg: "GRAWRRR R!!",
+        next: "bludgeon",
+      },
+    ]
   },
-    {
-    // Guess 3
+
+  "willYouAnswerRiddle":
+  {
+    reveal: standaRevealEmojis("🌳", "🌲", "🧌", "💬", "🌳"),
+
     question: "WILL YOU ANSWER MY RIDDLE?",
-    btnYes: "Yes", btnNo: "No",
-    msgYes: "yayyy ^~^", 
-    msgNo: "GRAWRRR R!!",
-    actionYes: (tiles) => revealCustomTiles(tiles, ["🏚️", "", "", "", "🚗"], ["emoji", "emoji", "emoji", "emoji", "emoji"]),
-    actionNo: (tiles) => {
-      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-      setTimeout(() => {
-        //danceTiles(tiles);
-        setTimeout(() => {
-          stopInteraction();
-          showShareModal("The ogre killed you in cold blood. Tell the tale?");
-        }, 2000);
-      }, 1500);
-    }
+
+    choices:
+    [
+      {
+        text: "Yes",
+        msg: "yayyy ^~^",
+        next: "riddle",
+      },
+      {
+        text: "No",
+        msg: "GRAWRRR R!!",
+        next: "bludgeon",
+      },
+    ]
   },
+
+  "bludgeon":
   {
-    // Guess 4
+    reveal: standaRevealEmojis("☠️", "🩸", "🪦", "🩸", "☠️"),
+
+    gg: () => endGame("The ogre killed you in cold blood. Tell the tale?")
+  },
+
+  "riddle":
+  {
+    reveal: standaRevealEmojis("🏚️", "", "", "", "🚗"),
+
     question: "Can car go home?",
-    btnYes: "Yes", btnNo: "No",
-    msgYes: "WRONG. NO ROAD. OGRE SMASH.", 
-    msgNo: "CORRECT. NO ROAD! OGRE THINK HE LOVE YOU",
-    actionYes: (tiles) => {
-      revealCustomTiles(tiles, ["☠️", "🩸", "🪦", "🩸", "☠️"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-      setTimeout(() => {
-        //danceTiles(tiles);
-        setTimeout(() => {
-          stopInteraction();
-          showShareModal("The ogre killed you in cold blood. Tell the tale?");
-        }, 2000);
-      }, 1500);
-    },
-    actionNo: (tiles) => revealCustomTiles(tiles, ["💕", "💕", "🧌", "💕", "💕"], ["emoji","emoji","emoji","emoji","emoji"])
+
+    choices:
+    [
+      {
+        text: "Yes",
+        msg: "WRONG. NO ROAD. OGRE SMASH.",
+        next: "bludgeon",
+      },
+      {
+        text: "No",
+        msg: "CORRECT. NO ROAD! OGRE THINK HE LOVE YOU",
+        next: "ogreLove",
+      },
+    ]
   },
+
+  "ogreLove":
   {
-    // Guess 5
+    reveal: standaRevealEmojis("💕", "💕", "🧌", "💕", "💕"),
+
     question: "marriage?",
-    btnYes: "yeah sure", btnNo: "nuh uhhhh",
-    msgYes: "*church bells ring*!", 
-    msgNo: "OGRE CAN'T TAKE IT ANYMORE",
-    actionYes: (tiles) => {
-      revealCustomTiles(tiles, ["👨", "📸", "🧌", "👰‍♀️", "💐"], ["emoji", "emoji", "emoji", "emoji", "emoji"]);
-      setTimeout(() => {
-        //danceTiles(tiles);
-        setTimeout(() => {
-          stopInteraction();
-          showShareModal("You two live happily ever after. Share your wedding photos?");
-        }, 2000); 
-      }, 1500);
-    },
-    actionNo: (tiles) => revealCustomTiles(tiles, ["💔", "💔", "🧌", "🔫", "💔"], ["emoji", "emoji","emoji", "emoji","emoji"])
+
+    choices:
+    [
+      {
+        text: "yeah sure",
+        msg: "*church bells ring*!",
+        next: "marriage"
+      },
+      {
+        text: "nuh uhhh",
+        msg: "OGRE CAN'T TAKE IT ANYMORE",
+        next: "cantTakeIt"
+      },
+    ]
   },
+
+  "marriage":
   {
-    // Guess 6
+    reveal: standaRevealEmojis("👨", "📸", "🧌", "👰‍♀️", "💐"),
+
+    gg: (tiles) => win(tiles, "You two live happily ever after. Share your wedding photos?")
+  },
+
+  "cantTakeIt":
+  {
+    reveal: standaRevealEmojis("💔", "💔", "🧌", "🔫", "💔"),
+
     question: "OGRE CANT TAKE IT ANYMORE",
-    btnYes: "WAIT", btnNo: "PLEASE",
-    msgYes: "It's too late...", 
-    msgNo: "He doesn't listen...",
-    actionYes: (tiles) => playOgreEnd(tiles),
-    actionNo: (tiles) => playOgreEnd(tiles)
-  }
-];
+
+    choices:
+    [
+      {
+        text: "WAIT",
+        msg: "It's too late...",
+        next: "ogreEnd",
+      },
+      {
+        text: "PLEASE",
+        next: "He doesn't listen...",
+        next: "ogreEnd",
+      },
+    ]
+  },
+
+  "ogreEnd":
+  {
+    reveal: standaRevealEmojis("", "", "🕳️", "", ""),
+
+    gg: () => endGame("What have you done? can you ever let people know?")
+  },
+}
 
 const eleDance = 
 {
@@ -524,12 +579,6 @@ const eleDance =
       { 
         text: "Yeah...", 
         next: "hit it", 
-        action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
-      },
-      { 
-        text: "hehe", 
-        next: "hit it", 
-        msg: "i'm a witch and i'm evil",
         action: (tiles) => revealCustomTiles(tiles, ["", "", "🐘", "", ""], ["white", "white", "emoji", "white", "white"]),
       },
     ]
@@ -644,6 +693,11 @@ const eleDance =
       }
     ]
   },
+}
+
+const eleRemake =
+{
+
 }
 
 const cutoutTiger = 
@@ -4588,5 +4642,190 @@ const recap =
     
     gg: () => endGame("Disclose the fact that you're a rube?", "wääää i hate text (that's what you sound like rn)")
 
+  },
+}
+
+const highFive =
+{
+  "start":
+  {
+    next: "heyDude"
+  },
+
+  "heyDude":
+  {
+    reveal: standaRevealEmojis("", "", "😎", "", ""),
+    question: "hey dude",
+
+    choices:
+    [
+      {
+        text: "hey dude!",
+        msg: "up top",
+        next: "downLow",
+      },
+      {
+        text: "hey jude",
+        next: "heyJude",
+      },
+    ]
+  },
+  
+  "downLow":
+  {
+    reveal: (tiles) => 
+    {
+      revealEmojis(tiles, "", "🤚", "😎", "", ""); 
+  
+      setTimeout(() => 
+      {
+        if (tiles[1]) 
+        {
+          tiles[1].classList.add("vert-reverse");
+        }
+      }, 1000);
+    },
+
+    onReveal: () => 
+      {
+        setTimeout(() => 
+          {
+            playSfx("assets/sfx/clap.wav", {volume: 0.5});
+          }, 500);
+      },
+
+    question: "down low",
+
+    choices:
+    [
+      {
+        text: "oh!",
+        msg: "haha nice, you got me :)",
+        msgBtn: "hehe ^~^",
+        next: "youDidIt",
+      },
+    ],
+
+    timer: { ms: 1500, next: "urAfool" },
+  },
+  
+  "urAfool":
+  {
+    reveal: standaRevealEmojis("", "🤚", "😎", "", ""),
+    gg: () => endGame("Gonna cry about it?", "too slow!")
+  },
+  
+  "heyJude":
+  {
+    reveal: standaRevealEmojis("🙇‍♀️", "🦎", "💈", "🟡", "🐒"),
+    question: "Can you find her?",
+
+    choices:
+    [
+      {
+        text: "she's all the way to the left!",
+        msg: "You have found her, nice! What now?",
+        msgBtn: "go and get her",
+        msg2: "you go and get her, jam out for approximately 7 minutes and 5 seconds then end it all off with a congratulatory high five.",
+        msgBtn2: "i'm glad we didn't make it bad :)",
+        next: "highFive",
+      },
+      {
+        text: "she's just left of center!",
+        msg: "close, that's actually RANGO!",
+        next: "rango",
+      },
+      {
+        text: "she's in the center!",
+        msg: "close, that's actually POLE!",
+        next: "pole",
+      },
+      {
+        text: "she's just right of center!",
+        msg: "proche! mais en faite c'est JAUNE",
+        next: "jaune",
+      },
+      {
+        text: "she's all the way to the right!",
+        msg: "close! that's actually my GORGEOUS HAIRY SON",
+        next: "hairySon",
+      },
+    ]
+  },
+
+  "rango":
+  {
+    reveal: standaRevealEmojis("", "", "🦎", "", ""),
+
+    gg: (tiles) => win(tiles, "quick! press this button to spread PEACE AND LOVE 😎✌️🌟❤️🎶🎵🍎🍇🕺🏼☮️", "I'VE GOT BLISTERS ON ME FINGERS")
+  },
+
+  "pole":
+  {
+    reveal: standaRevealEmojis("", "", "💈", "", ""),
+
+    gg: (tiles) => win(tiles, "Take these broken wings and learn to fly?", "co ty pierdolisz?")
+  },
+  
+
+  "jaune":
+  {
+    reveal: standaRevealEmojis("", "", "🟡", "", ""),
+
+    gg: (tiles) => win(tiles, "Twist and shout?", "oh mec je suis le meilleur beatle...")
+  },
+  
+  "hairySon":
+  {
+    reveal: standaRevealEmojis("", "", "🐒", "", ""),
+
+    gg: (tiles) => win(tiles, "Let your guitar gently weep?", "here comes the son!")
+  },
+  
+  
+  "highFive":
+  {
+    reveal: standaRevealEmojis("", "👩", "🙏", "👤", ""),
+    onReveal: () => 
+    {
+      setTimeout(() => 
+      {
+        playSfx("assets/sfx/clap.wav", {volume: 0.5});
+      }, 500);
+    },
+
+    gg: (tiles) => win(tiles, "Let it out and let it in?", "hell yeah"),
+  },
+  
+  "youDidIt":
+  {
+    reveal: standaRevealEmojis("", "", "❤️", "", ""),
+
+    gg: (tiles) => win(tiles, "Bro out?", "friernship is magic...")
+  },
+  
+  "2":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: (tiles) => win(tiles, "", "")
+  },
+  
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+    question: "",
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
   },
 }
