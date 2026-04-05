@@ -72,6 +72,8 @@ const STORY_REGISTRY =
   291: recap,
   292: highFive,
   293: easterSpecial,
+  294: trenchesReborn,
+  //295: funPokemonFacts,
 };
 
 /**
@@ -442,7 +444,7 @@ function finishTurn(scene, choice, activeTiles)
 function createContinueBtn(btnText = "next")
 {
   const continueBtn = document.createElement("button");
-  continueBtn.textContent = btnText;
+  continueBtn.innerHTML = btnText;
   continueBtn.classList.add("key");
 
   return continueBtn;
@@ -475,7 +477,7 @@ function showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTile
       
       const isLastStep = stepIndex === dialoSeq.length - 1;
       
-      modalText.textContent = currentStep.text;
+      modalText.innerHTML = currentStep.text;
       ResetBtnContainer(btnCont);
 
       if (isLastStep && choice.subChoices && choice.subChoices.length > 0) 
@@ -483,7 +485,7 @@ function showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTile
         choice.subChoices.forEach(subChoice => 
         {
           const subBtn = document.createElement("button");
-          subBtn.textContent = subChoice.text;
+          subBtn.innerHTML = subChoice.text;
           subBtn.classList.add("key"); 
           
           subBtn.onclick = () => finishTurn(scene, subChoice, activeTiles);
@@ -578,7 +580,7 @@ function setupChoices(scene, activeTiles, btnCont)
   scene.choices.forEach(choice => 
   {
     const btn = document.createElement("button");
-    btn.textContent = choice.text;
+    btn.innerHTML = choice.text;
     btn.classList.add("key"); 
     
     btn.onclick = () => btnOnClick(choice, scene, activeTiles, btn, btnCont)
@@ -632,10 +634,10 @@ function handleSeqTurn(activeTiles)
   // handle question text
   if (scene.question && scene.question.trim() !== "") 
   {
-    modalText.textContent = scene.question;
+    modalText.innerHTML = scene.question;
   } else 
   {
-    modalText.textContent = ""; // Keep it empty if no question
+    modalText.innerHTML = ""; // Keep it empty if no question
   }
 
   // analyse contents of current scene
@@ -716,7 +718,7 @@ function createDatumModal() {
     const btn = document.createElement("button");
     
     // FIX 2: You can just use the template literal for the whole string!
-    btn.textContent = `day ${dayNumber}`;
+    btn.innerHTML = `day ${dayNumber}`;
     btn.classList.add("key");
 
     btn.onclick = () => 
@@ -781,7 +783,7 @@ function getActiveTiles() {
 
 function showAlert(message, duration = 1000) {
   const alert = document.createElement("div")
-  alert.textContent = message
+  alert.innerHTML = message
   alert.classList.add("alert")
   alertContainer.prepend(alert)
   if (duration == null) return
@@ -867,12 +869,12 @@ function showShareModal(resultType) {
   questionModal.classList.remove("hidden");
 
 
-  modalText.textContent = resultType;
+  modalText.innerHTML = resultType;
 
 
   // create copy result button
   const shareBtn = document.createElement("button");
-  shareBtn.textContent = "Copy Result";
+  shareBtn.innerHTML = "Copy Result";
   
   // gives it the standard button look
   shareBtn.classList.add("key"); 
@@ -883,8 +885,8 @@ function showShareModal(resultType) {
   shareBtn.onclick = () => {
     generateShareString();
     // confirmation for user
-    shareBtn.textContent = "COPIED ^~^";
-    setTimeout(() => { shareBtn.textContent = "Copy Result"; }, 2000);
+    shareBtn.innerHTML = "COPIED ^~^";
+    setTimeout(() => { shareBtn.innerHTML = "Copy Result"; }, 2000);
   };
 
   btnCont.appendChild(shareBtn);

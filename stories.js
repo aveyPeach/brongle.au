@@ -48,7 +48,22 @@ function revealCustomTiles(tiles, contents, states)
   });
 }
 
+/**
+ * 
+ * @param {string} shareText 
+ * @param {string} alert 
+ * @returns 
+ */
+function standaWin(shareText, alert = "")
+{
+  return (tiles) => win(tiles, shareText, alert)
+}
 
+// functions like these help make your syntax more concise, and also the () => solevs the chicken or the egg (dependency) issue
+function standaEndGame(shareText, alert = "")
+{
+  return () => endGame(shareText, alert)
+}
 
 // REMAKE (old version is in graveyard)
 const twoSevenFourAKAhorse =
@@ -4966,6 +4981,359 @@ const easterSpecial =
   },
 }
 
+const trenchesReborn =
+{
+  "start":
+  {
+    question: "the ocean arc returns! You and your piggly continue your descent down to challenger deep, our ocean's greatest depth.",
+
+    choices: 
+    [
+      {
+        text: "descend",
+        next: `descend`,
+      },
+    ]
+  },
+
+  "descend":
+  {
+    reveal: standaRevealEmojis("⬇️", "🕳️", "🐟", "🐖", "⬇️"),
+
+    question: `The pressure pushes up against you as you descend, you've long gotten desensitized to the cold, now it's just a constant.`,
+
+    choices: 
+    [
+      {
+        text: "descend",
+        next: `descend2`,
+      },
+    ]
+  },
+  
+  "descend2":
+  {
+    reveal: standaRevealEmojis("🦐", "🐖", "🦐", "🐟", "🦐"),
+
+    question: `A horde of shrimp carrying something on their backs scurries past you.`,
+
+    choices: 
+    [
+      {
+        text: "Follow them",
+        next: `follow`,
+      },
+      {
+        text: "Descend",
+        next: `continueDescent`,
+      },
+    ]
+  },
+  
+  "follow":
+  {
+    reveal: standaRevealEmojis("🦐", "🦐", "🦐", "🦐", "🦐"),
+
+    question: `Ough. So many shimp.`,
+
+    choices: 
+    [
+      {
+        text: "Follow them",
+        next: `follow2`,
+      },
+      {
+        text: "Kidnap and interrogate",
+        next: `kidnap`,
+      },
+    ]
+  },
+
+  "follow2":
+  {
+    reveal: standaRevealEmojis("🦐", "🐖", "🦐", "🐟", "🦐"),
+
+    question: `Despite your best attempts to blend into the crowd, you inevitably get busted.`,
+
+    choices:
+    [
+      {
+        text: "uh oh",
+        next: "tooMany"
+      },
+    ]
+  },
+  
+  "kidnap":
+  {
+    reveal: standaRevealEmojis("🪑", "🦐", "💡", "🐟", "🐖"),
+
+    question: `YOU SHALL NEVER KNOW OF OUR DESTINATION`,
+
+    choices: 
+    [
+      {
+        text: "Threaten the srim",
+        msg: `You slam the table with your fins. 
+              Enough Mr. Nice Fry. You recount all the times you've eaten members of shrimpkind to your captive.`,
+        next: `threaten2`,
+      },
+      {
+        text: "Torture the shrimp",
+        next: `torture`,
+      },
+    ]
+  },
+  
+  "threaten2":
+  {
+    reveal: standaRevealEmojis("", "🪑", "🦐", "💬", ""),
+
+    question: `Gasp! No!!! You couldn't have. 
+               Please spare me, I'll tell you everything. 
+               Just check what's inside my backpack`,
+
+    choices: 
+    [
+      {
+        text: "Check the bag",
+        next: `checkBag`,
+      },
+      {
+        text: "I don't trust like that",
+        next: `dontTrust`,
+      },
+    ]
+  },
+  
+  "checkBag":
+  {
+    reveal: standaRevealEmojis("🟢", "🟢", "🟢", "🟢", "🟢"),
+
+    question: `Inside the bag you only find a handful of what seems to be pressed seaweed pellets. 
+               Out of curiosity you bite down on one of them, which instantly sends you crashing to the floor. 
+               It's a sedative strong enough to make your fins give out.`,
+
+    choices: 
+    [
+      {
+        text: "next",
+        msg: "fish! fish! are you okay?",
+        msgBtn: "doze off",
+        next: `doze`,
+      },
+    ]
+  },
+  
+  "doze":
+  {
+    reveal: standaRevealEmojis("", "", "🐽", "", ""),
+
+    gg: standaWin("Bear witness to the Mariana trench arc?", "To be continued....")
+  },
+  
+  "dontTrust":
+  {
+    reveal: standaRevealEmojis("🦐", "💨", "🪑", "🐟", "🐖"),
+
+    question: `While you're distracted by the possible bomb threat, the shrimp breaks its restraints and swims away leaving its belongings behind.`,
+
+    choices: 
+    [
+      {
+        text: "Give chase",
+        next: `giveChase`,
+      },
+      {
+        text: "Continue your descent",
+        next: `continueDescent`,
+      },
+    ]
+  },
+  
+  "giveChase":
+  {
+    reveal: standaRevealEmojis("🦐", "💨", "🐟", "🐖", "💨"),
+
+    question: `You throw yourself after the escaping crustacean, Hog follows suit. As you're about to catch it, it sneaks into a hole that's too small to fit in.`,
+
+    choices: 
+    [
+      {
+        text: "Transform into a shrimp",
+        next: `transShrimp`,
+      },
+    ]
+  },
+  
+  "transShrimp":
+  {
+    reveal: standaRevealEmojis("🦐", "💨", "", "🦐", "💨"),
+
+    question: `You skirt around endless sharp turns and forks. Your goal is slowly slipping out of reach.`,
+
+    choices: 
+    [
+      {
+        text: "next",
+        msg: "You've lost sight of the shrimp. It's dark. You're all alone. After wondering the hallways for a while you're struck with a seaquake, the tunnels collapse on you.",
+        msgBtn: "Become shrimp paste",
+        next: `lostShrimp`,
+      },
+    ]
+  },
+  
+  "lostShrimp":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: standaEndGame("Die alone in a hole?", "ohhh so that's where it comes from")
+  },
+  
+  "continueDescent":
+  {
+    reveal: standaRevealEmojis("🥒", "", "🐟", "🐖", ""),
+
+    question: `After a long and arduous journey you touch down at the bottom of the trench. 
+               You spot what a weird sea cucumber but desperately wish for it to be a flatfish. More importantly there's nothing else here.`,
+
+    choices: 
+    [
+      {
+        text: "Talk to whatever that is",
+        next: `talkCucumber`,
+      },
+    ]
+  },
+    
+  "talkCucumber":
+  {
+    reveal: standaRevealEmojis("", "", "🥒", "", ""),
+
+    question: `It doesn't seem to want to talk. You try your best to maintain your composure. What if there's nothing here?`,
+
+    choices: 
+    [
+      {
+        text: "next",
+        msg: "It's not like it matters anyway. You're nearly all out of food. You don't see a way out anymore.",
+        msgBtn: "Despair",
+        next: `moudameda`,
+      },
+    ]
+  },
+    
+  "moudameda":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    gg: standaEndGame("Base your entire philosophy off of this?", "It's all futile! It's all pointless!")
+  },
+    
+  "torture":
+  {
+    reveal: standaRevealEmojis("", "🧻", "🦐", "🪣", ""),
+
+    question: `You begin to waterboard the shrimp. After a while you realize that there might be a slight error in your apporach`,
+
+    choices: 
+    [
+      {
+        text: "Try a different method",
+        next: `torture2`,
+      },
+    ]
+  },
+    
+  "torture2":
+  {
+    reveal: standaRevealEmojis("💧", "💧", "🦐", "💧", "💧"),
+
+    question: `Uhhhh... chinese water torture? No that sucks too.`,
+
+    choices: 
+    [
+      {
+        text: "Try a different method",
+        next: `torture3`,
+      },
+    ]
+  },
+      
+  "torture3":
+  {
+    reveal: standaRevealEmojis("🐟", "🐖", "🦐", "🚽", "🌪️"),
+
+    question: `A swirly???? No... No... NO!!!!`,
+
+    choices: 
+    [
+      {
+        text: "Kill the shrimp",
+        next: `killShrimp`,
+      },
+    ]
+  },
+    
+  "killShrimp":
+  {
+    reveal: standaRevealEmojis("🧱", "🦐", "🔫", "🐟", "🐖"),
+
+    question: `Heh... Any last words?`,
+
+    choices: 
+    [
+      {
+        text: "Pull the trigger",
+        next: `uExplode`,
+      },
+    ]
+  },
+
+  "uExplode":
+  {
+    reveal: standaRevealEmojis("🧱", "🦐", "🔫", "💥", "💥"),
+
+    gg: standaEndGame("Out yourself as the worst torturer of the year?","Stop ordering guns from acme"),
+  },
+
+  "tooMany":
+  {
+    reveal: standaRevealEmojis("🦐", "🦐", "🦐", "🦐", "🦐"),
+
+    gg: standaEndGame("Shrimp someone else?","Shrimped to death..."),
+  },
+}
+
+const funPokemonFacts =
+{
+  "start":
+  {
+    question: `Hi and welcome <i>poképups</i>! My name is PennyPoochyena and welcome to episode 35 of <i>Penny's Pokémon Facts</i>!!
+               Without any further ado.. let's get facting!`,
+
+    choices:
+    [
+      {
+        text: "HI PENNY ＞Ｗ＜",
+        msg: `<>Fact#1 
+              Did you know that bulbasaur is awesome?`,
+        next: "fact2",
+
+      },
+      {
+        text: "YESSSS"
+      },
+    ]
+  },
+
+  "fact2":
+  {
+    // did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which translates to "pikachu"?
+  }
+}
+
+/*
 const welcomeToBrongles =
 {
   "start":
@@ -5155,3 +5523,4 @@ const welcomeToBrongles =
   },
 
 }
+*/

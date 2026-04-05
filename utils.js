@@ -45,3 +45,9 @@ function getRandomInt(min, max)
 {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function formatText(text) 
+{
+  // replaces *text* with <i>text</i>
+  return text.replace(/\*(.*?)\*/g, "<i>$1</i>");
+}
