@@ -4829,3 +4829,329 @@ const highFive =
     ]
   },
 }
+
+const easterSpecial =
+{
+  "start":
+  {
+    question: "hello, i just heard this awesome cameron winters impression, do you like it too?",
+
+    choices:
+    [
+      {
+        text: "lemme hear it",
+        next: "rateTime"
+      },
+    ]
+  },
+
+  "rateTime":
+  {
+    reveal: standaRevealEmojis("", "🎤", "🙆‍♀️", "", ""),
+    onReveal: () => playSfx("assets/sfx/novaBebey.mp3"),
+
+    question: "thjoughts?",
+
+    choices: 
+    [
+      {
+        text: "9",
+        next: "nine",
+        msg: "how's the weather up there and by up there i mean on my d-",
+      },
+      {
+        text: "8",
+        next: "eight",
+        msg: "you're lying dog",
+      },
+      {
+        text: "7",
+        next: "seven",
+        msg: "oh come on it's not *that* good",
+      },
+      {
+        text: "6",
+        next: "six",
+        msg: "i'm sure they're flattered to hear that thank you",
+      },
+      {
+        text: "5",
+        next: "five",
+        msg: "cheers",
+      },
+      {
+        text: "4",
+        next: "four",
+        msg: "the worst thing it could have been is mid..",
+      },
+      {
+        text: "3",
+        next: "three",
+        msg: "you know what i respect it"
+      },
+      {
+        text: "2",
+        next: "two",
+        msg: "go fuck yuorself",
+      },
+      {
+        text: "1",
+        next: "one",
+        msg: "nova will remember this",
+      },
+    ]
+  },
+
+  "nine":
+  {
+    reveal: standaRevealEmojis("", "", "9️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "eight":
+  {
+    reveal: standaRevealEmojis("", "", "8️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "seven":
+  {
+    reveal: standaRevealEmojis("", "", "7️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "six":
+  {
+    reveal: standaRevealEmojis("", "", "6️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "five":
+  {
+    reveal: standaRevealEmojis("", "", "5️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "four":
+  {
+    reveal: standaRevealEmojis("", "", "4️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever? ", "let me daaance away~")
+  },
+  
+  "three":
+  {
+    reveal: standaRevealEmojis("", "", "3️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "two":
+  {
+    reveal: standaRevealEmojis("", "", "2️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+  
+  "one":
+  {
+    reveal: standaRevealEmojis("", "", "1️⃣", "", ""),
+
+    gg: (tiles) => win(tiles, "forever?", "let me daaance away~")
+  },
+}
+
+const welcomeToBrongles =
+{
+  "start":
+  {
+    next: "welcome",
+  },
+
+  "welcome":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: `Hi welcome to Brongle's!
+               What can i get for you? :)`,
+
+    choices:
+    [
+      {
+        text: "sloppy for 99¢",
+        next: "",
+      },
+      {
+        text: "refined for 3$",
+        next: "",
+      },
+      {
+        text: "soggy fries free of charge",
+        next: "",
+      },
+            {
+        text: "rewire your soda machine so the tubes go to my mouth",
+        next: "",
+      },
+
+    ]
+  },
+  
+  "8":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "7":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "6":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "5":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "4":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "3":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "2":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+    
+  "1":
+  {
+    reveal: standaRevealEmojis("", "", "", "", ""),
+
+    question: ``,
+
+    choices:
+    [
+      {
+        text: "",
+        next: "",
+      },
+      {
+        text: "",
+        next: "",
+      },
+    ]
+  },
+
+}

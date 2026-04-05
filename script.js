@@ -71,6 +71,7 @@ const STORY_REGISTRY =
   290: preTrench,
   291: recap,
   292: highFive,
+  293: easterSpecial,
 };
 
 /**
@@ -224,7 +225,8 @@ function startInteraction() {
   document.addEventListener("keydown", handleKeyPress)
 }
 
-function stopInteraction() {
+function stopInteraction() 
+{
   document.removeEventListener("click", handleMouseClick)
   document.removeEventListener("keydown", handleKeyPress)
 }
