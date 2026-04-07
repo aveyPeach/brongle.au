@@ -5315,8 +5315,8 @@ const funPokemonFacts =
     choices:
     [
       {
-        text: "HI PENNY ＞Ｗ＜",
-        msg: `<>Fact#1 
+        text: `HI PENNY :D`,
+        msg: `Fact#1: 
               Did you know that bulbasaur is awesome?`,
         next: "fact2",
 
@@ -5329,8 +5329,91 @@ const funPokemonFacts =
 
   "fact2":
   {
-    // did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which translates to "pikachu"?
+    // did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which actually translates to "pikachu"?
   }
+}
+
+let coinIsHeads = false;
+
+function flipCoin()
+{
+  coinIsHeads = getRandomInt(0,1);
+}
+
+const defaultBrongle =
+{
+  "start":
+  {
+    question: `hi, you've reached the default brongle, caused by me not yet having uploaded a new broungle for today, though there might be one in an hour or two :3.
+               in the meanwhile, feel free to see whether the dogs smile upon you in *coin flip chaos*`,
+
+    choices: 
+    [
+      {
+        text: "no worries, i know it's just a passion project! how does the game play?",
+        msg: `i'm glad you asked! the rules are simple:
+              I'll flip a coin, you'll guess the outcome. If you guess right, you'll get a token of gratitude. 
+              Otherwise that's it for today's coing flip mayhem, you'll have to pray for another sleepy dev day to retry -w-.`,
+        msgBtn: "understood...",
+        next: "letsPlay",
+      },
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "letsPlay":
+  {
+    noReveal: true,
+    question: `great! then let's play. heads(😶😶😶) or tails(🐩🐩🐩)?`,
+
+    choices: 
+    [
+      {
+        text: '😶😶😶',
+        msg: () => (coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`),
+        next: () => (coinIsHeads ? "guessedRight":"guessedWrong"),
+      },
+
+      {
+        text: `🐩🐩🐩`,
+        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
+        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
+      }
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "guessedRight":
+  {
+    reveal: standaRevealEmojis("", "", "🥧", "", ""),
+
+    question: `another round! heads(😶😶😶) or tails(🐩🐩🐩)?`, 
+
+    choices: 
+    [
+      {
+        text: '😶😶😶',
+        msg: () => coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`,
+        next: () => coinIsHeads ? "guessedRight":"guessedWrong",
+      },
+      {
+        text: `🐩🐩🐩`,
+        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
+        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
+      }
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "guessedWrong":
+  {
+    reveal: standaRevealEmojis("", "👋", "🐱", "", ""),
+
+    gg: standaWin("Test your friends' fortune?", "see you tomorrow !!")
+  },
 }
 
 /*

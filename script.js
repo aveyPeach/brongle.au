@@ -73,6 +73,7 @@ const STORY_REGISTRY =
   292: highFive,
   293: easterSpecial,
   294: trenchesReborn,
+  295: defaultBrongle,
   //295: funPokemonFacts,
 };
 
@@ -95,8 +96,8 @@ initGame()
 function initGame() 
 {
   currentMode = GAME_MODES.BASIC_BRONGLE;
-  // if no game defined for that day default to 283 = survivnight (once fixed it'll be 274, original nonaustralian game) 
-  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[283]; 
+  // if no game defined for that day default to 295 = defaultBrongle (coin toss)
+  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[295]; 
 
   // 282 = prop hunt day :3
   if (dayOffset === 282) 
@@ -408,25 +409,27 @@ function finishTurn(scene, choice, activeTiles)
 
   questionModal.classList.add("hidden");
       
+  let nextId = choice?.next || scene.next;
+
+  if (typeof nextId === "function") 
+  {
+    nextId = nextId();
+  }
+
   if (scene.action) scene.action(activeTiles);
   if (choice?.action) choice?.action(activeTiles);
-      
-  const nextId = choice?.next || scene.next; 
 
   if (nextId && storySequence[nextId])
   {
     sceneId = nextId;
     const nextScene = storySequence[nextId];
 
-    // 🪄 THE TRAFFIC COP
     if (nextScene.noReveal) 
     {
       handleSeqTurn(activeTiles);
     } 
     else 
     {
-      // Phase 2: Standard Game Loop. 
-      // Increment guess, do tile animations, and give the keyboard back.
       guessCount++; 
       setupNextScene(nextId, activeTiles);
       setTimeout(startInteraction, 1500);
@@ -530,9 +533,11 @@ function btnOnClick(choice, scene, activeTiles, btn, btnCont)
 
   const dialoSeq = [];
   
-  if (choice.msg) 
+  const rawMsg = typeof choice.msg === "function" ? choice.msg() : choice.msg;
+  
+  if (rawMsg) 
   {
-    dialoSeq.push({ text: choice.msg, btnLabel: choice.msgBtn || "Next..." });
+    dialoSeq.push({ text: rawMsg, btnLabel: choice.msgBtn || "Next..." });
   }
   
   let i = 2;
