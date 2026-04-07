@@ -52,6 +52,7 @@ let storySequence = {};
 
 const STORY_REGISTRY = 
 {
+  1: defaultBrongle,
   274: twoSevenFourAKAhorse,
   275: ogre,
   276: eleDance,
@@ -73,7 +74,6 @@ const STORY_REGISTRY =
   292: highFive,
   293: easterSpecial,
   294: trenchesReborn,
-  295: defaultBrongle,
   //295: funPokemonFacts,
 };
 
@@ -96,8 +96,8 @@ initGame()
 function initGame() 
 {
   currentMode = GAME_MODES.BASIC_BRONGLE;
-  // if no game defined for that day default to 295 = defaultBrongle (coin toss)
-  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[295]; 
+  // if no game defined for that day default to 1 = defaultBrongle (coin toss)
+  storySequence = STORY_REGISTRY[dayOffset] || STORY_REGISTRY[1]; 
 
   // 282 = prop hunt day :3
   if (dayOffset === 282) 

@@ -5345,7 +5345,7 @@ const defaultBrongle =
   "start":
   {
     question: `hi, you've reached the default brongle, caused by me not yet having uploaded a new broungle for today, though there might be one in an hour or two :3.
-               in the meanwhile, feel free to see whether the dogs smile upon you in *coin flip chaos*`,
+               in the meanwhile, see whether the dogs smile upon you in *coin flip chaos*`,
 
     choices: 
     [
