@@ -74,6 +74,7 @@ const STORY_REGISTRY =
   292: highFive,
   293: easterSpecial,
   294: trenchesReborn,
+  295: trenchesAmongShrimp,
   //295: funPokemonFacts,
 };
 

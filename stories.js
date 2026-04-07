@@ -65,6 +65,89 @@ function standaEndGame(shareText, alert = "")
   return () => endGame(shareText, alert)
 }
 
+let coinIsHeads = false;
+
+function flipCoin()
+{
+  coinIsHeads = getRandomInt(0,1);
+}
+
+const defaultBrongle =
+{
+  "start":
+  {
+    question: `hi, you've reached the default brongle, caused by me not yet having uploaded a new broungle for today, though there might be one in an hour or two :3.
+               in the meanwhile, see whether the dogs smile upon you in *coin flip chaos*`,
+
+    choices: 
+    [
+      {
+        text: "no worries, i know it's just a passion project! how does the game play?",
+        msg: `i'm glad you asked! the rules are simple:
+              I'll flip a coin, you'll guess the outcome. If you guess right, you'll get a token of gratitude. 
+              Otherwise that's it for today's coing flip mayhem, you'll have to pray for another sleepy dev day to retry -w-.`,
+        msgBtn: "understood...",
+        next: "letsPlay",
+      },
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "letsPlay":
+  {
+    noReveal: true,
+    question: `great! then let's play. heads(😶😶😶) or tails(🐩🐩🐩)?`,
+
+    choices: 
+    [
+      {
+        text: '😶😶😶',
+        msg: () => (coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`),
+        next: () => (coinIsHeads ? "guessedRight":"guessedWrong"),
+      },
+
+      {
+        text: `🐩🐩🐩`,
+        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
+        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
+      }
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "guessedRight":
+  {
+    reveal: standaRevealEmojis("", "", "🥧", "", ""),
+
+    question: `another round! heads(😶😶😶) or tails(🐩🐩🐩)?`, 
+
+    choices: 
+    [
+      {
+        text: '😶😶😶',
+        msg: () => coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`,
+        next: () => coinIsHeads ? "guessedRight":"guessedWrong",
+      },
+      {
+        text: `🐩🐩🐩`,
+        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
+        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
+      }
+    ],
+
+    action: () => flipCoin(), // note that this happens at the end of the turn
+  },
+
+  "guessedWrong":
+  {
+    reveal: standaRevealEmojis("", "👋", "🐱", "", ""),
+
+    gg: standaWin("Test your friends' fortune?", "see you tomorrow !!")
+  },
+}
+
 // REMAKE (old version is in graveyard)
 const twoSevenFourAKAhorse =
 {
@@ -5333,86 +5416,230 @@ const funPokemonFacts =
   }
 }
 
-let coinIsHeads = false;
-
-function flipCoin()
-{
-  coinIsHeads = getRandomInt(0,1);
-}
-
-const defaultBrongle =
+const trenchesAmongShrimp =
 {
   "start":
   {
-    question: `hi, you've reached the default brongle, caused by me not yet having uploaded a new broungle for today, though there might be one in an hour or two :3.
-               in the meanwhile, see whether the dogs smile upon you in *coin flip chaos*`,
-
-    choices: 
-    [
-      {
-        text: "no worries, i know it's just a passion project! how does the game play?",
-        msg: `i'm glad you asked! the rules are simple:
-              I'll flip a coin, you'll guess the outcome. If you guess right, you'll get a token of gratitude. 
-              Otherwise that's it for today's coing flip mayhem, you'll have to pray for another sleepy dev day to retry -w-.`,
-        msgBtn: "understood...",
-        next: "letsPlay",
-      },
-    ],
-
-    action: () => flipCoin(), // note that this happens at the end of the turn
+    next: "wakeUp",
   },
 
-  "letsPlay":
+  "wakeUp":
+  {
+    reveal: standaRevealEmojis("", "", "🐷", "", ""),
+
+    question: `Fish!!! Fish!!! Wake up`,
+
+    choices:
+    [
+      {
+        text: `Huh whuh?`,
+        next: `huhWhuh`,
+      },
+    ],
+  },
+  
+  "huhWhuh":
+  {
+    reveal: standaRevealEmojis("🪑", "🐷", "", "🐟", "🪑"),
+
+    question: `Once you come to, you realize that you're tied to a chair.`,
+
+    choices:
+    [
+      {
+        text: `What happened?`,
+        next: `whatHappened`,
+      },
+    ],
+  },
+    
+  "whatHappened":
+  {
+    reveal: standaRevealEmojis("🪑", "🐖", "💬", "🐟", "🪑"),
+
+    question: `The shimp... they overwhelmed me... I couldn't do anything to save us.`,
+
+    choices:
+    [
+      {
+        text: `Observe your surroundings`,
+        next: `observe`,
+      },
+      /*
+      {
+        text: "Rock the chair",
+        next: "rockChair"
+      },
+      */
+    ],
+  },
+    
+  "observe":
+  {
+    reveal: standaRevealEmojis("🪞", "", "", "🐟", "🪑"),
+
+    question: `You spot a mirror. Upon a gaze you realize that you're in fact a fish, and a slimy one at that. These seaweed ropes can't hold you down. You're free at last.`,
+
+    choices:
+    [
+      {
+        text: `Untie Hog`,
+        next: `untieHog`,
+      },
+    ],
+  },
+    
+  "untieHog":
+  {
+    reveal: standaRevealEmojis("🦐", "🚪", "", "🐖", "🐟"),
+
+    question: `After setting your companion free you begin looking for answers. 
+               You seem to be in some sort of complex comprised of winding hallways and cavernous rooms full of... something.`,
+
+    choices:
+    [
+      {
+        text: `wander`,
+        next: `wander`,
+      },
+    ],
+  },
+    
+  "wander":
   {
     noReveal: true,
-    question: `great! then let's play. heads(😶😶😶) or tails(🐩🐩🐩)?`,
 
-    choices: 
+    question: `A noticable hubbub lures you down one of the hallways. At the end of it you spot a door, behind which a meeting seems to be in progress.`,
+
+    choices:
     [
       {
-        text: '😶😶😶',
-        msg: () => (coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`),
-        next: () => (coinIsHeads ? "guessedRight":"guessedWrong"),
+        text: `Eavesdrop`,
+        msg: `I......... Love.......... Sniffing......
+              ....Ass.....`,
+        msgBtn: `hm?`,
+        next: `eavesdrop`,
       },
-
       {
-        text: `🐩🐩🐩`,
-        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
-        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
-      }
+        text: `Come in`,
+        next: `comeIn`,
+      },
     ],
-
-    action: () => flipCoin(), // note that this happens at the end of the turn
   },
-
-  "guessedRight":
+    
+  "comeIn":
   {
-    reveal: standaRevealEmojis("", "", "🥧", "", ""),
+    reveal: standaRevealEmojis("🦐", "🐖", "🦐", "🐟", "🦐"),
 
-    question: `another round! heads(😶😶😶) or tails(🐩🐩🐩)?`, 
+    question: `You come in with a confidence that screams "I'm right where I'm supposed to be".
+               The shrimp don't seem to pay you any mind`,
 
-    choices: 
+    choices:
     [
       {
-        text: '😶😶😶',
-        msg: () => coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`,
-        next: () => coinIsHeads ? "guessedRight":"guessedWrong",
+        text: `Listen in`,
+        next: `listenIn`,
       },
       {
-        text: `🐩🐩🐩`,
-        msg: () => (coinIsHeads ? `the result was HEADS... unlucky </3` : `the result was TAILS! have a freshly baked slice of pie <3`),
-        next: () => (coinIsHeads ? "guessedWrong":"guessedRight"),
-      }
+        text: `Spitball`,
+        next: `spitball`,
+      },
     ],
-
-    action: () => flipCoin(), // note that this happens at the end of the turn
   },
-
-  "guessedWrong":
+    
+  "listenIn":
   {
-    reveal: standaRevealEmojis("", "👋", "🐱", "", ""),
+    reveal: standaRevealEmojis("", "", "🦐", "💬", ""),
 
-    gg: standaWin("Test your friends' fortune?", "see you tomorrow !!")
+    question: `I am overjoyed that all of you have decided to show up today. 
+    This quarter we've noted a growth of only around 2%, which I don't love, because I know we've been able to do much better before...`,
+
+    choices:
+    [
+      {
+        text: `Stay quiet and listen`,
+        msg: `I've also just received word that our scouting and gathering units have finished sniffing around and are now on the way back to the base. 
+              To sum it up, and I don't mean to be an ass, but we need to up our game if we don't want the deal on that new facility to fall through.`,
+        msgBtn: `Stay quiet and listen`,
+        next: `stayQuietAndListen`,
+      },
+    ],
+  },
+    
+  "stayQuietAndListen":
+  {
+    reveal: standaRevealEmojis("", "", "🤧", "", ""),
+
+    question: `You're gonna sneeze`,
+
+    choices:
+    [
+      {
+        text: `What? But I don't need to.`,
+
+        msg: `You're gonna sneeze.`,
+        msgBtn: `Fish can't sneeze`,
+
+        msg2: `It doesn't matter. You're sneezing`,
+        msgBtn2: `No I'm not`,
+        
+        msg3: `You're sneezing sooooo loud and everyone's getting alerted.`,
+        msgBtn3: `Please`,
+
+        msg4: `You sneeze, it alerts everyone.`,
+        msgBtn4: `Motherfu-`,
+
+        msg5: `You're jumped by hundreds of shrimp. In response you quickly transform into one of them and do your best to get lost in the crowd. 
+               Hog is left fending for himself. Suddenly the room is filled with a harp glissando as hog's life flashes before his eyes.`,
+        msgBtn5: `HOG NO`,
+
+        next: `caughtTrueEnding`,
+      },
+    ],
+  },
+    
+  "caughtTrueEnding":
+  {
+    reveal: standaRevealEmojis("🦐", "🦐", "🐖", "🦐", "🦐"),
+
+    gg: standaWin("Hear Hog's gripping backstory?", "A flashback sequence ⁉️")
+  },
+      
+  "spitball":
+  {
+    reveal: standaRevealEmojis("🦐", "🎯", "🏐", "🪈", "🐟"),
+
+    question: `You shove all of the seaweed papyrus tbag you can grab into your mouth and begin chewing vigorously. 
+               When the speaker has their back turned you take aim and launch a spitball, hitting them square in the head. The room goes silent.`,
+
+    choices:
+    [
+      {
+        text: "hehe >:3",
+        msg: `you fool. you foolish fool.`,
+        msgBtn: `problem?`,
+
+        msg2: `You're jumped by hundreds of shrimp. In response you quickly transform into one of them and do your best to get lost in the crowd. 
+               Hog is left fending for himself. Suddenly the room is filled with a harp glissando as hog's life flashes before his eyes.`,
+        msgBtn2: `HOG NO`,
+
+        next: `caughtFalseEnding`,
+      },
+    ],
+  },
+      
+  "caughtFalseEnding":
+  {
+    reveal: standaRevealEmojis("🦐", "🦐", "🐖", "🦐", "🦐"),
+
+    gg: standaEndGame("Hear Hog's gripping backstory?", "A flashback sequence ⁉️")
+  },
+      
+  "eavesdrop":
+  {
+    reveal: standaRevealEmojis("🦐", "🚪", "👂", "🐟", "🐖"),
+
+    gg: standaEndGame("Break the story to the public?", "Buncha weirdos")
   },
 }
 
