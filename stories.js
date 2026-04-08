@@ -77,7 +77,7 @@ const defaultBrongle =
 {
   hasSecretScene: true,
 
-  secretNode: "letsPlay",
+  secretNode: "9innaRow",
 
   "start":
   {
@@ -92,7 +92,7 @@ const defaultBrongle =
               I'll flip a coin, you'll guess the outcome. If you guess right, you'll get a token of gratitude. 
               Otherwise that's it for today's coing flip mayhem, you'll have to pray for another sleepy dev day to retry -w-.`,
         msgBtn: "understood...",
-        next: "9innaRow",
+        next: "letsPlay",
       },
     ],
 
