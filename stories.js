@@ -69,7 +69,7 @@ let coinIsHeads = false;
 
 function flipCoin()
 {
-  coinIsHeads = getRandomInt(1,1);
+  coinIsHeads = getRandomInt(0,1);
 }
 
 // TODO: add path for 9 flips in a row, give different rewards after each right guess :3 (like suika game,,)
