@@ -526,7 +526,6 @@ function btnOnClick(choice, scene, activeTiles, btn, btnCont)
   }
 
   let correctProp = true;
-
   if (currentMode === GAME_MODES.PROP_HUNT && !choice.next) 
   {
     correctProp = false;
@@ -534,20 +533,29 @@ function btnOnClick(choice, scene, activeTiles, btn, btnCont)
 
   const dialoSeq = [];
   
-  const rawMsg = typeof choice.msg === "function" ? choice.msg() : choice.msg;
+  // 🪄 1. Resolve the Main Message AND the Button Label first
+  const resolvedMsg = typeof choice.msg === "function" ? choice.msg() : choice.msg;
+  const resolvedBtn = typeof choice.msgBtn === "function" ? choice.msgBtn() : choice.msgBtn;
   
-  if (rawMsg) 
+  // 🪄 2. Push them to the sequence (only if there is a message to show)
+  if (resolvedMsg) 
   {
-    dialoSeq.push({ text: rawMsg, btnLabel: choice.msgBtn || "Next..." });
+    dialoSeq.push({ 
+      text: resolvedMsg, 
+      btnLabel: resolvedBtn || "Next..." 
+    });
   }
   
+  // 3. Handle extra messages (msg2, msg3, etc.)
   let i = 2;
   while (choice[`msg${i}`]) 
   {
-    dialoSeq.push(
-    {
-      text: choice[`msg${i}`],
-      btnLabel: choice[`msgBtn${i}`] || "Next..."
+    const msgData = choice[`msg${i}`];
+    const btnData = choice[`msgBtn${i}`];
+
+    dialoSeq.push({
+      text: typeof msgData === "function" ? msgData() : msgData,
+      btnLabel: typeof btnData === "function" ? btnData() : (btnData || "Next...")
     });
     i++;
   }
@@ -555,10 +563,9 @@ function btnOnClick(choice, scene, activeTiles, btn, btnCont)
   const finishWrap = () => finishTurn(scene, choice, activeTiles);
 
   if (currentMode === GAME_MODES.PROP_HUNT && correctProp) 
-    {
-      playTrack("assets/sfx/meow.mp3", {loop: false});
-    }
-    
+  {
+    playTrack("assets/sfx/meow.mp3", {loop: false});
+  }
 
   if (!correctProp) 
   {
@@ -566,12 +573,13 @@ function btnOnClick(choice, scene, activeTiles, btn, btnCont)
   } 
   else if (dialoSeq.length === 0) 
   {
-    finishWrap(); // No messages at all, just move on
+    finishWrap(); 
   } 
   else 
   {
+    // 🪄 IMPORTANT: Make sure your showNextMessage 
+    // increments the index, otherwise buttons stay "unclickable"!
     let stepIndex = 0; 
-
     showNextMessage(stepIndex, dialoSeq, btnCont, choice, scene, activeTiles, finishWrap);
   }
 }

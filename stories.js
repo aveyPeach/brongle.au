@@ -69,11 +69,16 @@ let coinIsHeads = false;
 
 function flipCoin()
 {
-  coinIsHeads = getRandomInt(0,1);
+  coinIsHeads = getRandomInt(1,1);
 }
 
+// TODO: add path for 9 flips in a row, give different rewards after each right guess :3 (like suika game,,)
 const defaultBrongle =
 {
+  hasSecretScene: true,
+
+  secretNode: "letsPlay",
+
   "start":
   {
     question: `hi, you've reached the default brongle, caused by me not yet having uploaded a new broungle for today, though there might be one in an hour or two :3.
@@ -87,7 +92,7 @@ const defaultBrongle =
               I'll flip a coin, you'll guess the outcome. If you guess right, you'll get a token of gratitude. 
               Otherwise that's it for today's coing flip mayhem, you'll have to pray for another sleepy dev day to retry -w-.`,
         msgBtn: "understood...",
-        next: "letsPlay",
+        next: "9innaRow",
       },
     ],
 
@@ -102,7 +107,7 @@ const defaultBrongle =
     choices: 
     [
       {
-        text: '😶😶😶',
+        text: `😶😶😶`,
         msg: () => (coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`),
         next: () => (coinIsHeads ? "guessedRight":"guessedWrong"),
       },
@@ -119,14 +124,14 @@ const defaultBrongle =
 
   "guessedRight":
   {
-    reveal: standaRevealEmojis("", "", "🥧", "", ""),
+    reveal: standaRevealEmojis("", "", "🥧", "", ""), 
 
     question: `another round! heads(😶😶😶) or tails(🐩🐩🐩)?`, 
 
     choices: 
     [
       {
-        text: '😶😶😶',
+        text: `😶😶😶`,
         msg: () => coinIsHeads ? `the result was HEADS! have a freshly baked slice of pie <3` : `the result was TAILS... unlucky </3`,
         next: () => coinIsHeads ? "guessedRight":"guessedWrong",
       },
@@ -146,6 +151,44 @@ const defaultBrongle =
 
     gg: standaWin("Test your friends' fortune?", "see you tomorrow !!")
   },
+
+  "9innaRow":
+  {
+    reveal: standaRevealEmojis("", "", "🥧", "", ""), 
+
+    question: "O.o you're almost there, the 1/1024 odds... what will it be?",
+
+        choices: 
+    [
+      {
+        text: `😶😶😶`,
+        msg: () => coinIsHeads ? `the result was HEADS! there's no doubt about it, you're actually stoated` : `the result was TAILS... can't win em all </3`,
+        msgBtn: () => (coinIsHeads ? "<i>*stoat noises*</i>" : ";~;"),
+        next: () => coinIsHeads ? "urStoated":"unlucky",
+      },
+      {
+        text: `🐩🐩🐩`,
+        msg: () => (coinIsHeads ? `the result was HEADS... can't win em all </3` : `the result was TAILS! there's no doubt about it, you're actually stoated`),
+        msgBtn: () => (coinIsHeads ? ";~;":"*stoat noises*"),
+        next: () => (coinIsHeads ? "unlucky":"urStoated"),
+      }
+    ],
+  },
+
+  "unlucky":
+  {
+    reveal: standaRevealEmojis("", "👋", "🐱", "❣️", ""),
+
+    gg: standaWin("leave your friends in disbelief?", "9 in a row is still rebarkable!!"),
+  },
+
+  "urStoated":
+  {
+    reveal: standaRevealEmojis("✨", "🏆", "🦦", "🍾", "✨"),
+
+    gg: standaWin("Let ppl know you're the lebron of coinflips?", "with the paws"),
+  }
+
 }
 
 // REMAKE (old version is in graveyard)
@@ -5412,7 +5455,7 @@ const funPokemonFacts =
 
   "fact2":
   {
-    // did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which actually translates to "pikachu"?
+    question: `did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which actually translates to "pikachu"?`
   }
 }
 
