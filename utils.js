@@ -51,3 +51,10 @@ function formatText(text)
   // replaces *text* with <i>text</i>
   return text.replace(/\*(.*?)\*/g, "<i>$1</i>");
 }
+
+function advanceRow() 
+{
+    guessCount++; 
+    
+    return Array.from(getActiveTiles());
+}

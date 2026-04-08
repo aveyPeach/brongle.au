@@ -101,7 +101,7 @@ const defaultBrongle =
 
   "letsPlay":
   {
-    noReveal: true,
+    textOnly: true,
     question: `great! then let's play. heads(😶😶😶) or tails(🐩🐩🐩)?`,
 
     choices: 
@@ -4494,7 +4494,7 @@ const recap =
 
   "recapOrNo":
   {
-    noReveal: true,
+    textOnly: true,
     question: `But don't worry! We've made sure that you'll still get your daily fill of brongling. 
               Today's episode just might have different pacing than you're used to is all.
               If you'd prefer to just catch the essential story progressing parts of today's brongle, the option is yours, otherwise: strap in!`,
@@ -4514,7 +4514,7 @@ const recap =
 
   "guiltPlayer":
   {
-    noReveal: true,
+    textOnly: true,
     question: `o-oh, are you sure?`,
 
     choices: 
@@ -4532,7 +4532,7 @@ const recap =
   
   "guilt2":
   {
-    noReveal: true,
+    textOnly: true,
     question: `hmm, do you hate me?`,
 
     choices: 
@@ -4558,7 +4558,7 @@ const recap =
   
   "recap":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Long ago there was nothing except for uhhhh.`,
 
     choices: 
@@ -4572,7 +4572,7 @@ const recap =
   
   "recap1":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Like dust I guess?`,
 
     choices: 
@@ -4586,7 +4586,7 @@ const recap =
   
   "recap2":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Regardless, it wasn't too long after that earth was covered water.`,
 
     choices: 
@@ -4600,7 +4600,7 @@ const recap =
   
   "recap3":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Salty sea water`,
 
     choices: 
@@ -4616,7 +4616,7 @@ const recap =
   
   "recap4":
   {
-    noReveal: true,
+    textOnly: true,
     question: `And "life" ended up uhhhh`,
 
     choices: 
@@ -4632,7 +4632,7 @@ const recap =
   
   "recap5":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Which brings us to the first chapter...`,
 
     choices: 
@@ -4652,7 +4652,7 @@ const recap =
   
   "recap6":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Oh btw if you're not feeling this recap so far you could skip it BUT
                That would bar you from experiencing the Beginning of The Mariana Trench Arc`,
 
@@ -4672,7 +4672,7 @@ const recap =
   
   "recap7":
   {
-    noReveal: true,
+    textOnly: true,
     question: `:3c`,
 
     choices: 
@@ -4739,7 +4739,7 @@ const recap =
   
   "recap8":
   {
-    noReveal: true,
+    textOnly: true,
     question: `Which leads us to today's chapter! Chapter 8, the one we're currently on. I'm sure you've been wondering: "What happened after the events of yesterday??!?"`,
 
     choices: 
@@ -4765,7 +4765,7 @@ const recap =
   
   "2":
   {
-    noReveal: true,
+    textOnly: true,
     question: ``,
 
     choices: 
@@ -5431,33 +5431,7 @@ const trenchesReborn =
   },
 }
 
-const funPokemonFacts =
-{
-  "start":
-  {
-    question: `Hi and welcome <i>poképups</i>! My name is PennyPoochyena and welcome to episode 35 of <i>Penny's Pokémon Facts</i>!!
-               Without any further ado.. let's get facting!`,
 
-    choices:
-    [
-      {
-        text: `HI PENNY :D`,
-        msg: `Fact#1: 
-              Did you know that bulbasaur is awesome?`,
-        next: "fact2",
-
-      },
-      {
-        text: "YESSSS"
-      },
-    ]
-  },
-
-  "fact2":
-  {
-    question: `did you know that pikachu's original japanese name is ピカチュウ (pronounced pi-ka-chuu) which actually translates to "pikachu"?`
-  }
-}
 
 const trenchesAmongShrimp =
 {
@@ -5550,7 +5524,7 @@ const trenchesAmongShrimp =
     
   "wander":
   {
-    noReveal: true,
+    textOnly: true,
 
     question: `A noticable hubbub lures you down one of the hallways. At the end of it you spot a door, behind which a meeting seems to be in progress.`,
 
@@ -5684,6 +5658,205 @@ const trenchesAmongShrimp =
 
     gg: standaEndGame("Break the story to the public?", "Buncha weirdos")
   },
+}
+
+const funPokemonFacts =
+{
+  "start":
+  {
+    question: `Hi and welcome <i>poképups</i>! My name is PennyPoochyena and welcome to episode 35 of <i>Penny's Pokémon Facts</i>!!
+               Without any further ado.. let's get facting!`,
+
+    next: "fact1",
+    
+    choices:
+    [
+      {
+        text: `HI PENNY :D`,
+      },
+      {
+        text: "YESSSS"
+      },
+    ]
+  },
+
+  "fact1":
+  {
+    textOnly: true,
+
+    question: `Fact#1: 
+               Did you know? Bulbasaur is awesome.`,
+
+    next: "fact2",
+
+    choices:
+    [
+      {
+        text: "That's plain as sunny day to an expert of my caliber.",
+        msg: "yay! he always tries his best and he likes to be happy after all :)",
+      },
+      {
+        text: "brok is this true?",
+        msg: "please don't confuse me for pewter city's gym leader. But yes, it's true, see it for yourself!",
+        msgBtn: "my bad",
+      },
+    ]
+  },
+
+  "fact2":
+  {
+    reveal: standaRevealEmojis("", "🧅", "🐢", "", ""),
+
+    onReveal: () => 
+    {
+      showAlert("-w-");
+      displayImg("assets/pics/sleepyBulba.jpg");
+    },
+
+    question: `We all love pikachu nowadays. But did you know that in the original japanese games, pikachu's name was actually ピカチュウ (pronounced pi-ka-chuu) which translates to "pikachu"?`,
+
+       choices:
+    [
+      {
+        text: `WHAT!`,
+        msg: `Yep!, It seems like pikachu's (or should i say ピカチュウ's?) cheeks aren't just full of electricity, but secrets too!`,
+        next: `fact3`,
+      },
+      {
+        text: `I'm shook to my core.`,
+        msg: `Yep!, It seems like pikachu's (or should i say ピカチュウ's?) cheeks aren't just full of electricity, but secrets too!`,
+        next: `fact3`,
+      },
+    ]
+  },
+
+  "fact3":
+  {
+    reveal: standaRevealEmojis("", "⚡", "🐭", "", ""),
+
+    onReveal: () => 
+    {
+      showAlert("pikachub my beloved,,,");
+      displayImg("assets/pics/pikaChub.png");
+    },
+
+    question: `Did you know? Alakazam is actually so smart that it can multiply 5 * 10 000 in less than 10 seconds? 
+               Wow! If only alakazam could do my homework for me...`,
+
+    next: `fact4`,
+    choices:
+    [
+      {
+        text: `I know you've got a calc in your hand alakazam`,
+      },
+      {
+        text: `Holy shell it's an actual genius`,
+      },
+    ]
+  },
+  
+  "fact4":
+  {
+    reveal: standaRevealEmojis("🧠", "🟣", "🦎", "🟣", "🧠"),
+
+    onReveal: () => 
+    {
+      showAlert("BRO THEY'VE GOT 5 CALCS");
+      displayImg("assets/pics/alakazamCalc.png");
+    },
+
+    next: `fact5`,
+
+    question: `Did you know? cubone made up their backstory so people would feel bad for them.`,
+
+    choices:
+    [
+      {
+        text: `cubone i trusted you...`,
+      },
+    ]
+  },
+  
+  "fact5":
+  {
+    reveal: standaRevealEmojis("", "🦴", "👶", "", ""),
+
+    onReveal: () => 
+    {
+      showAlert("not a shred of honesty in those bones");
+      displayImg("assets/pics/happyCubone.png");
+    },
+
+    question: `Finally, did you know that some pokemon... exist in real life? I'll leave a link in the description if you're curious;...`,
+
+    choices:
+    [
+      {
+        text: `i want to believe...`,
+        next: `end`,
+      },
+      {
+        text: `that's baloney..`,
+        next: `end`,
+      },
+    ],
+
+    action: () => playTrack("assets/music/thefatratUnity.mp3"),
+  },
+
+  "end":
+  {
+    reveal: standaRevealEmojis("🇵", "🇪", "🇳", "🇳", "🇾"),
+
+    gg: standaWin(`Become a pokemon master? (also here's the link 2 the video ^~^ https://www.youtube.com/watch?v=wnNxn7dDyx0)`, `THANKS FOR WATCHING :D`),
+  },
+  
+  /*
+  "pokeball1":
+  {
+    reveal: standaRevealEmojis("🟥", "🟥", "🟥", "🟥", "🟥"),
+
+    question: "",
+
+    next: "pokeball2",
+  },
+
+  "pokeball2":
+  {   
+    reveal: standaRevealEmojis("🟥", "⬛", "⬛", "⬛", "🟥"),
+
+    question: "",
+
+    next: "pokeball3",
+  },
+  
+  "pokeball3":
+  {
+    reveal: standaRevealEmojis("⬛", "⬛", "⬜", "⬛", "⬛"),
+
+    question: "",
+
+    next: "pokeball4",
+  },
+
+  "pokeball4":
+  {
+    reveal: standaRevealEmojis("⬜", "⬛", "⬛", "⬛", "⬜"),
+
+    question: "",
+
+    next: "pokeball5",
+  },
+
+  "pokeball5":
+  {
+    reveal: standaRevealEmojis("⬜", "⬛", "⬛", "⬛", "⬜"),
+
+    question: "",
+
+    gg: standaWin(`Become a pokemon master? (also here's the link 2 the video ^~^ https://www.youtube.com/watch?v=wnNxn7dDyx0)`, `THANKS FOR WATCHING :D`)
+  },
+  */
 }
 
 /*

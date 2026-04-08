@@ -75,7 +75,8 @@ const STORY_REGISTRY =
   293: easterSpecial,
   294: trenchesReborn,
   295: trenchesAmongShrimp,
-  //295: funPokemonFacts,
+  296: defaultBrongle, // skipped cus i was resetting sleep n very out of it (people got to see defaultbrongle for the first time tho :3)
+  297: funPokemonFacts,
 };
 
 /**
@@ -380,8 +381,6 @@ function setupNextScene(nextId, activeTiles)
 
   if (nextScene.next && (!nextScene.choices || nextScene.choices.length === 0)) 
   {
-    // 🪄 We use a Timeout so the player actually has time to READ the text
-    // before it vanishes and the next scene starts!
     const readTime = nextScene.isTextOnly ? 1500 : 3000; 
 
     setTimeout(() => 
@@ -425,7 +424,7 @@ function finishTurn(scene, choice, activeTiles)
     sceneId = nextId;
     const nextScene = storySequence[nextId];
 
-    if (nextScene.noReveal) 
+    if (nextScene.textOnly) 
     {
       handleSeqTurn(activeTiles);
     } 
@@ -795,7 +794,8 @@ function getActiveTiles() {
   return guessGrid.querySelectorAll('[data-state="active"]');
 }
 
-function showAlert(message, duration = 1000) {
+function showAlert(message, duration = 4000) 
+{
   const alert = document.createElement("div")
   alert.innerHTML = message
   alert.classList.add("alert")
@@ -956,7 +956,7 @@ function generateShareString()
 
           // 2 braille characters so text doesn't get collapsed
 
-          rowText += (char === "") ? "⠀⠀" : char;
+          rowText += (char === "") ? "⠀⠀" : char + "\u200B";
 
         }
 
@@ -1004,7 +1004,7 @@ function generateShareString()
 
         const char = t.textContent.trim();
 
-        shareText += (char === "") ? "⠀⠀" : char;
+        rowText += (char === "") ? "⠀⠀" : char + "\u200B"; // u200b so regional indicators don't get glued together
 
       }
 
